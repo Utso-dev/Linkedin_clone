@@ -7,6 +7,7 @@ import {
 } from "@/feature/slice/admin/securitySettings";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 interface PasswordInputProps {
   label: string;
@@ -123,6 +124,7 @@ export default function ChangePassword() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
+      toast.success("Password updated successfully.");
     } catch (error: any) {
       const newPasswordError = error?.data?.errors?.new_password?.[0];
 

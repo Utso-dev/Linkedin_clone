@@ -125,10 +125,16 @@ export default function LoginActivityTable() {
               <Monitor className="h-5 w-5 stroke-headerColor" />
             )}
           </span>
-          <div className="flex flex-col">
-            <span className="text-[13px] font-semibold text-[#0A0A0A]">
-              {row.device} • {row.browser}
-            </span>
+          <div className="flex flex-col ">
+            <div className="relative w-40 group">
+              <span className="block w-40 truncate text-[13px] font-semibold text-[#0A0A0A]">
+                {row.device} • {row.browser}
+              </span>
+
+              {/* <div className="absolute bottom-full left-1/2 z-[999] mb- hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-black px-3 py-2 text-xs font-medium text-white shadow-lg group-hover:block">
+                {row.device} • {row.browser}
+              </div> */}
+            </div>
             <span className="whitespace-nowrap text-[13px] font-semibold text-grayColor1">
               {row.location}
             </span>
