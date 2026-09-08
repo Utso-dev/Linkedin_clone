@@ -97,18 +97,20 @@ export async function proxy(request: NextRequest) {
     const userData = await userResponse.json();
 
     if (userData && userData.success) {
-      // If onboarding is incomplete, redirect to onboarding for protected pages
-      if (!userData?.is_onboarding) {
+      const isAdmin = userData?.user?.role === "admin";
+      const isOnboardingComplete = userData?.is_onboarding;
+    
+      // Incomplete onboarding → force to /onboarding (skip for admins)
+      if (!isOnboardingComplete && !isAdmin) {
         if (!pathname.startsWith("/onboarding")) {
-          const res = NextResponse.redirect(
-            new URL("/onboarding", request.url),
-          );
-          if (currentToken)
+          const res = NextResponse.redirect(new URL("/onboarding", request.url));
+          if (currentToken) {
             res.cookies.set("accessToken", currentToken, { path: "/" });
+          }
           return res;
         }
       } else {
-        // If onboarding is completed, prevent access to onboarding pages
+        // Onboarding complete OR admin → block /onboarding pages
         if (pathname.startsWith("/onboarding")) {
           return redirectToHome();
         }
