@@ -6,6 +6,7 @@ import { IoMdNotifications } from "react-icons/io";
 import { Menu, X } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useGetMyProfileQuery } from "@/feature/slice/user/userSlice";
+import adminProfile from "@/public/images/admin/profile.png";
 
 export default function TopHeader() {
   const { openMobile, setOpenMobile } = useSidebar();
@@ -37,7 +38,7 @@ export default function TopHeader() {
 
         <div className="flex items-center gap-2">
           <Image
-            src={profile?.profile_image_url || "/images/default-avatar.png"}
+            src={profile?.profile_image_url || adminProfile}
             alt="Admin Image"
             width={32}
             height={32}

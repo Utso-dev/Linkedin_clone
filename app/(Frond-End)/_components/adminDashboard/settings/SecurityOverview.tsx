@@ -139,9 +139,9 @@ export default function SecurityOverview({
 
           <p className="text-[#4A4C56] text-sm font-normal leading-[140%] tracking-[0.07px] mt-1">
             Last checked:{" "}
-            {dayjs(OverviewData?.security_score?.last_checked).format(
-              "DD-MM-YYYY, hh:mm A",
-            )}
+            {dayjs(OverviewData?.security_score?.last_checked)
+              .format("DD MMM YYYY, hh:mm A")
+              .toUpperCase()}
           </p>
         </div>
 

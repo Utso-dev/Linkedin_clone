@@ -157,11 +157,19 @@ export default function LoginActivityTable() {
       cell: (row) => (
         <div className="flex flex-col">
           <span className="whitespace-nowrap text-[13px] font-medium text-headerColor">
-            {dayjs.utc(row.login_at).tz(userTimezone).format("DD/MM/YYYY")}
+            {dayjs
+              .utc(row.login_at)
+              .tz(userTimezone)
+              .format("DD MMM YYYY")
+              .toUpperCase()}
           </span>
 
           <span className="whitespace-nowrap text-[12px] text-[#A5A5AB]">
-            {dayjs.utc(row.login_at).tz(userTimezone).format("hh:mm:ss A")}
+            {dayjs
+              .utc(row.login_at)
+              .tz(userTimezone)
+              .format(" hh:mm A")
+              .toUpperCase()}
           </span>
         </div>
       ),

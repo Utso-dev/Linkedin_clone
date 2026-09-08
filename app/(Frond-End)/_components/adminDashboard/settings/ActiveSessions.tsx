@@ -93,7 +93,9 @@ export default function ActiveSessions() {
 "
                 >
                   {session.location} • {session.ip_address} •{" "}
-                  {dayjs(session.login_at).format("DD-MM-YYYY, hh:mm A")}
+                  {dayjs(session.login_at)
+                    .format("DD MMM YYYY, hh:mm A")
+                    .toUpperCase()}
                 </p>
               </div>
               <div className="flex items-center gap-2 justify-end">
