@@ -1,7 +1,7 @@
 // components/reusable/dashboard/DeleteConfirmationModal.tsx
 
 import React from "react";
-import CustomModal from "@/components/reusable/dashboard/CustomModal"; // আপনার CustomModal-এর পাথ
+import CustomModal from "@/components/reusable/dashboard/CustomModal"; 
 
 type DeleteConfirmationModalProps = {
     isOpen: boolean;

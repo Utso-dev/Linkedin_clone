@@ -179,7 +179,7 @@ export const SidebarData: SidebarItem[] = [
       {
         id: "neuroscience",
         name: "Neuroscience",
-        href: "/dashboard/categories",
+        href: "/dashboard/categories/neuroscience",
         icon: NeuroscienceIcon,
       },
     ],
@@ -191,9 +191,21 @@ export const SidebarData: SidebarItem[] = [
     icon: Brain,
     children: [
       {
-        id: "psychology-content",
-        name: "Psychology Content",
-        href: "/dashboard/psychology",
+        id: "biotechnology",
+        name: "Biotechnology",
+        href: "/dashboard/phychology/biotechnology",
+        icon: Brain,
+      },
+      {
+        id:  "psychotropics",
+        name: "Psychotropics",
+        href: "/dashboard/phychology/psychotropics",
+        icon: Brain,
+      },
+      {
+        id:  "publications",
+        name: "Publications",
+        href: "/dashboard/phychology/publications",
         icon: Brain,
       },
     ],

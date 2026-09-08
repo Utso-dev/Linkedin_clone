@@ -301,13 +301,21 @@ export async function proxy(request: NextRequest) {
       const isOnboarded =
         userData?.data?.is_onboarding ?? userData?.is_onboarding;
 
-      if (!isOnboarded) {
+    if (userData && userData.success) {
+      const isAdmin = userData?.user?.role === "admin";
+      const isOnboardingComplete = userData?.is_onboarding;
+    
+      // Incomplete onboarding → force to /onboarding (skip for admins)
+      if (!isOnboardingComplete && !isAdmin) {
         if (!pathname.startsWith("/onboarding")) {
-          return withQueryTokenCookie(
-            NextResponse.redirect(new URL("/onboarding", request.url))
-          );
+          const res = NextResponse.redirect(new URL("/onboarding", request.url));
+          if (currentToken) {
+            res.cookies.set("accessToken", currentToken, { path: "/" });
+          }
+          return res;
         }
       } else {
+        // Onboarding complete OR admin → block /onboarding pages
         if (pathname.startsWith("/onboarding")) {
           return withQueryTokenCookie(
             NextResponse.redirect(new URL("/mu/home", request.url))
