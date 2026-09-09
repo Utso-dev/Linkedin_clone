@@ -1,4 +1,6 @@
 import ButtonReuseable from "@/components/reusable/CustomButton";
+import Link from "next/link";
+
 
 function SubscriptionCard() {
   return (
@@ -7,10 +9,12 @@ function SubscriptionCard() {
       <p className="text-sm text-whiteColor">
         Try your experience for using more features
       </p>
-      <ButtonReuseable
-        title="Upgrade Now"
-        className="bg-whiteColor! mt-2 text-primaryColor!"
-      />
+      <Link
+        href="/mu/jobs/subscription"
+        className="text-sm font-semibold px-4 py-3 rounded-md mt-2 bg-whiteColor text-primaryColor "
+      >
+        Upgrade Now
+      </Link>
     </div>
   );
 }
