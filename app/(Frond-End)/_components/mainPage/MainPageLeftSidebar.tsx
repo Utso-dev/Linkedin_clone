@@ -82,9 +82,9 @@ function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
       <div className="pt-6  ">
         <MainPageBottomNav onItemClick={onItemClick} />
       </div>
-      <div className="pt-6">
+      {/* <div className="pt-6">
         <SubscriptionCard />
-      </div>
+      </div> */}
     </div>
   );
 }
