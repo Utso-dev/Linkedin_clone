@@ -1,12 +1,11 @@
-import PlanPricingTable from '@/app/(Frond-End)/_components/adminDashboard/subscription/planPricingCard/PlanPricingTable'
-import React from 'react'
+import SubscriptionPricingTable from "../_component/SubscriptionPricingTable";
 
 function page() {
   return (
     <div>
-          <PlanPricingTable/>
+      <SubscriptionPricingTable />
     </div>
-  )
+  );
 }
 
-export default page
+export default page;
