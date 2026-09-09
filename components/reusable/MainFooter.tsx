@@ -42,7 +42,7 @@ function MainFooter() {
             </div>
 
             <div className="flex flex-col md:flex-row  items-center gap-1.5" >
-              <p className="sm:text-right text-center text-sm text-[#A5A5AB] hidden md:block"> &copy; {year} Mind Unite, All rights Reserved.</p>
+              <p className="sm:text-right text-center text-sm text-[#A5A5AB] hidden md:block"> &copy; {year} Mind Unite, All Rights Reserved.</p>
 
               <div className="flex gap-1.5">
                 <Link href="/terms-conditions" className=" text-sm font-normal text-primaryColor">
@@ -53,7 +53,7 @@ function MainFooter() {
                   Privacy Policy
                 </Link>
               </div>
-              <p className="sm:text-right text-center text-sm text-[#A5A5AB] block md:hidden"> &copy; {year} Mind Unite, All rights Reserved.</p>
+              <p className="sm:text-right text-center text-sm text-[#A5A5AB] block md:hidden"> &copy; {year} Mind Unite, All Rights Reserved.</p>
 
             </div>
           </div>
