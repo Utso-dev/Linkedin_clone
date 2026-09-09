@@ -197,7 +197,6 @@ export default function PublicationTable({
             <DataTable
                 columns={columns}
                 data={publications}
-                defaultPageSize={10}
                 onEdit={onEdit}
                 onDelete={setDeleting}
             />

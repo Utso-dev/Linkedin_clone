@@ -36,6 +36,7 @@ export const baseApiSlice = createApi({
     "Like",
     "experience",
     "study",
+    "subscription",
   ],
 });
 

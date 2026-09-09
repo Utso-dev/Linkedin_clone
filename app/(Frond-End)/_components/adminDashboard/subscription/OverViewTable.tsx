@@ -7,14 +7,16 @@ import Image from "next/image";
 import userIcon from "@/public/images/admin/parterner.png";
 
 import { useState } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowDownToLine, ArrowUpDown, Download, SearchIcon } from "lucide-react";
+import { ArrowDownToLine, SearchIcon } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
 import { DateRange } from "react-day-picker";
 import EditOverModal from "./EditOverModal";
+import { useGetMySubscribersQuery, useCancelSubscriptionMutation } from "@/feature/slice/admin/subscription/subscriptionApi";
+import { Subscription } from "@/feature/slice/admin/subscription/subscriptionType";
+import { formatDate } from "date-fns";
 
 type Job = {
     id: number;
@@ -24,102 +26,43 @@ type Job = {
     billingCycle: string;
     nextBilling: string;
     amount: string;
-    email: string;
     stayday: string;
     status: string;
     joined: string;
 };
 
-const initialJobs: Job[] = [
-    {
-        id: 1,
-        img: userIcon.src,
-        Subscribers: "Clinical Psychologist",
-        plan: "Premium",
-        billingCycle: "Yearly",
-        nextBilling: "2024-01-15",
-        amount: "$100",
-        email: "rachel@gmail.com",
-        stayday: "In 45 days",
-        status: "Active",
-        joined: "2024-01-15",
-    },
-    {
-        id: 2,
-        img: userIcon.src,
-        Subscribers: "Clinical Psychologist",
-        plan: "Basic",
-        billingCycle: "Monthly",
-        nextBilling: "2024-01-15",
-        amount: "$100",
-        email: "rachel@gmail.com",
-        stayday: "In 45 days",
-        status: "Active",
-        joined: "2024-01-15",
-    },
-    {
-        id: 3,
-        img: userIcon.src,
-        Subscribers: "Clinical Psychologist",
-        plan: "Premium",
-        billingCycle: "Monthly",
-        nextBilling: "2024-01-15",
-        amount: "$100",
-        email: "rachel@gmail.com",
-        stayday: "Expired",
-        status: "Suspended",
-        joined: "2024-01-15",
-    },
-    {
-        id: 4,
-        img: userIcon.src,
-        Subscribers: "Clinical Psychologist",
-        plan: "Pro industry",
-        billingCycle: "Monthly",
-        nextBilling: "2024-01-15",
-        amount: "$100",
-        email: "rachel@gmail.com",
-        stayday: "In 45 days",
-        status: "Suspended",
-        joined: "2024-01-15",
-    },
-    {
-        id: 5,
-        img: userIcon.src,
-        Subscribers: "Clinical Psychologist",
-        plan: "Premium",
-        billingCycle: "Monthly",
-        nextBilling: "2024-01-15",
-        amount: "$100",
-        email: "rachel@gmail.com",
-        stayday: "5 days Over",
-        status: "Active",
-        joined: "2024-01-15",
-    },
-    {
-        id: 6,
-        img: userIcon.src,
-        Subscribers: "Clinical Psychologist",
-        plan: "Premium",
-        billingCycle: "Monthly",
-        nextBilling: "2024-01-15",
-        amount: "$100",
-        email: "rachel@gmail.com",
-        stayday: "In 45 days",
-        status: "Active",
-        joined: "2024-01-15",
-    },
-];
-
 export default function OverViewTable() {
-    const [jobs, setJobs] = useState<Job[]>(initialJobs);
+    const [page, setPage] = useState(1);
+    const [planFilter, setPlanFilter] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
+    const [date, setDate] = useState<DateRange | undefined>(undefined);
+    const [selectedJob, setSelectedJob] = useState<Job | null>(null);
     const [viewOpen, setViewOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
-    const [sort, setSort] = useState("default");
 
-    const [date, setDate] = useState<DateRange | undefined>(undefined);
-    const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+    const queryParams: Record<string, unknown> = { page, per_page: 10 };
+    if (planFilter) queryParams.plan = planFilter;
+    if (statusFilter) queryParams.status = statusFilter;
+
+    const { data: apiResponse, isLoading, isError } = useGetMySubscribersQuery({ query: queryParams });
+
+    const [cancelSubscription] = useCancelSubscriptionMutation();
+
+    const mapSubscriptionToJob = (sub: Subscription): Job => ({
+        id: sub.id,
+        img: sub.subscriber?.image || userIcon.src,
+        Subscribers: sub.subscriber?.name || "Unknown",
+        plan: sub.plan?.name || "-",
+        billingCycle: sub.billing_cycle,
+        nextBilling: sub.next_billing_date,
+        amount: sub.plan?.amount || "$0",
+        stayday: sub.days_left > 0 ? `In ${sub.days_left} days` : sub.status === "active" ? "In 0 days" : "Expired",
+        status: sub.status === "active" ? "Active" : "Suspended",
+        joined: sub.joined_at,
+    });
+
+    const jobs: Job[] = apiResponse?.data?.map(mapSubscriptionToJob) ?? [];
 
     const openView = (job: Job) => {
         setSelectedJob(job);
@@ -136,13 +79,15 @@ export default function OverViewTable() {
         setDeleteOpen(true);
     };
 
-
-    const handleDeleteUser = () => {
+    const handleDeleteUser = async () => {
         if (selectedJob) {
-            setJobs((prevJobs) => prevJobs.filter((item) => item.id !== selectedJob.id));
-            console.log(`Deleted user with ID: ${selectedJob.id}`);
-            setDeleteOpen(false);
-            setSelectedJob(null);
+            try {
+                await cancelSubscription({ id: selectedJob.id }).unwrap();
+                setDeleteOpen(false);
+                setSelectedJob(null);
+            } catch (error) {
+                console.error("Failed to cancel subscription:", error);
+            }
         }
     };
 
@@ -204,7 +149,7 @@ export default function OverViewTable() {
             cell: (row) => (
                 <div className="flex flex-col gap-2">
                     <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
-                        {row.nextBilling}
+                        {formatDate(new Date(row.nextBilling), "dd MMM yyyy")}
                     </span>
                     <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                         {row.stayday}
@@ -226,7 +171,18 @@ export default function OverViewTable() {
             header: "Joined",
             cell: (row) => (
                 <span className="text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
-                    {row.joined}
+                    {formatDate(new Date(row.joined), "dd MMM yyyy")    }
+                </span>
+            ),
+        },
+
+        {
+            header: "Action",
+            cell: (row) => (
+                <span className="text-ellipsis text-[#0A0A0A] font-['Segoe_UI'] text-sm font-semibold leading-[140%] tracking-[0.07px]">
+                    <button onClick={() => openDelete(row)} className="flex items-center justify-center gap-2 rounded-md bg-red-500/80 hover:bg-red-500/90 cursor-pointer px-3 py-1.5 text-white ">
+                        Cancel
+                    </button>
                 </span>
             ),
         },
@@ -263,10 +219,9 @@ export default function OverViewTable() {
 
                         <CustomSelect
                             className=" h-[38px]"
-                            value={sort}
+                            value={planFilter || "default"}
                             onChange={(value: string) =>
-                                setSort(value === "default" ? "" : value)
-
+                                setPlanFilter(value === "default" ? "" : value)
                             }
                             options={[
                                 {
@@ -285,16 +240,14 @@ export default function OverViewTable() {
                                     label: "Pro Industry",
                                     value: "Pro Industry",
                                 },
-
                             ]}
                         />
 
                         <CustomSelect
-                            value={sort}
+                            value={statusFilter || "default"}
                             className=" h-[38px]"
                             onChange={(value: string) =>
-                                setSort(value === "All Status" ? "" : value)
-
+                                setStatusFilter(value === "default" ? "" : value)
                             }
                             options={[
                                 {
@@ -302,13 +255,16 @@ export default function OverViewTable() {
                                     value: "default",
                                 },
                                 {
-                                    label: "Suspended",
-                                    value: "suspended",
+                                    label: "Active",
+                                    value: "active",
                                 },
-
-
+                                {
+                                    label: "Suspended",
+                                    value: "cancelled",
+                                },
                             ]}
                         />
+
                         <DateRangePicker className=" h-[38px]" date={date} setDate={setDate} placeholder='Select date range' />
 
                         <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 py-2 text-white md:w-auto">
@@ -322,8 +278,6 @@ export default function OverViewTable() {
                 <DataTable
                     columns={columns}
                     data={jobs}
-                    onEdit={openEdit}
-                    onDelete={openDelete}
                 />
 
                 {/* View Job Details */}
@@ -363,8 +317,10 @@ export default function OverViewTable() {
                     isOpen={deleteOpen}
                     onClose={() => setDeleteOpen(false)}
                     onConfirm={handleDeleteUser}
-                    title="Do you want to delete this user?"
-                    description="Click “Delete Now” if you want to delete otherwise press cancel."
+                    title="Do you want to cancel this subscription?"
+                    description="Click “Cancel Now” if you want to cancel otherwise press cancel."
+                    confirmText="Cancel Now"
+                    cancelText="Cancel"
                 />
             </div>
         </div>
