@@ -365,6 +365,7 @@ function MessageRoot() {
     window.open(url, "_blank");
   }, []);
 
+
   return (
     <div>
       <div className="h-full md:pl-4 bg-white">
@@ -390,10 +391,29 @@ function MessageRoot() {
             className="lg:h-135 md:h-115 h-105 border-t overflow-y-auto px-3! py-6! md:p-6! space-y-5.5 overscroll-contain"
           >
             {isFetchingMore && (
-              <div className="flex justify-center py-2">
-                <span className="text-xs text-gray-400 animate-pulse">
-                  Loading older messages...
-                </span>
+              <div className="space-y-3.5 py-2">
+                {/* 1. Incoming message skeleton (Left) */}
+                <div className="flex items-end gap-2.5 justify-start">
+                  <Skeleton className="w-8 h-8 rounded-full shrink-0 bg-gray-200" />
+                  <div className="space-y-1.5">
+                    <Skeleton className="h-10 w-48 sm:w-64 rounded-2xl rounded-bl-xs bg-gray-200" />
+                    <Skeleton className="h-2.5 w-12 ml-1 bg-gray-200" />
+                  </div>
+                </div>
+                {/* 2. Outgoing message skeleton (Right) */}
+                <div className="flex items-end gap-2.5 justify-end">
+                  <div className="space-y-1.5 flex flex-col items-end">
+                    <Skeleton className="h-11 w-40 sm:w-56 rounded-2xl rounded-br-xs bg-gray-200" />
+                    <Skeleton className="h-2.5 w-12 mr-1 bg-gray-200" />
+                  </div>
+                </div>
+                {/* 3. Another Incoming message skeleton (Left) */}
+                <div className="flex items-end gap-2.5 justify-start">
+                  <Skeleton className="w-8 h-8 rounded-full shrink-0 bg-gray-200" />
+                  <div className="space-y-1.5">
+                    <Skeleton className="h-8 w-32 sm:w-44 rounded-2xl rounded-bl-xs bg-gray-200" />
+                  </div>
+                </div>
               </div>
             )}
 
@@ -413,18 +433,16 @@ function MessageRoot() {
 
             {isOtherUserTyping && <TypingIndicator />}
           </div>
-         
-            <MessageInputBar
-              isConnected={conversation?.other_user}
-              sending={sendingMessage}
-              isFetchingMore={isFetchingMore}
-              replyTo={replyTo}
-              onTyping={whisperTyping}
-              onCancelReply={() => setReplyTo(null)}
-              onSendText={handleSendText}
-              onSendVoice={handleSendVoice}
-            />
-          
+          <MessageInputBar
+            isConnected={conversation?.other_user}
+            sending={sendingMessage}
+            isFetchingMore={isFetchingMore}
+            replyTo={replyTo}
+            onTyping={whisperTyping}
+            onCancelReply={() => setReplyTo(null)}
+            onSendText={handleSendText}
+            onSendVoice={handleSendVoice}
+          />
         </div>
       </div>
 
