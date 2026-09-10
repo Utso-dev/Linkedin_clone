@@ -47,14 +47,25 @@ function isAdminFromUser(userData: {
   data?: { user?: { role?: string } };
 }) {
   return (
-    userData?.user?.role === "admin" ||
-    userData?.data?.user?.role === "admin"
+    userData?.user?.role === "admin" || userData?.data?.user?.role === "admin"
   );
 }
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const createNextResponse = () => {
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-current-path", pathname);
+    const segments = pathname.split("/").filter(Boolean);
+    const lastParam = segments.length > 0 ? segments[segments.length - 1] : "";
+    requestHeaders.set("x-current-params", lastParam);
 
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
+  };
   if (
     pathname === "/favicon.ico" ||
     pathname.startsWith("/_next") ||
@@ -200,7 +211,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  return withQueryTokenCookie(NextResponse.next());
+  return withQueryTokenCookie(createNextResponse());
 }
 
 export const config = {

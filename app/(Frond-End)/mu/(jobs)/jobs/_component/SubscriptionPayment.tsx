@@ -1,4 +1,5 @@
 "use client";
+import ButtonReuseable from "@/components/reusable/CustomButton";
 import {
   useGetSubscriptionSinglePlansQuery,
   useSendSubscriptionOTPRequestMutation,
@@ -72,6 +73,7 @@ const CheckoutForm = ({ planDetails }) => {
       }
       const response = await sendSubscriptionOTP({
         plan_id: planDetails?.id,
+        checkout_type: "stripe",
       }).unwrap();
       console.log("OTP Sent Successfully:", response);
       route.push(
@@ -87,8 +89,8 @@ const CheckoutForm = ({ planDetails }) => {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto py-12 px-4">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
+    <div className="w-full max-w-5xl mx-auto py-12 lg:pb-30 px-4">
+      <div className="grid grid-cols-1 h-full md:grid-cols-12 gap-12 items-start">
         {/* Left Side: Payment Form */}
         <div className="md:col-span-7">
           <h2 className="text-2xl font-semibold text-headerColor mb-3">
@@ -156,18 +158,19 @@ const CheckoutForm = ({ planDetails }) => {
             )}
 
             {/* Pay Button */}
-            <button
+            <ButtonReuseable
               type="submit"
               disabled={!stripe || isOtpSending}
-              className="w-full py-3 px-4 bg-primaryColor text-white font-medium rounded-lg text-sm hover:opacity-95 transition-opacity disabled:opacity-50 cursor-pointer"
-            >
-              {isOtpSending
-                ? "Processing..."
-                : `Pay USD $${planDetails?.billing_rate || "6.99"}`}
-            </button>
+              title={
+                isOtpSending
+                  ? "Processing..."
+                  : `Pay USD $${planDetails?.billing_rate || "6.99"}`
+              }
+              className="w-full"
+            />
 
             {/* Disclaimer */}
-            <p className="text-xs text-gray-400 leading-relaxed pt-2">
+            <p className="text-sm text-grayColor1 leading-relaxed ">
               Your personal data will be used to process your order, support
               your experience throughout this website, and for other purposes
               described in our privacy policy.
@@ -176,7 +179,7 @@ const CheckoutForm = ({ planDetails }) => {
         </div>
 
         {/* Right Side: Order Summary */}
-        <div className="md:col-span-5 bg-gray-50/50 p-6 md:p-8 rounded-xl">
+        <div className="md:col-span-5 bg-gray-50/50 h-full p-6 md:p-8 rounded-xl">
           <h2 className="text-2xl font-semibold text-headerColor mb-3">
             Order Summary
           </h2>
@@ -185,12 +188,12 @@ const CheckoutForm = ({ planDetails }) => {
           {/* Plan Info */}
           <div className="flex justify-between items-start mb-6">
             <div>
-              <p className="text-sm font-bold text-headerColor">
+              <p className="text-base lg:text-lg font-bold text-headerColor">
                 {planDetails?.name || "Premium Individual"}
               </p>
-              <p className="text-xs text-gray-400 mt-0.5">Unlimited Access</p>
+              <p className="text-sm text-grayColor1 mt-0.5">Unlimited Access</p>
             </div>
-            <span className="text-sm font-semibold text-headerColor">
+            <span className="text-base lg:text-lg font-semibold text-headerColor">
               ${planDetails?.billing_rate || "6.99"}
             </span>
           </div>
@@ -199,13 +202,13 @@ const CheckoutForm = ({ planDetails }) => {
 
           {/* Subtotal & VAT */}
           <div className="space-y-3 mb-6">
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-base">
               <span className="font-semibold text-headerColor">Subtotal</span>
               <span className="font-semibold text-headerColor">
                 ${planDetails?.billing_rate || "6.99"}
               </span>
             </div>
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-base">
               <span className="font-semibold text-headerColor">VAT</span>
               <span className="font-semibold text-headerColor">$0.00</span>
             </div>
@@ -216,8 +219,8 @@ const CheckoutForm = ({ planDetails }) => {
           {/* Total */}
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-semibold text-headerColor">Total</p>
-              <p className="text-[11px] text-gray-400 mt-0.5">
+              <p className="text-base  font-semibold text-headerColor">Total</p>
+              <p className="text-sm text-gray-400 mt-0.5">
                 Including $0.00 in taxes
               </p>
             </div>
