@@ -2,7 +2,7 @@ import SubscriptionPricingTable from "../_component/SubscriptionPricingTable";
 
 function page() {
   return (
-    <div>
+    <div className="mb-14 md:mb-20">
       <SubscriptionPricingTable />
     </div>
   );

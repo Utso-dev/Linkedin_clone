@@ -1,145 +1,9 @@
+"use client";
+import ButtonReuseable from "@/components/reusable/CustomButton";
+import { useGetSubscriptionPlansQuery } from "@/feature/slice/subscriptionSlice";
 import { HiBadgeCheck } from "react-icons/hi";
-
-const plansData = {
-  columns: [
-    {
-      key: "standard",
-      title: "Standard",
-      price: "Free",
-      isButtonOutlined: true,
-    },
-    {
-      key: "premium",
-      title: "Premium",
-      price: "$6.99",
-      period: "/Month",
-      isPrimary: true,
-    },
-    {
-      key: "industryPro",
-      title: "Industry Pro",
-      price: "$9.99",
-      period: "/Month",
-      isPrimary: true,
-    },
-  ],
-  features: [
-    {
-      name: "Create Your Professional Profile",
-      standard: true,
-      premium: true,
-      industryPro: true,
-    },
-    {
-      name: "Search Mind Unite Profiles",
-      standard: true,
-      premium: true,
-      industryPro: true,
-    },
-    {
-      name: "Profile View Visibility",
-      standard: "Last 5 viewers",
-      premium: "Unlimited",
-      industryPro: "Unlimited",
-    },
-    {
-      name: "Endorsements & Recommendations",
-      standard: true,
-      premium: true,
-      industryPro: true,
-    },
-    {
-      name: "Build Your Network",
-      standard: "Up to 500 Users",
-      premium: "Unlimited",
-      industryPro: "Unlimited",
-    },
-    {
-      name: "Send A Connection Request",
-      standard: "Up to 10/day",
-      premium: "Unlimited",
-      industryPro: "Unlimited",
-    },
-    {
-      name: "Unlimited Direct Messaging",
-      standard: "Within Network",
-      premium: "Across Mind Unite",
-      industryPro: "Across Mind Unite",
-    },
-    {
-      name: "Join a Collaboration Group",
-      standard: "Up to 3 Groups",
-      premium: "Unlimited",
-      industryPro: "Unlimited",
-    },
-    {
-      name: "Posts, Articles, Photos, Videos",
-      standard: "Within Network",
-      premium: "Across Mind Unite",
-      industryPro: "Across Mind Unite",
-    },
-    {
-      name: "Job Search",
-      standard: true,
-      premium: true,
-      industryPro: true,
-    },
-    {
-      name: "Job Applications- Submit a CV/Resume",
-      standard: false,
-      premium: true,
-      industryPro: true,
-    },
-    {
-      name: "Job Alerts",
-      standard: false,
-      premium: true,
-      industryPro: true,
-    },
-    {
-      name: "Unlimited InMail Messages",
-      standard: false,
-      premium: true,
-      industryPro: true,
-    },
-    {
-      name: "Saved Searches & Their Weekly Alerts",
-      standard: false,
-      premium: true,
-      industryPro: true,
-    },
-    {
-      name: "Interactive Media",
-      standard: false,
-      premium: true,
-      industryPro: true,
-    },
-    {
-      name: "Profile Viewer Insights",
-      standard: false,
-      premium: true,
-      industryPro: true,
-    },
-    {
-      name: "Receive Unlimited Messages",
-      standard: false,
-      premium: true,
-      industryPro: true,
-    },
-    {
-      name: "Connect with Organizations",
-      standard: false,
-      premium: true,
-      industryPro: true,
-    },
-    {
-      name: "Product Advertisement",
-      standard: false,
-      premium: false,
-      industryPro: true,
-    },
-  ],
-};
+import SubscriptionSkeleton from "./SubscriptionSkeleton";
+// আপনার API slice পাথ অনুযায়ী import করুন
 
 const CrossIcon = () => (
   <svg
@@ -157,98 +21,100 @@ const CrossIcon = () => (
   </svg>
 );
 
-export default function SubscriptionPricingTable() {
-  const renderCellContent = (value) => {
-    if (typeof value === "boolean") {
-      return value ? (
-        <HiBadgeCheck className="text-primaryColor" />
+export default function SubscriptionCards() {
+  const { data, isLoading, isError } = useGetSubscriptionPlansQuery("");
+
+  if (isLoading) {
+    return <SubscriptionSkeleton />;
+  }
+
+  if (isError || !data?.success) {
+    return (
+      <div className="flex justify-center items-center py-20">
+        <p className="text-red-500 font-medium">
+          Failed to load subscription plans.
+        </p>
+      </div>
+    );
+  }
+
+  const plans = data?.data?.plans || [];
+
+  const renderValue = (val) => {
+    if (typeof val === "boolean") {
+      return val ? (
+        <HiBadgeCheck className="text-primaryColor text-xl" />
       ) : (
         <CrossIcon />
       );
     }
-    return <span className="text-headerColor text-sm font-normal">{value}</span>;
+    return <span className="text-gray-700 text-xs font-medium">{val}</span>;
   };
-
+const handleClick = () => {
+  // Handle button click logic here
+  console.log("Button clicked");
+}
   return (
-    <div className="">
-      <div className="border border-borderColor rounded-xl overflow-hidden">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b border-borderColor">
-              {/* Feature Header */}
-              <th className="w-1/4 p-6 text-left align-top border-r border-borderColor">
-                <h2 className="text-2xl font-bold text-headerColor tracking-tight">
-                  Features
-                </h2>
-                <p className="text-sm text-grayColor1 mt-1 font-normal leading-relaxed">
-                  Choose your workspace plan according to your organisational
-                  plan
-                </p>
-              </th>
+    <div className="w-full  ">
+      {/* 3 Grid layout for 3 cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+        {plans.map((plan, index) => {
+          const isFree = parseFloat(plan.billing_rate) === 0;
 
-              {/* Plan Headers */}
-              {plansData.columns.map((col, idx) => (
-                <th
-                  key={col.key}
-                  className={`w-1/4 p-6 text-center align-top ${
-                    idx < plansData.columns.length - 1
-                      ? "border-r border-borderColor"
-                      : ""
-                  }`}
-                >
-                  <h3 className="text-xl font-bold text-headerColor mb-3">
-                    {col.title}
-                  </h3>
-                  {col.isButtonOutlined ? (
-                    <button className="w-full cursor-pointer py-2 border border-primaryColor text-headerColor font-medium rounded-md text-sm hover:bg-teal-50 transition-colors">
-                      {col.price}
-                    </button>
-                  ) : (
-                    <button className="w-full cursor-pointer py-2 bg-primaryColor text-white font-medium rounded-md text-sm hover:bg-primaryColorHover transition-colors">
-                      <span>{col.price}</span>
-                      <span className="text-[11px] font-light opacity-90">
-                        {col.period}
-                      </span>
-                    </button>
-                  )}
-                </th>
-              ))}
-            </tr>
-          </thead>
+          return (
+            <div
+              key={plan.id}
+              className="bg-white border border-borderColor rounded-2xl hover:shadow-md overflow-hidden flex flex-col"
+            >
+              {/* Card Header */}
+              <div className="p-6 text-center border-b border-borderColor">
+                <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-headerColor mb-3">
+                  {plan.name}
+                </h3>
 
-          <tbody>
-            {plansData.features.map((row, index) => (
-              <tr
-                key={index}
-                className={`transition-colors hover:bg-slate-50 ${
-                  index !== plansData.features.length - 1
-                    ? "border-b border-borderColor"
-                    : ""
-                }`}
-              >
-                {/* Feature Name */}
-                <td className="p-4 px-6 text-sm font-semibold text-primaryColor border-r border-borderColor ">
-                  {row.name}
-                </td>
-                {/* Plan Values */}
-                {plansData.columns.map((col, cIdx) => (
-                  <td
-                    key={col.key}
-                    className={`p-4 text-center  ${
-                      cIdx < plansData.columns.length - 1
-                        ? "border-r border-borderColor"
-                        : ""
-                    }`}
+                {isFree ? (
+                  <button className="w-full py-2.5 px-4 border border-primaryColor text-gray-800 font-semibold rounded-lg text-sm hover:bg-teal-50 transition-colors">
+                    Free
+                  </button>
+                ) : (
+                  <ButtonReuseable
+                    onClick={handleClick}
+                    className="w-full"
+                    title={
+                      <div>
+                        <span className="text-base md:text-lg lg:text-xl font-semibold">
+                          ${plan.billing_rate}
+                        </span>
+                        <span className="text-sm font-normal opacity-90 capitalize">
+                          /{plan.billing_cycle === "monthly" ? "Month" : "Year"}
+                        </span>
+                      </div>
+                    }
+                  />
+                )}
+              </div>
+
+              {/* Feature List */}
+              <div className="divide-y divide-borderColor flex-1">
+                {plan.features?.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50 transition-colors text-left"
                   >
-                    <div className="flex items-center justify-center text-center ">
-                    {renderCellContent(row[col.key])}
+                    <div>
+                      <span className="text-sm md:text-base  font-medium text-headerColor pr-3 ">
+                        {item.key}
+                      </span>
                     </div>
-                  </td>
+                    <div className="shrink-0 flex items-center justify-center">
+                      {renderValue(item.value)}
+                    </div>
+                  </div>
                 ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
