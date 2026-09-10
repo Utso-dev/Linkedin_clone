@@ -1,6 +1,6 @@
 "use client";
-import ButtonReuseable from "@/components/reusable/CustomButton";
 import { useGetSubscriptionPlansQuery } from "@/feature/slice/subscriptionSlice";
+import Link from "next/link";
 import { HiBadgeCheck } from "react-icons/hi";
 import SubscriptionSkeleton from "./SubscriptionSkeleton";
 // আপনার API slice পাথ অনুযায়ী import করুন
@@ -50,10 +50,10 @@ export default function SubscriptionCards() {
     }
     return <span className="text-gray-700 text-xs font-medium">{val}</span>;
   };
-const handleClick = () => {
-  // Handle button click logic here
-  console.log("Button clicked");
-}
+  const handleClick = () => {
+    // Handle button click logic here
+    console.log("Button clicked");
+  };
   return (
     <div className="w-full  ">
       {/* 3 Grid layout for 3 cards */}
@@ -77,20 +77,20 @@ const handleClick = () => {
                     Free
                   </button>
                 ) : (
-                  <ButtonReuseable
+                  <Link
                     onClick={handleClick}
-                    className="w-full"
-                    title={
-                      <div>
-                        <span className="text-base md:text-lg lg:text-xl font-semibold">
-                          ${plan.billing_rate}
-                        </span>
-                        <span className="text-sm font-normal opacity-90 capitalize">
-                          /{plan.billing_cycle === "monthly" ? "Month" : "Year"}
-                        </span>
-                      </div>
-                    }
-                  />
+                    className="w-full py-2.5 px-4 block hover:shadow-md  bg-primaryColor text-white font-semibold rounded-lg text-sm hover:opacity-95 transition-opacity"
+                    href={`/mu/jobs/subscription/${plan.id}`}
+                  >
+                    <div>
+                      <span className="text-base md:text-lg lg:text-xl font-semibold">
+                        ${plan.billing_rate}
+                      </span>
+                      <span className="text-sm font-normal opacity-90 capitalize">
+                        /{plan.billing_cycle === "monthly" ? "Month" : "Year"}
+                      </span>
+                    </div>
+                  </Link>
                 )}
               </div>
 

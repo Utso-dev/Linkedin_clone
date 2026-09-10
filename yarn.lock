@@ -2163,6 +2163,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@stripe/react-stripe-js@npm:^6.9.0":
+  version: 6.9.0
+  resolution: "@stripe/react-stripe-js@npm:6.9.0"
+  dependencies:
+    prop-types: "npm:^15.7.2"
+  peerDependencies:
+    "@stripe/stripe-js": ">=9.10.0 <10.0.0"
+    react: ">=16.8.0 <20.0.0"
+    react-dom: ">=16.8.0 <20.0.0"
+  checksum: 10c0/09fb9bbf003a5201b4a3e1ae5ce5a561cfb78a44a87308de22e915f5f21687d6277f5936b0c0221cb8acd68207a594ce6f6e96c01ff13ce4f5d0cdd4852f53b9
+  languageName: node
+  linkType: hard
+
+"@stripe/stripe-js@npm:^7.10.0":
+  version: 7.10.0
+  resolution: "@stripe/stripe-js@npm:7.10.0"
+  checksum: 10c0/b14614393917ddf84ef780b1f4193aeedbc9c3553b2306d53ece932cc5d59ff4f198c1a07f486400695ca40ef19b23cf607d920993a978e84556e5cb2840a6e4
+  languageName: node
+  linkType: hard
+
 "@swc/helpers@npm:0.5.23":
   version: 0.5.23
   resolution: "@swc/helpers@npm:0.5.23"
@@ -4636,6 +4656,8 @@ __metadata:
     "@radix-ui/react-switch": "npm:^1.2.6"
     "@radix-ui/react-tabs": "npm:^1.1.9"
     "@reduxjs/toolkit": "npm:^2.11.2"
+    "@stripe/react-stripe-js": "npm:^6.9.0"
+    "@stripe/stripe-js": "npm:^7.10.0"
     "@tailwindcss/postcss": "npm:^4.0.9"
     "@types/leaflet": "npm:^1.9.21"
     "@types/leaflet.markercluster": "npm:^1.5.6"
