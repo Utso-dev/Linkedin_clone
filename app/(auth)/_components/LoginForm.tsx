@@ -40,7 +40,11 @@ function LoginForm() {
       } else {
         toast.success("Login successful!");
         await setToken(response?.token || response.data.token);
-        route.push(`/mu/home`);
+        if (response?.user?.role === "admin") {
+          route.push(`/dashboard`);
+        } else {
+          route.push(`/mu/home`);
+        }
       }
     } catch (error) {
       toast.error(error?.data?.message || "Email or password is incorrect.");

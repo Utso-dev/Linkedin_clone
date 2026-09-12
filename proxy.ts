@@ -200,6 +200,22 @@ export async function proxy(request: NextRequest) {
 
     if (userResponse.ok) {
       const userData = await userResponse.json();
+      const userRole =
+        userData?.user?.role ||
+        userData?.data?.user?.role ||
+        userData?.data?.role;
+
+      if (userRole === "user" && pathname.startsWith("/dashboard")) {
+        return NextResponse.redirect(new URL("/mu/home", request.url));
+      }
+      if (
+        userRole === "admin" &&
+        (pathname.startsWith("/mu") ||
+          pathname.startsWith("/onboarding") ||
+          pathname.startsWith("/admin"))
+      ) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
       const redirect = redirectForOnboarding(
         isOnboardedFromUser(userData),
         isAdminFromUser(userData),

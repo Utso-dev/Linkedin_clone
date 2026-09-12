@@ -21,11 +21,11 @@ export const PaymentProcessModal = ({
       {/* Body: Loading */}
       {isSuccess ? (
         <div className="py-12 flex flex-col items-center justify-center">
-          <div className="relative w-14 h-14 mb-6">
-            <HiBadgeCheck />
+          <div className="relative  mb-4">
+            <HiBadgeCheck className="w-16 h-16 text-lightGreenColor" />
           </div>
-          <p className="text-sm text-grayColor1 font-medium">
-            Congratulation! Your Payment Process is Successful
+          <p className="text-base text-lightGreenColor font-medium">
+            Congratulation! Your Payment Process is Successful.
           </p>
         </div>
       ) : status === "loading" ? (
@@ -83,7 +83,7 @@ export const PaymentProcessModal = ({
               strokeLinecap="round"
             />
           </svg>
-          <p className="text-sm font-normal text-red-500">
+          <p className="text-base font-normal text-red-500">
             Payment process failed try again!
           </p>
         </div>

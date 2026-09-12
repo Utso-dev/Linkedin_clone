@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { PaymentProcessModal } from "./PaymentProcessModal";
+import ButtonReuseable from "@/components/reusable/CustomButton";
 interface FormData {
   otp: string;
 }
@@ -21,7 +22,7 @@ export default function SubscriptionOtpPayment({
   const planDetails = planData?.data?.plan;
   const params = useSearchParams();
   const [otp, setOtp] = useState(["", "", "", ""]);
-  const [isVerified, setIsVerified] = useState(true);
+  const [isVerified, setIsVerified] = useState(false);
   const [isProcessingOpen, setIsProcessingOpen] = useState(false);
   const [modalStatus, setModalStatus] = useState<"loading" | "error">(
     "loading",
@@ -103,10 +104,6 @@ export default function SubscriptionOtpPayment({
         checkout_type: "stripe",
       }).unwrap();
       setIsVerified(true);
-
-      setTimeout(() => {
-        toast.success("Payment completed successfully!");
-      }, 2000);
     } catch (err: any) {
       toast.error("Payment process failed. Please try again.");
 
@@ -115,6 +112,27 @@ export default function SubscriptionOtpPayment({
       setError("otp", { type: "manual", message: msg });
     }
   };
+  const handleKeyDown = (
+  e: React.KeyboardEvent<HTMLInputElement>,
+  index: number
+) => {
+  if (e.key === "Backspace") {
+   
+    if (!otp[index] && index > 0) {
+      e.preventDefault();
+      const newOtp = [...otp];
+      newOtp[index - 1] = "";
+      setOtp(newOtp);
+      document.getElementById(`payment-otp-${index - 1}`)?.focus();
+    }
+  } else if (e.key === "ArrowLeft" && index > 0) {
+    e.preventDefault();
+    document.getElementById(`payment-otp-${index - 1}`)?.focus();
+  } else if (e.key === "ArrowRight" && index < otp.length - 1) {
+    e.preventDefault();
+    document.getElementById(`payment-otp-${index + 1}`)?.focus();
+  }
+};
 
   return (
     <div className="w-full max-w-5xl mx-auto py-12 px-4">
@@ -132,7 +150,7 @@ export default function SubscriptionOtpPayment({
             </p>
 
             {/* OTP Input Fields */}
-            <div className="w-full flex justify-center items-center flex-col">
+            <div className="w-full flex justify-center items-center flex-col mb-10">
               <div className="flex items-center gap-3">
                 {otp.map((digit, index) => (
                   <input
@@ -141,6 +159,7 @@ export default function SubscriptionOtpPayment({
                     value={digit}
                     maxLength={1}
                     inputMode="numeric"
+                    onKeyDown={(e) => handleKeyDown(e, index)} 
                     onChange={(e) => handleOtpChange(e.target.value, index)}
                     onPaste={handlePaste}
                     className={`w-12 h-14 bg-white border text-center text-lg font-semibold rounded-xl outline-none transition-all ${
@@ -148,7 +167,7 @@ export default function SubscriptionOtpPayment({
                         ? "border-redColor text-redColor ring-1 ring-redColor"
                         : isVerified
                           ? "border-lightGreenColor text-headerColor ring-lightGreenColor/20"
-                          : "border-borderColor text-headerColor focus:border-primaryColor focus:ring-1 focus:ring-primaryColor"
+                          : "border-borderColor text-headerColor focus:border-lightGreenColor focus:ring-1 focus:ring-lightGreenColor"
                     }`}
                   />
                 ))}
@@ -182,14 +201,15 @@ export default function SubscriptionOtpPayment({
             </div>
 
             {/* Pay Button */}
-            <button
-              type="button"
+            
+            <ButtonReuseable  type="button"
               onClick={handleSubmit(handlePaymentSubmit)}
-              disabled={isVerifying }
-              className="w-full py-3 px-4 bg-primaryColor text-white font-medium rounded-lg text-sm hover:opacity-95 transition-opacity disabled:opacity-50 cursor-pointer"
-            >
-              Pay USD ${planDetails?.billing_rate || "6.99"}
-            </button>
+              disabled={isVerifying } 
+              loading={isVerifying }
+              sendingMsg={"Processing your payment..."}
+              title={ `Pay USD $${planDetails?.billing_rate || "6.99"}`}
+              className="w-full"
+              />
 
             {/* Privacy Policy */}
             <p className="text-sm text-grayColor1 leading-relaxed pt-2">
