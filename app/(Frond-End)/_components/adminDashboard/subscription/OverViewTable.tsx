@@ -64,15 +64,9 @@ export default function OverViewTable() {
 
     const jobs: Job[] = apiResponse?.data?.map(mapSubscriptionToJob) ?? [];
 
-    const openView = (job: Job) => {
-        setSelectedJob(job);
-        setViewOpen(true);
-    };
+    const totalSubscribers = apiResponse?.data?.length ?? 0;
 
-    const openEdit = (job: Job) => {
-        setSelectedJob(job);
-        setEditOpen(true);
-    };
+ 
 
     const openDelete = (job: Job) => {
         setSelectedJob(job);
@@ -194,8 +188,8 @@ export default function OverViewTable() {
                 {/* Title */}
                 <div className="mb-6  w-full">
                     <CustomTitleDescription
-                        title="overview"
-                        description="8,560 Premium Users"
+                        title="Overview"
+                        description={`${totalSubscribers} Premium Users`}
                     />
                 </div>
 
@@ -207,7 +201,7 @@ export default function OverViewTable() {
 
 
                         {/* Search */}
-                        <div className="relative w-full ">
+                        <div className="relative w-full min-w-48">
                             <SearchIcon className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#808897]" />
 
                             <input
@@ -218,7 +212,7 @@ export default function OverViewTable() {
                         </div>
 
                         <CustomSelect
-                            className=" h-[38px]"
+                            className=" h-[38px] text-nowrap"
                             value={planFilter || "default"}
                             onChange={(value: string) =>
                                 setPlanFilter(value === "default" ? "" : value)
@@ -245,7 +239,7 @@ export default function OverViewTable() {
 
                         <CustomSelect
                             value={statusFilter || "default"}
-                            className=" h-[38px]"
+                            className=" h-[38px] text-nowrap"
                             onChange={(value: string) =>
                                 setStatusFilter(value === "default" ? "" : value)
                             }

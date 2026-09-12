@@ -3,137 +3,150 @@
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
-import Image from "next/image";
-import userIcon from "@/public/images/admin/parterner.png";
-import visaIcon from "@/public/images/admin/visa.png";
-import mastercardIcon from "@/public/images/admin/paypal.png";
-import americanExpressIcon from "@/public/images/admin/american.png";
-import { useState } from "react";
-import { ArrowDownToLine, Copy, SearchIcon } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowDownToLine, SearchIcon } from "lucide-react";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
 import { DateRange } from "react-day-picker";
+import { useDeactivePlanMutation, useGetPlansQuery } from "@/feature/slice/admin/subscription/subscriptionApi";
+import { Plan } from "@/feature/slice/admin/subscription/subscriptionType";
+import CreatePlan from "./CreatePlan";
+import toast from "react-hot-toast";
 
-
-type Transaction = {
-    id: number;
-    subscriber: number;
-    plan: string;
-    description:string;
-    amount: string;
-    status: "Completed" | "Failed" | "Refunded";
+const getPlanBadgeColor = (name: string) => {
+    const n = name.toLowerCase();
+    if (n.includes("premium") || n.includes("professional")) return "orange" as const;
+    if (n.includes("basic") || n.includes("free")) return "purple" as const;
+    if (n.includes("pro") || n.includes("industry")) return "green" as const;
+    return "gray" as const;
 };
 
-const initialTransactions: Transaction[] = [
-    {
-        id: 1,
-       
-        subscriber: 4923,
-        plan: "Premium",
-        description:"Perfect for students and professionals getting started.",
-        amount: "$9.99 ",
-        status: "Completed",
-    },
-    {
-        id: 2,
-   
-        subscriber: 453,
-        plan: "Premium",
-         description:"Unlock advanced networking and career opportunities.",
-        amount: "$6.99",
-        status: "Failed",
-    },
-    {
-        id: 3,
-     
-        subscriber: 3678,
-        plan: "Pro Industry",
-         description:"Built for organizations, recruiters, and industry partners.",
-
-        amount: "$9.99",
-        status: "Failed",
-    }
-];
+const formatRate = (rate: string) => {
+    if (!rate) return "$0";
+    return rate.trim().startsWith("$") ? rate : `$${rate}`;
+};
 
 export default function PlanPricingTable() {
-    const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
-    const [deleteOpen, setDeleteOpen] = useState(false);
-    const [sort, setSort] = useState("default");
-    const [statusFilter, setStatusFilter] = useState("default");
+    const [search, setSearch] = useState("");
+    const [planFilter, setPlanFilter] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
     const [date, setDate] = useState<DateRange | undefined>(undefined);
-    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+    const [deactiveOpen, setDeactiveOpen] = useState(false);
+    const [editOpen, setEditOpen] = useState(false);
+    const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
-    const openDelete = (row: Transaction) => {
-        setSelectedTransaction(row);
-        setDeleteOpen(true);
+    const { data: apiResponse, isLoading, isError } = useGetPlansQuery();
+    const [deactivePlan] = useDeactivePlanMutation();
+
+    const plans = apiResponse?.data ?? [];
+
+    const filteredPlans = useMemo(() => {
+        return plans.filter((plan) => {
+            const q = search.trim().toLowerCase();
+            const matchesSearch =
+                !q ||
+                plan.name.toLowerCase().includes(q) ||
+                plan.short_description.toLowerCase().includes(q);
+
+            const matchesPlan = !planFilter || plan.name === planFilter;
+            const matchesStatus = !statusFilter || plan.status === statusFilter;
+
+            const createdAt = plan.created_at ? new Date(plan.created_at) : null;
+            const matchesDate =
+                !date?.from ||
+                (createdAt &&
+                    createdAt >= date.from &&
+                    createdAt <= (date.to ?? date.from));
+
+            return matchesSearch && matchesPlan && matchesStatus && matchesDate;
+        });
+    }, [plans, search, planFilter, statusFilter, date]);
+
+    const planOptions = useMemo(() => {
+        const names = Array.from(new Set(plans.map((plan) => plan.name).filter(Boolean)));
+        return [
+            { label: "All Plans", value: "default" },
+            ...names.map((name) => ({ label: name, value: name })),
+        ];
+    }, [plans]);
+
+    const openDelete = (row: Plan) => {
+        setSelectedPlan(row);
+        setDeactiveOpen(true);
     };
 
-    const handleDelete = () => {
-        if (selectedTransaction) {
-            setTransactions((prev) => prev.filter((item) => item.id !== selectedTransaction.id));
-            setDeleteOpen(false);
-            setSelectedTransaction(null);
+    const openEdit = (row: Plan) => {
+        setSelectedPlan(row);
+        setEditOpen(true);
+    };
+
+    const handleDeactive = async () => {
+        if (!selectedPlan) return;
+        try {
+            await deactivePlan({ id: selectedPlan.id }).unwrap();
+            toast.success(selectedPlan?.status === "active" ? "Plan deactivated successfully." : "Plan activated successfully.");
+            setDeactiveOpen(false);
+            setSelectedPlan(null);
+        } catch {
+            toast.error(selectedPlan?.status === "active" ? "Failed to deactive this plan." : "Failed to activate this plan.");
         }
     };
 
-    const columns: Column<Transaction>[] = [
+    const columns: Column<Plan>[] = [
         {
             header: "No.",
-            cell: (row) => <span className="text-gray-500">{row.id}</span>,
+            cell: (row) => (
+                <span className="text-gray-500">
+                    {filteredPlans.findIndex((plan) => plan.id === row.id) + 1}
+                </span>
+            ),
         },
-
         {
             header: "Description",
             cell: (row) => (
                 <div className="flex items-center gap-2">
-                   
-                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-normal text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI']">{row.description}</span>
+                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-normal text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI']">
+                        {row.short_description}
+                    </span>
                 </div>
             ),
         },
-   
-    
         {
             header: "Plan",
             cell: (row) => (
-                <CustomBadge
-                    color={row.plan === "Premium" ? "orange" : "purple"}
-                    className="font-medium"
-                >
-                    {row.plan}
+                <CustomBadge color={getPlanBadgeColor(row.name)} className="font-medium">
+                    {row.name}
                 </CustomBadge>
             ),
         },
-     
         {
             header: "Status",
-            cell: (row) => {
-                if (row.status === "Completed") {
-                    return <CustomBadge color="active">{row.status}</CustomBadge>;
-                }
-                if (row.status === "Failed") {
-                    return <CustomBadge color="suspended">{row.status}</CustomBadge>;
-                }
-                return <CustomBadge color="orange">{row.status}</CustomBadge>; // Refunded
-            },
+            cell: (row) =>
+                row.status === "active" ? (
+                    <CustomBadge color="active">Active</CustomBadge>
+                ) : (
+                    <CustomBadge color="suspended">Inactive</CustomBadge>
+                ),
         },
-       
-           {
+        {
             header: "Amount",
             cell: (row) => (
-                <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI']">{row.amount}
-                    <span className="text-[14px] text-[#777980]">/ month</span>
+                <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI']">
+                    {formatRate(row.billing_rate)}
+                    <span className="text-[14px] text-[#777980]">
+                        / {row.billing_cycle === "yearly" ? "year" : "month"}
+                    </span>
                 </span>
             ),
         },
-
-            {
+        {
             header: "Subscribers",
             cell: (row) => (
                 <div className="flex items-center gap-2">
-                   
-                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI']">{row.subscriber}</span>
+                    <span className="overflow-hidden text-ellipsis text-[#0A0A0A] font-semibold text-[14px] leading-[140%] tracking-[0.07px] font-['Segoe_UI']">
+                        {row.subscribers ?? "-"}
+                    </span>
                 </div>
             ),
         },
@@ -141,50 +154,46 @@ export default function PlanPricingTable() {
 
     return (
         <div>
+
+            <h2 className="text-2xl font-bold">Plan Pricing</h2>
+            <p className="text-sm text-gray-500 mb-4">Manage your subscription plans and pricing.</p>
             {/* Filters */}
-            <div className="flex w-full justify-start lg:justify-end">
+            {/* <div className="flex w-full justify-start lg:justify-end">
                 <div className="mb-6 flex flex-col w-full lg:w-full xl:w-2/3 lg:flex-row items-center justify-start gap-4 ">
-                    {/* Search */}
                     <div className="relative w-full  xl:w-[300px]">
                         <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#808897]" />
 
                         <input
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
                             className="h-10 w-full xl:w-[300px] rounded-md border border-gray-200 bg-white p-2 pl-9 text-sm focus:outline-none focus:ring-1 focus:ring-primaryColor"
                             type="text"
-                            placeholder="Search by user name, email or plan..."
+                            placeholder="Search by plan name or description..."
                         />
                     </div>
 
-                    {/* All Plans */}
                     <CustomSelect
                         className="h-[38px]"
-                        value={sort}
-                        onChange={(value: string) =>
-                            setSort(value === "default" ? "" : value)
+                        value={planFilter || "default"}
+                        onChange={(value: string | number) =>
+                            setPlanFilter(value === "default" ? "" : String(value))
                         }
-                        options={[
-                            { label: "All Plans", value: "default" },
-                            { label: "Premium", value: "Premium" },
-                            { label: "Basic", value: "Basic" },
-                        ]}
+                        options={planOptions}
                     />
 
-                    {/* All Status */}
                     <CustomSelect
                         className="h-[38px] "
-                        value={statusFilter}
-                        onChange={(value: string) =>
-                            setStatusFilter(value === "default" ? "" : value)
+                        value={statusFilter || "default"}
+                        onChange={(value: string | number) =>
+                            setStatusFilter(value === "default" ? "" : String(value))
                         }
                         options={[
                             { label: "All Status", value: "default" },
-                            { label: "Completed", value: "Completed" },
-                            { label: "Failed", value: "Failed" },
-                            { label: "Refunded", value: "Refunded" },
+                            { label: "Active", value: "active" },
+                            { label: "Inactive", value: "inactive" },
                         ]}
                     />
 
-                    {/* Date Range */}
                     <DateRangePicker
                         className="h-[38px] "
                         date={date}
@@ -192,29 +201,50 @@ export default function PlanPricingTable() {
                         placeholder="Select Date Range"
                     />
 
-                    {/* Export */}
                     <button className="flex h-[38px] w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 text-white transition hover:bg-[#038a9c]">
                         <ArrowDownToLine className="h-4 w-4" />
                         Export
                     </button>
                 </div>
-            </div>
+            </div> */}
 
-            {/* Table */}
-            <DataTable
-                columns={columns}
-                data={transactions}
-                onDelete={openDelete}
-            />
+            {isLoading ? (
+                <p className="py-12 text-center text-sm text-gray-400">Loading plans...</p>
+            ) : isError ? (
+                <p className="py-12 text-center text-sm text-red-500">Failed to load plans.</p>
+            ) : (
+                <DataTable
+                    columns={columns}
+                    data={filteredPlans}
+                    onDelete={openDelete}
+                    onEdit={openEdit}
+                />
+            )}
 
+            <CustomModal
+                open={editOpen}
+                onOpenChange={setEditOpen}
+                size="lg"
+                showCloseButton={false}
+            >
+                <CreatePlan
+                    key={selectedPlan?.id}
+                    data={selectedPlan}
+                    onClose={() => {
+                        setEditOpen(false);
+                        setSelectedPlan(null);
+                    }}
+                />
+            </CustomModal>
 
-            {/* Delete Modal */}
             <CustomDeletModal
-                isOpen={deleteOpen}
-                onClose={() => setDeleteOpen(false)}
-                onConfirm={handleDelete}
-                title="Do you want to delete this transaction?"
-                description='Click “Delete Now” if you want to delete otherwise press cancel.'
+                isOpen={deactiveOpen}
+                onClose={() => setDeactiveOpen(false)}
+                onConfirm={handleDeactive}
+                title="Do you want to deactive this plan?"
+                description='Click “Deactive Now” if you want to deactive otherwise press cancel.'
+                confirmText={selectedPlan?.status === "active" ? "Deactive Now" : "Activate Now"}
+                
             />
         </div>
     );
