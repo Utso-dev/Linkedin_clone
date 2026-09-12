@@ -1,6 +1,4 @@
-import ButtonReuseable from "@/components/reusable/CustomButton";
 import Link from "next/link";
-
 
 function SubscriptionCard() {
   return (
@@ -10,7 +8,7 @@ function SubscriptionCard() {
         Try your experience for using more features
       </p>
       <Link
-        href="/mu/jobs/subscription"
+        href="/mu/subscription"
         className="text-sm font-semibold px-4 py-3 rounded-md mt-2 bg-whiteColor text-primaryColor "
       >
         Upgrade Now

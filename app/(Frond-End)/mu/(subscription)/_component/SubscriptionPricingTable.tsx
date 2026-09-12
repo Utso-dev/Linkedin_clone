@@ -80,7 +80,7 @@ export default function SubscriptionCards() {
                   <Link
                     onClick={handleClick}
                     className="w-full py-2.5 px-4 block hover:shadow-md  bg-primaryColor text-white font-semibold rounded-lg text-sm hover:opacity-95 transition-opacity"
-                    href={`/mu/jobs/subscription/${plan.id}`}
+                    href={`/mu/subscription/${plan.id}`}
                   >
                     <div>
                       <span className="text-base md:text-lg lg:text-xl font-semibold">
