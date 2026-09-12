@@ -11,8 +11,6 @@ export default async function FrontEndLayout({
   return (
     <div>
       <div className="">
-     
-       
         <div className="">{children}</div>
       </div>
     </div>
