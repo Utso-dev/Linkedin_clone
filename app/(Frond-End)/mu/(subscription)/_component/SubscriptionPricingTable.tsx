@@ -57,7 +57,7 @@ export default function SubscriptionCards() {
   return (
     <div className="w-full  ">
       {/* 3 Grid layout for 3 cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center items-start">
         {plans.map((plan, index) => {
           const isFree = parseFloat(plan.billing_rate) === 0;
 

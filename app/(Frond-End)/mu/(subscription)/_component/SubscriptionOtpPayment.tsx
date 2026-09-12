@@ -37,7 +37,7 @@ export default function SubscriptionOtpPayment({
     defaultValues: { otp: "6381" },
   });
 
-  const [sendSubscriptionConfirmation, { isLoading: isVerifying , isError }] =
+  const [sendSubscriptionConfirmation, { isLoading: isVerifying , isError, isSuccess }] =
     useSendSubscriptionConfirmationMutation();
 
   const handleOtpChange = (val: string, index: number) => {
@@ -264,6 +264,7 @@ export default function SubscriptionOtpPayment({
       >
         <PaymentProcessModal
           status={modalStatus}
+          isSuccess={isSuccess}
           onClose={() => setIsProcessingOpen(false)}
         />
       </RootDialog>

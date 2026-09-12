@@ -1,9 +1,13 @@
+import { HiBadgeCheck } from "react-icons/hi";
+
 export const PaymentProcessModal = ({
   status,
   onClose,
+  isSuccess,
 }: {
   status: "loading" | "error";
   onClose: () => void;
+  isSuccess: boolean;
 }) => {
   return (
     <div className="p-6 relative text-center">
@@ -12,11 +16,19 @@ export const PaymentProcessModal = ({
         <h3 className="text-base font-semibold text-headerColor">
           Payment Process
         </h3>
-        
       </div>
 
       {/* Body: Loading */}
-      {status === "loading" ? (
+      {isSuccess ? (
+        <div className="py-12 flex flex-col items-center justify-center">
+          <div className="relative w-14 h-14 mb-6">
+            <HiBadgeCheck />
+          </div>
+          <p className="text-sm text-grayColor1 font-medium">
+            Congratulation! Your Payment Process is Successful
+          </p>
+        </div>
+      ) : status === "loading" ? (
         <div className="py-12 flex flex-col items-center justify-center">
           <div className="relative w-14 h-14 mb-6">
             <svg
@@ -39,7 +51,7 @@ export const PaymentProcessModal = ({
               />
             </svg>
           </div>
-          <p className="text-sm text-gray-500 font-medium">
+          <p className="text-sm text-grayColor1 font-medium">
             Waiting For Payment Process
           </p>
         </div>

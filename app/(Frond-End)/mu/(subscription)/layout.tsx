@@ -13,7 +13,7 @@ export default async function FrontEndLayout({
       <div className="">
      
        
-        <div>{children}</div>
+        <div className="">{children}</div>
       </div>
     </div>
   );
