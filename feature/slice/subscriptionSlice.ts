@@ -27,6 +27,7 @@ const subscriptionSlice = baseApiSlice.injectEndpoints({
         method: "POST",
         body: confirmationData,
       }),
+      invalidatesTags: ["User"],
     }),
   }),
 });

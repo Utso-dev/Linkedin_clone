@@ -58,7 +58,7 @@ export default function SubscriptionCards() {
     <div className="w-full  ">
       {/* 3 Grid layout for 3 cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center items-start">
-        {plans.map((plan, index) => {
+        {plans.length > 0 ?plans.map((plan, index) => {
           const isFree = parseFloat(plan.billing_rate) === 0;
 
           return (
@@ -114,7 +114,11 @@ export default function SubscriptionCards() {
               </div>
             </div>
           );
-        })}
+        }): <div className="col-span-3 text-center py-10">
+          <p className="text-descriptionColor text-lg font-medium">
+            No subscription plans available.
+          </p>
+        </div>}
       </div>
     </div>
   );

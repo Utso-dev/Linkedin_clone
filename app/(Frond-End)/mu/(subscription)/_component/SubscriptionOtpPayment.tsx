@@ -1,15 +1,16 @@
 "use client";
+import ButtonReuseable from "@/components/reusable/CustomButton";
 import RootDialog from "@/components/reusable/RootDialog";
 import {
   useGetSubscriptionSinglePlansQuery,
   useSendSubscriptionConfirmationMutation,
 } from "@/feature/slice/subscriptionSlice";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { PaymentProcessModal } from "./PaymentProcessModal";
-import ButtonReuseable from "@/components/reusable/CustomButton";
 interface FormData {
   otp: string;
 }
@@ -38,8 +39,12 @@ export default function SubscriptionOtpPayment({
     defaultValues: { otp: "6381" },
   });
 
-  const [sendSubscriptionConfirmation, { isLoading: isVerifying , isError, isSuccess }] =
-    useSendSubscriptionConfirmationMutation();
+  const [
+    sendSubscriptionConfirmation,
+    { isLoading: isVerifying, isError, isSuccess },
+  ] = useSendSubscriptionConfirmationMutation();
+  const { data: userProfile, isLoading: isUserLoading } =
+    useGetUserProfileQuery("");
 
   const handleOtpChange = (val: string, index: number) => {
     if (!/^\d?$/.test(val)) return;
@@ -56,7 +61,6 @@ export default function SubscriptionOtpPayment({
       document.getElementById(`payment-otp-${index + 1}`)?.focus();
     }
   };
-  console.log(paymentMethodId, "paymentMethodId");
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -113,26 +117,26 @@ export default function SubscriptionOtpPayment({
     }
   };
   const handleKeyDown = (
-  e: React.KeyboardEvent<HTMLInputElement>,
-  index: number
-) => {
-  if (e.key === "Backspace") {
-   
-    if (!otp[index] && index > 0) {
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    if (e.key === "Backspace") {
+      if (!otp[index] && index > 0) {
+        e.preventDefault();
+        const newOtp = [...otp];
+        newOtp[index - 1] = "";
+        setOtp(newOtp);
+        document.getElementById(`payment-otp-${index - 1}`)?.focus();
+      }
+    } else if (e.key === "ArrowLeft" && index > 0) {
       e.preventDefault();
-      const newOtp = [...otp];
-      newOtp[index - 1] = "";
-      setOtp(newOtp);
       document.getElementById(`payment-otp-${index - 1}`)?.focus();
+    } else if (e.key === "ArrowRight" && index < otp.length - 1) {
+      e.preventDefault();
+      document.getElementById(`payment-otp-${index + 1}`)?.focus();
     }
-  } else if (e.key === "ArrowLeft" && index > 0) {
-    e.preventDefault();
-    document.getElementById(`payment-otp-${index - 1}`)?.focus();
-  } else if (e.key === "ArrowRight" && index < otp.length - 1) {
-    e.preventDefault();
-    document.getElementById(`payment-otp-${index + 1}`)?.focus();
-  }
-};
+  };
+
 
   return (
     <div className="w-full max-w-5xl mx-auto py-12 px-4">
@@ -159,15 +163,15 @@ export default function SubscriptionOtpPayment({
                     value={digit}
                     maxLength={1}
                     inputMode="numeric"
-                    onKeyDown={(e) => handleKeyDown(e, index)} 
+                    onKeyDown={(e) => handleKeyDown(e, index)}
                     onChange={(e) => handleOtpChange(e.target.value, index)}
                     onPaste={handlePaste}
                     className={`w-12 h-14 bg-white border text-center text-lg font-semibold rounded-xl outline-none transition-all ${
                       errors.otp
                         ? "border-redColor text-redColor ring-1 ring-redColor"
                         : isVerified
-                          ? "border-lightGreenColor text-headerColor ring-lightGreenColor/20"
-                          : "border-borderColor text-headerColor focus:border-lightGreenColor focus:ring-1 focus:ring-lightGreenColor"
+                          ? "border-lightGreenColor2 text-headerColor ring-lightGreenColor2/20"
+                          : "border-borderColor text-headerColor focus:border-lightGreenColor2 focus:ring-1 focus:ring-lightGreenColor2"
                     }`}
                   />
                 ))}
@@ -175,7 +179,7 @@ export default function SubscriptionOtpPayment({
 
               {/* Verified Badge */}
               {isVerified && !errors.otp && (
-                <div className="flex items-center gap-1.5 mt-4 text-lightGreenColor text-sm font-medium">
+                <div className="flex items-center gap-1.5 mt-4 text-lightGreenColor2 text-sm font-medium">
                   <svg
                     className="w-4 h-4"
                     fill="none"
@@ -201,15 +205,16 @@ export default function SubscriptionOtpPayment({
             </div>
 
             {/* Pay Button */}
-            
-            <ButtonReuseable  type="button"
+
+            <ButtonReuseable
+              type="button"
               onClick={handleSubmit(handlePaymentSubmit)}
-              disabled={isVerifying } 
-              loading={isVerifying }
+              disabled={isVerifying || userProfile?.subscription?.is_subscribed}
+              loading={isVerifying}
               sendingMsg={"Processing your payment..."}
-              title={ `Pay USD $${planDetails?.billing_rate || "6.99"}`}
+              title={userProfile?.subscription?.is_subscribed ? "Already Subscribed" : `Pay USD $${planDetails?.billing_rate || "6.99"}`}
               className="w-full"
-              />
+            />
 
             {/* Privacy Policy */}
             <p className="text-sm text-grayColor1 leading-relaxed pt-2">
