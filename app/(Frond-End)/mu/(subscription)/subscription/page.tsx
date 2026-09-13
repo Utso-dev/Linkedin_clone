@@ -36,7 +36,7 @@ async function page({
 
   const plans = data?.data?.plans || [];
   return (
-    <div className="my-14 md:my-20">
+    <div className="my-14 md:my-18">
       <div>
         <h1 className="text-2xl md:text-3xl font-semibold text-headerColor text-center">
           Choose your subscription plan
