@@ -3,9 +3,12 @@ import baseApiSlice from "./baseApi";
 const subscriptionSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getSubscriptionPlans: builder.query({
-      query: () => ({
-        url: "/plans",
+      query: (billingCycle) => ({
+        url: `/plans`,
         method: "GET",
+        params: {
+          billing_cycle: billingCycle,
+        },
       }),
     }),
     getSubscriptionSinglePlans: builder.query({
