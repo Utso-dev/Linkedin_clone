@@ -85,7 +85,7 @@ export default function TransactionTable() {
         value: plan.id,
     })) || [];
     
-    console.log("planData", planOptions);
+    // console.log("planData", planOptions);
 
     const apiTransactions: Transaction[] = useMemo(() => {
         return (apiResponse?.data ?? []).map((t: ApiTransaction) => ({
