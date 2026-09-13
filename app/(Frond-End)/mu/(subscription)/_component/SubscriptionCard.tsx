@@ -30,7 +30,7 @@ function SubscriptionCard() {
 
       {!isSubscribed && (
         <Link
-          href="/mu/subscription"
+          href="/mu/subscription?billing=monthly"
           className={`text-sm  bg-whiteColor font-semibold px-4 py-3 rounded-md mt-2  text-primaryColor `}
         >
           {"Upgrade Now"}
