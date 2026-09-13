@@ -1,5 +1,6 @@
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import Link from "next/link";
+import { FaCrown } from "react-icons/fa6";
 
 function SubscriptionCard() {
   const { data, isLoading, isError } = useGetUserProfileQuery("");
@@ -13,7 +14,7 @@ function SubscriptionCard() {
         <div>
           <div className=" bg-white/10 border border-white/20 px-4 py-1.5 rounded-full">
             <div className="flex items-center gap-2 justify-center">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+              <FaCrown className="text-whiteColor" />
               <p className="text-sm text-whiteColor">Active Plan </p>
             </div>
             <span className="font-bold text-whiteColor tracking-wide">
@@ -27,15 +28,9 @@ function SubscriptionCard() {
         </p>
       )}
 
-      {isSubscribed ? (
-        <div
-          className={`text-sm  bg-whiteColor/80 cursor-not-allowed  font-semibold px-4 py-3 rounded-md mt-2  text-primaryColor `}
-        >
-          {"Active"}
-        </div>
-      ) : (
+      {!isSubscribed && (
         <Link
-          href="/mu/subscription"
+          href="/mu/subscription?billing=monthly"
           className={`text-sm  bg-whiteColor font-semibold px-4 py-3 rounded-md mt-2  text-primaryColor `}
         >
           {"Upgrade Now"}

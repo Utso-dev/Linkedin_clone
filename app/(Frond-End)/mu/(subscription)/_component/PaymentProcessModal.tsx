@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { HiBadgeCheck } from "react-icons/hi";
 
 export const PaymentProcessModal = ({
@@ -22,11 +23,12 @@ export const PaymentProcessModal = ({
       {isSuccess ? (
         <div className="py-12 flex flex-col items-center justify-center">
           <div className="relative  mb-4">
-            <HiBadgeCheck className="w-16 h-16 text-lightGreenColor" />
+            <HiBadgeCheck className="w-16 h-16 text-lightGreenColor2" />
           </div>
-          <p className="text-base text-lightGreenColor font-medium">
+          <p className="text-base text-lightGreenColor2 font-medium mb-6">
             Congratulation! Your Payment Process is Successful.
           </p>
+          <Link className="px-4 py-2 bg-buttonColor rounded-md text-whiteColor" href="/">Go to home</Link>
         </div>
       ) : status === "loading" ? (
         <div className="py-12 flex flex-col items-center justify-center">
@@ -83,9 +85,10 @@ export const PaymentProcessModal = ({
               strokeLinecap="round"
             />
           </svg>
-          <p className="text-base font-normal text-red-500">
+          <p className="text-base font-normal text-red-500 mb-6">
             Payment process failed try again!
           </p>
+           <Link className="px-4 py-2 bg-redColor rounded-md text-whiteColor" href="/">Back to home</Link>
         </div>
       )}
     </div>

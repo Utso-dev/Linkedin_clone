@@ -1,9 +1,5 @@
-"use client";
-import { useGetSubscriptionPlansQuery } from "@/feature/slice/subscriptionSlice";
 import Link from "next/link";
 import { HiBadgeCheck } from "react-icons/hi";
-import SubscriptionSkeleton from "./SubscriptionSkeleton";
-// আপনার API slice পাথ অনুযায়ী import করুন
 
 const CrossIcon = () => (
   <svg
@@ -21,25 +17,7 @@ const CrossIcon = () => (
   </svg>
 );
 
-export default function SubscriptionCards() {
-  const { data, isLoading, isError } = useGetSubscriptionPlansQuery("");
-
-  if (isLoading) {
-    return <SubscriptionSkeleton />;
-  }
-
-  if (isError || !data?.success) {
-    return (
-      <div className="flex justify-center items-center py-20">
-        <p className="text-red-500 font-medium">
-          Failed to load subscription plans.
-        </p>
-      </div>
-    );
-  }
-
-  const plans = data?.data?.plans || [];
-
+export default function SubscriptionCards({ plans, billingCycle }) {
   const renderValue = (val) => {
     if (typeof val === "boolean") {
       return val ? (
@@ -50,23 +28,39 @@ export default function SubscriptionCards() {
     }
     return <span className="text-gray-700 text-xs font-medium">{val}</span>;
   };
-  const handleClick = () => {
-    // Handle button click logic here
-    console.log("Button clicked");
-  };
+
+  if (!plans.length) {
+    return (
+      <div className="col-span-3 text-center py-10">
+        <p className="text-descriptionColor text-lg font-medium">
+          No subscription plans available.
+        </p>
+      </div>
+    );
+  }
+
+  const isCentered = plans.length <= 2;
   return (
-    <div className="w-full  ">
-      {/* 3 Grid layout for 3 cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center items-start">
-        {plans.map((plan, index) => {
+    <div className="w-full">
+      <div
+        className={
+          isCentered
+            ? "flex flex-wrap justify-center gap-6"
+            : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center items-start"
+        }
+      >
+        {plans.map((plan) => {
           const isFree = parseFloat(plan.billing_rate) === 0;
 
           return (
             <div
               key={plan.id}
-              className="bg-white border border-borderColor rounded-2xl hover:shadow-md overflow-hidden flex flex-col"
+              className={
+                isCentered
+                  ? "bg-white border border-borderColor rounded-2xl hover:shadow-md overflow-hidden flex flex-col w-full sm:max-w-1/3"
+                  : "bg-white border border-borderColor rounded-2xl hover:shadow-md overflow-hidden flex flex-col"
+              }
             >
-              {/* Card Header */}
               <div className="p-6 text-center border-b border-borderColor">
                 <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-headerColor mb-3">
                   {plan.name}
@@ -78,8 +72,7 @@ export default function SubscriptionCards() {
                   </button>
                 ) : (
                   <Link
-                    onClick={handleClick}
-                    className="w-full py-2.5 px-4 block hover:shadow-md  bg-primaryColor text-white font-semibold rounded-lg text-sm hover:opacity-95 transition-opacity"
+                    className="w-full py-2.5 px-4 block hover:shadow-md bg-primaryColor text-white font-semibold rounded-lg text-sm hover:opacity-95 transition-opacity"
                     href={`/mu/subscription/${plan.id}`}
                   >
                     <div>
@@ -94,18 +87,15 @@ export default function SubscriptionCards() {
                 )}
               </div>
 
-              {/* Feature List */}
               <div className="divide-y divide-borderColor flex-1">
                 {plan.features?.map((item, idx) => (
                   <div
                     key={idx}
                     className="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50 transition-colors text-left"
                   >
-                    <div>
-                      <span className="text-sm md:text-base  font-medium text-headerColor pr-3 ">
-                        {item.key}
-                      </span>
-                    </div>
+                    <span className="text-sm md:text-base font-medium text-headerColor pr-3">
+                      {item.key}
+                    </span>
                     <div className="shrink-0 flex items-center justify-center">
                       {renderValue(item.value)}
                     </div>
