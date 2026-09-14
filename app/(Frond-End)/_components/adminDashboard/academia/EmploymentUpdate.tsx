@@ -11,15 +11,43 @@ interface EmploymentUpdateProps {
   onClose?: () => void;
   data: any;
 }
+
 export default function UpdateEmployment({
   onClose,
   data,
 }: EmploymentUpdateProps) {
-  const salaryParts =
-    data?.salary_range
-      ?.replace(/\$/g, "")
-      ?.split("-")
-      ?.map((value: string) => value.trim()) || [];
+  const parseSalary = (range?: string) => {
+    if (!range) return ["", ""];
+    return range
+      .replace(/\$|,/g, "")
+      .split(/[-–—]/)
+      .map((v) => {
+        const val = v.trim();
+        return /k$/i.test(val)
+          ? String(Math.round(parseFloat(val) * 1000))
+          : isNaN(+val)
+            ? ""
+            : String(Math.round(+val));
+      });
+  };
+
+  const norm = (val?: string, type: "mode" | "type" = "mode") => {
+    if (!val) return "";
+    const v = val.toLowerCase().replace(/[-\s]/g, "");
+    if (type === "mode") {
+      if (v === "onsite") return "onsite";
+      if (v === "hybrid") return "hybrid";
+      if (v === "remote") return "remote";
+    } else {
+      if (v === "fulltime") return "Full Time";
+      if (v === "parttime") return "Part-Time";
+      if (v === "contract") return "Contract";
+      if (v === "internship") return "Internship";
+    }
+    return val;
+  };
+
+  const [minS, maxS] = parseSalary(data?.salary_range);
 
   const [formData, setFormData] = useState({
     title: data?.title || data?.jobtitle || "",
@@ -27,44 +55,40 @@ export default function UpdateEmployment({
     category: data?.category || "",
     state: data?.state_id ? String(data.state_id) : "",
     cityLocation: data?.location || data?.city || "",
-    minSalary: data?.salary_min || data?.minSalary || salaryParts[0] || "",
-    maxSalary: data?.salary_max || data?.maxSalary || salaryParts[1] || "",
-    workMode: data?.job_mode || "",
-    employmentType: data?.job_type || "",
+    minSalary: data?.salary_min || data?.minSalary || minS || "",
+    maxSalary: data?.salary_max || data?.maxSalary || maxS || "",
+    workMode: norm(data?.job_mode || data?.work_mode),
+    employmentType: norm(data?.job_type || data?.employment_type, "type"),
   });
+
   const { data: states } = useGetAllStateQuery({});
   const [editEmployment, { isLoading }] = useEditEmploymentMutation();
 
   const stateOptions =
-    states?.data?.map((state: any) => ({
-      label: state.name,
-      value: String(state.id),
+    states?.data?.map((s: any) => ({
+      label: s.name,
+      value: String(s.id),
     })) || [];
 
   useEffect(() => {
     if (!states?.data || !data) return;
-
     if (data.state_id) {
-      setFormData((prev) => ({ ...prev, state: String(data.state_id) }));
+      setFormData((p) => ({ ...p, state: String(data.state_id) }));
     } else if (data.state) {
-      const stateStr =
+      const name =
         typeof data.state === "object" ? data.state.name : String(data.state);
-      const foundState = states.data.find(
+      const found = states.data.find(
         (s: any) =>
-          s.name?.toLowerCase() === stateStr.toLowerCase() ||
-          String(s.id) === stateStr,
+          s.name?.toLowerCase() === name.toLowerCase() || String(s.id) === name,
       );
-      if (foundState) {
-        setFormData((prev) => ({ ...prev, state: String(foundState.id) }));
-      }
+      if (found) setFormData((p) => ({ ...p, state: String(found.id) }));
     }
   }, [states, data]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
-      const payload = {
+      const res = await editEmployment({
         id: data.id,
         title: formData.title,
         company_name: formData.companyName,
@@ -75,20 +99,17 @@ export default function UpdateEmployment({
         salary_max: formData.maxSalary,
         work_mode: formData.workMode,
         employment_type: formData.employmentType,
-      };
-
-      const response = await editEmployment(payload).unwrap();
-      toast.success(response?.message || "Job updated successfully");
+      }).unwrap();
+      toast.success(res?.message || "Job updated successfully");
       onClose?.();
-    } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to update job");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to update job");
     }
   };
 
   return (
     <div className="">
       <div className="space-y-5">
-        {/* Job Title + Company Name */}
         <div className="grid grid-cols-2 gap-4">
           <CustomInput
             label="Job Title"
@@ -108,7 +129,6 @@ export default function UpdateEmployment({
               setFormData({ ...formData, companyName: e.target.value })
             }
           />
-
           <CustomSelect
             label="State"
             required
@@ -119,7 +139,6 @@ export default function UpdateEmployment({
             }
             options={stateOptions}
           />
-
           <CustomSelect
             label="Category"
             required
@@ -135,19 +154,17 @@ export default function UpdateEmployment({
           />
         </div>
 
-        <div>
-          <CustomInput
-            label="City/Location"
-            required
-            placeholder="Enter City/Location"
-            value={formData.cityLocation}
-            onChange={(e) =>
-              setFormData({ ...formData, cityLocation: e.target.value })
-            }
-          />
-        </div>
+        <CustomInput
+          label="City/Location"
+          required
+          placeholder="Enter City/Location"
+          value={formData.cityLocation}
+          onChange={(e) =>
+            setFormData({ ...formData, cityLocation: e.target.value })
+          }
+        />
 
-        <div className="text-[#4A4C56] text-base font-semibold  leading-6 tracking-wide">
+        <div className="text-[#4A4C56] text-base font-semibold leading-6 tracking-wide">
           Salary Range
         </div>
 
@@ -187,7 +204,6 @@ export default function UpdateEmployment({
               { label: "Remote", value: "remote" },
             ]}
           />
-
           <CustomSelect
             label="Employment Type "
             required
@@ -197,31 +213,30 @@ export default function UpdateEmployment({
               setFormData({ ...formData, employmentType: val as string })
             }
             options={[
-              { label: "Full-Time", value: "Full-time" },
+              { label: "Full-Time", value: "Full Time" },
               { label: "Part-Time", value: "Part-Time" },
               { label: "Contract", value: "Contract" },
               { label: "Internship", value: "Internship" },
             ]}
           />
         </div>
-        <div>
-          <div className="flex justify-end gap-2.5 py-4">
-            <button
-              className="border border-[#B6B6B6] rounded-lg px-3 py-2 cursor-pointer "
-              onClick={onClose}
-              type="button"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className="border cursor-pointer bg-primaryColor text-white rounded-lg px-3 py-2"
-              type="button"
-            >
-              {isLoading ? "Saving..." : "Save Job"}
-            </button>
-          </div>
+
+        <div className="flex justify-end gap-2.5 py-4">
+          <button
+            className="border border-[#B6B6B6] rounded-lg px-3 py-2 cursor-pointer"
+            onClick={onClose}
+            type="button"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="border cursor-pointer bg-primaryColor text-white rounded-lg px-3 py-2"
+            type="button"
+          >
+            {isLoading ? "Saving..." : "Save Job"}
+          </button>
         </div>
       </div>
     </div>
