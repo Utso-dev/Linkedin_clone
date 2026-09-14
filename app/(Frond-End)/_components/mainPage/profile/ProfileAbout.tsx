@@ -4,7 +4,7 @@ import {
   useGetMyProfileQuery,
   useGetProfileByIdQuery,
 } from "@/feature/slice/user/userSlice";
-import { EditeIcon } from "@/public/svgIcons/Icons";
+import { EditeIcon, PencileIcon } from "@/public/svgIcons/Icons";
 import { useState } from "react";
 import ProfileAboutUpdateForm from "./ProfileAboutUpdateForm";
 
@@ -37,7 +37,7 @@ function ProfileAbout({ userId }: { userId?: string }) {
             onClick={() => setIsNotify(true)}
             className="cursor-pointer"
           >
-            <EditeIcon />
+            <PencileIcon />
           </button>
         )}
       </div>

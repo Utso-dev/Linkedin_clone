@@ -1,113 +1,120 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
-import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
-import { DateRange } from "react-day-picker";
-import { DeletIcon, EditIcon } from "@/public/svgIcons/AdminIcon";
+import { DatePicker } from "@/components/reusable/dashboard/DatePicker";
+import { Plan, PlanFeatureValue, PlanPayload } from "@/feature/slice/admin/subscription/subscriptionType";
+import { useCreatePlanMutation, useGetPlanFeaturesQuery, useUpdatePlanMutation } from "@/feature/slice/admin/subscription/subscriptionApi";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface CreatePlanModalProps {
-  data?: any;
+  data?: Plan | null;
   onClose?: () => void;
   onSuccess?: () => void;
 }
+
+const toDateValue = (value?: string): Date | undefined => {
+  if (!value) return undefined;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return undefined;
+  return parsed;
+};
+
+const formatDateValue = (value?: Date) => {
+  if (!value) return "";
+  const year = value.getFullYear();
+  const month = String(value.getMonth() + 1).padStart(2, "0");
+  const day = String(value.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 export default function CreatePlan({
   data,
   onClose,
   onSuccess,
 }: CreatePlanModalProps) {
+  const [createPlan] = useCreatePlanMutation();
+  const [updatePlan] = useUpdatePlanMutation();
+  const { data: featuresResponse, isLoading: isFeaturesLoading, isError: isFeaturesError } = useGetPlanFeaturesQuery();
+  const router = useRouter();
+
+  const featureOptions = featuresResponse?.data;
+
   const [formData, setFormData] = useState({
     name: data?.name || "",
-    shortDescription: data?.description || "",
-    billingRate: data?.price?.replace("$", "") || "0.00",
-    billingCycle: data?.billingCycle || "Yearly",
-    discount: "0",
-    badgeColor: "#04A1B7",
-    status: data?.isActive ?? true,
+    shortDescription: data?.short_description || "",
+    billingRate: String(data?.billing_rate ?? "0.00").replace("$", ""),
+    billingCycle: data?.billing_cycle || "yearly",
+    discount: String(data?.discount_percent ?? "0"),
+    badgeColor: data?.badge_color || "#04A1B7",
+    status: data ? data.status === "active" : true,
   });
 
-  const [features, setFeatures] = useState({
-    searchMindUniteProfiles: false,
-    profileViewVisibility: false,
-    endorsementsRecommendations: false,
-    buildYourNetwork: true,
-    sendConnectionRequest: false,
-    unlimitedDirectMessaging: false,
-    joinCollaborationGroup: true,
-    postsArticlesPhotosVideos: false,
-    jobSearch: false,
-    jobApplications: false,
-    jobAlerts: false,
-    unlimitedInMailMessages: false,
-    savedSearchesWeeklyAlerts: false,
-    interactiveMedia: false,
-    profileViewerInsights: false,
-    receiveUnlimitedMessages: false,
-    connectWithOrganizations: false,
-  });
-
-  const [date, setDate] = useState<DateRange | undefined>(undefined);
+  const [selectedFeatures, setSelectedFeatures] = useState<PlanFeatureValue[]>([]);
+  const [date, setDate] = useState<Date | undefined>(toDateValue(data?.discount_duration));
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!featureOptions?.length) return;
+
+    const mapped = (data?.features ?? [])
+      .map((feature) => {
+        const match = featureOptions.find(
+          (option) => option.value === feature || option.label === feature
+        );
+        return match?.value;
+      })
+      .filter((value): value is PlanFeatureValue => Boolean(value));
+
+    setSelectedFeatures(mapped);
+  }, [featureOptions, data?.features]);
 
   const handleChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleFeatureToggle = (key: keyof typeof features) => {
-    setFeatures((prev) => ({ ...prev, [key]: !prev[key] }));
+  const handleFeatureToggle = (value: PlanFeatureValue) => {
+    setSelectedFeatures((prev) =>
+      prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const payload = {
-      ...formData,
-      features,
-      discountDuration: date,
+    const payload: PlanPayload = {
+      name: formData.name,
+      short_description: formData.shortDescription,
+      billing_rate: Number(formData.billingRate) || 0,
+      billing_cycle: formData.billingCycle === "yearly" ? "yearly" : "monthly",
+      discount_percent: Number(formData.discount) || 0,
+      discount_duration: formatDateValue(date),
+      badge_color: formData.badgeColor,
+      status: formData.status ? "active" : "inactive",
+      features: selectedFeatures,
     };
 
     try {
-      console.log("Payload →", payload);
-
- 
-      // const res = await fetch("/api/plans", {
-      //   method: data ? "PUT" : "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(payload),
-      // });
-
-      await new Promise((r) => setTimeout(r, 700));
+      if (data?.id) {
+        await updatePlan({ id: data.id, body: payload }).unwrap();
+        toast.success("Plan updated successfully.");
+      } else {
+        await createPlan(payload).unwrap();
+        toast.success("Plan created successfully.");
+      }
       onSuccess?.();
       onClose?.();
+      router.push("/dashboard/subscription/plan-pricing");
     } catch (err) {
       console.error(err);
+      toast.error(data?.id ? "Failed to update plan." : "Failed to create plan.");
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  const featureList = [
-    { key: "searchMindUniteProfiles", label: "Search Mind unite Profiles" },
-    { key: "profileViewVisibility", label: "Profile View Visibility" },
-    { key: "endorsementsRecommendations", label: "Endorsements & Recommendations" },
-    { key: "buildYourNetwork", label: "Build Your Network" },
-    { key: "sendConnectionRequest", label: "Send A Connection Request" },
-    { key: "unlimitedDirectMessaging", label: "Unlimited Direct Messaging" },
-    { key: "joinCollaborationGroup", label: "Join a Collaboration Group" },
-    { key: "postsArticlesPhotosVideos", label: "Posts, Articles, Photos, Videos" },
-    { key: "jobSearch", label: "Job Search" },
-    { key: "jobApplications", label: "Job Applications - Submit a CV/Resume" },
-    { key: "jobAlerts", label: "Job Alerts" },
-    { key: "unlimitedInMailMessages", label: "Unlimited InMail Messages" },
-    { key: "savedSearchesWeeklyAlerts", label: "Saved Searches & Their Weekly Alerts" },
-    { key: "interactiveMedia", label: "Interactive Media" },
-    { key: "profileViewerInsights", label: "Profile Viewer Insights" },
-    { key: "receiveUnlimitedMessages", label: "Receive Unlimited Messages" },
-    { key: "connectWithOrganizations", label: "Connect with Organizations" },
-  ] as const;
 
   return (
     <div className="w-full overflow-hidden rounded-[10px] ">
@@ -167,8 +174,8 @@ export default function CreatePlan({
                 value={formData.billingCycle}
                 onChange={(v) => handleChange("billingCycle", v as string)}
                 options={[
-                  { label: "Monthly", value: "Monthly" },
-                  { label: "Yearly", value: "Yearly" },
+                  { label: "Monthly", value: "monthly" },
+                  { label: "Yearly", value: "yearly" },
                 ]}
               />
             </div>
@@ -199,7 +206,7 @@ export default function CreatePlan({
               </div>
             </div>
 
-            <DateRangePicker
+            <DatePicker
               label="Discount Duration"
               date={date}
               setDate={setDate}
@@ -217,7 +224,7 @@ export default function CreatePlan({
               <button
                 type="button"
                 onClick={() => handleChange("status", !formData.status)}
-                className={`relative h-6 w-11 rounded-full transition-colors ${
+                className={`relative h-6 w-11 rounded-full transition-colors cursor-pointer ${
                   formData.status ? "bg-primaryColor" : "bg-gray-300"
                 }`}
               >
@@ -242,47 +249,45 @@ export default function CreatePlan({
         Select and configure features for this plan
       </p>
        <div className="flex items-center justify-center gap-2 py-4 w-full">
-      <button
-        type="button"
-        className="flex h-8 w-8 items-center justify-center rounded-md   hover:bg-gray-50"
-        title="Delete"
-      >
-        <DeletIcon />
-      </button>
-      <button
-        type="button"
-        className="flex h-8 w-8 items-center justify-center rounded-md  hover:bg-gray-50"
-        title="Edit"
-      >
-        <EditIcon />
-      </button>
+      
     </div>
    
   </div>
 
   {/* Feature List */}
   <div className="max-h-[520px] space-y-3 overflow-y-auto pr-1">
-    {featureList.map((item) => (
-      <div
-        key={item.key}
-        className="flex items-center justify-between rounded-lg  px-4 py-3"
-      >
-        <span className=" text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#4A4C56]">{item.label}</span>
-        <button
-          type="button"
-          onClick={() => handleFeatureToggle(item.key)}
-          className={`relative h-6 w-11 rounded-full transition-colors ${
-            features[item.key] ? "bg-primaryColor" : "bg-gray-300"
-          }`}
-        >
-          <span
-            className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
-              features[item.key] ? "translate-x-5" : ""
-            }`}
-          />
-        </button>
-      </div>
-    ))}
+    {isFeaturesLoading ? (
+      <p className="px-4 py-3 text-sm text-[#777980]">Loading features...</p>
+    ) : isFeaturesError ? (
+      <p className="px-4 py-3 text-sm text-red-500">Failed to load features.</p>
+    ) : !featureOptions?.length ? (
+      <p className="px-4 py-3 text-sm text-[#777980]">No features available.</p>
+    ) : (
+      featureOptions.map((item) => {
+        const isEnabled = selectedFeatures.includes(item.value);
+        return (
+          <div
+            key={item.value}
+            className="flex items-center justify-between rounded-lg  px-4 py-3"
+          >
+            <span className=" text-xl font-semibold leading-[130%] tracking-[0.1px] text-[#4A4C56]">{item.label}</span>
+            <button
+              type="button"
+              onClick={() => handleFeatureToggle(item.value)}
+              className={`relative h-6 w-11 rounded-full transition-colors ${
+                isEnabled ? "bg-primaryColor" : "bg-gray-300"
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
+                  isEnabled ? "translate-x-5" : ""
+                }`}
+              />
+            </button>
+          </div>
+        );
+      })
+    )}
   </div>
 </div>
         </div>

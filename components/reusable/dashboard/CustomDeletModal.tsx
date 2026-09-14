@@ -1,7 +1,7 @@
 // components/reusable/dashboard/DeleteConfirmationModal.tsx
 
 import React from "react";
-import CustomModal from "@/components/reusable/dashboard/CustomModal";
+import CustomModal from "@/components/reusable/dashboard/CustomModal"; 
 
 type DeleteConfirmationModalProps = {
   isOpen: boolean;
@@ -44,15 +44,28 @@ export default function CustomDeletModal({
             {cancelText}
           </button>
 
-          <button
-            type="button"
-            onClick={onConfirm}
-            className="w-30.75 h-9 cursor-pointer rounded-sm bg-redColor px-3 text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-white transition-colors"
-          >
-            {confirmText}
-          </button>
-        </div>
-      </div>
-    </CustomModal>
-  );
+
+                <div className="flex items-center justify-end gap-2.5 ] w-full pt-2">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="px-3 py-2 rounded-lg border border-[#DFDFDF] text-[#777980] font-['Segoe_UI'] text-[14px] min-w-[125px] font-semibold leading-[140%] tracking-[0.07px] cursor-pointer transition-colors"
+                    >
+                        {cancelText}
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => {
+                            onConfirm();
+                            onClose();
+                        }}
+                        className="px-5 py-2.5 rounded-lg bg-[#EB3D4D] text-[#FFF] font-['Segoe_UI'] text-[14px] font-semibold leading-[140%] tracking-[0.07px] cursor-pointer transition-colors"
+                    >
+                        {confirmText}
+                    </button>
+                </div>
+            </div>
+        </CustomModal>
+    );
 }

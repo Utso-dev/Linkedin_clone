@@ -20,7 +20,7 @@ type Transaction = {
   subscriber: string;
   plan: string;
   amount: string;
-  status: "Completed" | "Failed" | "Refunded";
+  status: "Completed" | "Failed" | "Refunded" | "Pending";
   paymentMethod: string;
   cardNumber: string;
   date: string;
@@ -114,6 +114,10 @@ const EditTransactionForm = ({ data, onClose }: EditTransactionFormProps) => {
             {
               label: "Refunded",
               value: "Refunded",
+            },
+            {
+              label: "Pending",
+              value: "Pending",
             },
           ]}
         />

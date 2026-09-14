@@ -10,7 +10,7 @@ import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import SubscriptionCard from "./SubscriptionCard";
+import SubscriptionCard from "../../../(subscription)/_component/SubscriptionCard";
 
 function JobsLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname();

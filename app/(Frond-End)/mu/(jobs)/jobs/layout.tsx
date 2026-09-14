@@ -1,6 +1,6 @@
 import Breadcrumb from "../../../_components/Breadcrumb";
 
-export default function FrontEndLayout({
+export default async function FrontEndLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -8,7 +8,7 @@ export default function FrontEndLayout({
   return (
     <div>
       <div className="">
-        <Breadcrumb />
+        && <Breadcrumb />
         {/* <div className="lg:grid lg:grid-cols-12  sm:pb-8 pb-6 gap-4 xl:gap-6 mb-10">
           <div className="hidden lg:block col-span-3   lg:sticky lg:top-19  lg:overflow-y-auto self-start">
             <JobsLeftSidebar />
@@ -20,7 +20,7 @@ export default function FrontEndLayout({
             <TopJobsRightbar />
           </div>
         </div> */}
-        <div>{ children }</div>
+        <div>{children}</div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { Toaster } from "react-hot-toast";
+
 
 import DashboardSidebar from "./dashboard/_components/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -41,15 +41,7 @@ export default function DashboardLayout({
         <div className="flex flex-1 flex-col min-w-0">
           {/* Page Content */}
           <main className="flex-1 w-full  p-4 md:p-6 overflow-auto">
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                style: {
-                  background: "#008000",
-                  color: "#fff",
-                },
-              }}
-            />
+           
             <div className="w-full">{children}</div>
           </main>
         </div>

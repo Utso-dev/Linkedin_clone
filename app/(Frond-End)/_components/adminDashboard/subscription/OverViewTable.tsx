@@ -14,8 +14,8 @@ import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import { DateRangePicker } from "@/components/reusable/dashboard/DataRangePiker";
 import { DateRange } from "react-day-picker";
 import EditOverModal from "./EditOverModal";
-import { useGetMySubscribersQuery, useCancelSubscriptionMutation } from "@/feature/slice/admin/subscription/subscriptionApi";
-import { Subscription } from "@/feature/slice/admin/subscription/subscriptionType";
+import { useGetMySubscribersQuery, useCancelSubscriptionMutation, useGetPlansQuery } from "@/feature/slice/admin/subscription/subscriptionApi";
+import { Plan, Subscription } from "@/feature/slice/admin/subscription/subscriptionType";
 import { formatDate } from "date-fns";
 
 type Job = {
@@ -40,14 +40,25 @@ export default function OverViewTable() {
     const [viewOpen, setViewOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
+    const [search, setSearch] = useState("");
 
     const queryParams: Record<string, unknown> = { page, per_page: 10 };
-    if (planFilter) queryParams.plan = planFilter;
+    if (planFilter) queryParams.plan_id = planFilter;
     if (statusFilter) queryParams.status = statusFilter;
+    if (date?.from) queryParams.date_from = date.from.toISOString().split("T")[0];
+    if (date?.to) queryParams.date_to = date.to.toISOString().split("T")[0];
+    if (search.trim()) queryParams.search = search.trim();
 
     const { data: apiResponse, isLoading, isError } = useGetMySubscribersQuery({ query: queryParams });
 
     const [cancelSubscription] = useCancelSubscriptionMutation();
+
+    const {data: planData, isLoading: isPlanLoading, isError: isPlanError} = useGetPlansQuery();
+
+    const planOptions = planData?.data?.map((plan: Plan) => ({
+        label: plan.name,
+        value: plan.id,
+    })) || [];
 
     const mapSubscriptionToJob = (sub: Subscription): Job => ({
         id: sub.id,
@@ -64,15 +75,9 @@ export default function OverViewTable() {
 
     const jobs: Job[] = apiResponse?.data?.map(mapSubscriptionToJob) ?? [];
 
-    const openView = (job: Job) => {
-        setSelectedJob(job);
-        setViewOpen(true);
-    };
+    const totalSubscribers = apiResponse?.data?.length ?? 0;
 
-    const openEdit = (job: Job) => {
-        setSelectedJob(job);
-        setEditOpen(true);
-    };
+ 
 
     const openDelete = (job: Job) => {
         setSelectedJob(job);
@@ -194,8 +199,8 @@ export default function OverViewTable() {
                 {/* Title */}
                 <div className="mb-6  w-full">
                     <CustomTitleDescription
-                        title="overview"
-                        description="8,560 Premium Users"
+                        title="Overview"
+                        description={`${totalSubscribers} Premium Users`}
                     />
                 </div>
 
@@ -207,7 +212,7 @@ export default function OverViewTable() {
 
 
                         {/* Search */}
-                        <div className="relative w-full ">
+                        <div className="relative w-full min-w-48">
                             <SearchIcon className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#808897]" />
 
                             <input
@@ -218,34 +223,17 @@ export default function OverViewTable() {
                         </div>
 
                         <CustomSelect
-                            className=" h-[38px]"
+                            className=" h-[38px] text-nowrap"
                             value={planFilter || "default"}
                             onChange={(value: string) =>
                                 setPlanFilter(value === "default" ? "" : value)
                             }
-                            options={[
-                                {
-                                    label: "All Plans",
-                                    value: "default",
-                                },
-                                {
-                                    label: "Premium",
-                                    value: "Premium",
-                                },
-                                {
-                                    label: "Basic",
-                                    value: "Basic",
-                                },
-                                {
-                                    label: "Pro Industry",
-                                    value: "Pro Industry",
-                                },
-                            ]}
+                            options={planOptions}
                         />
 
                         <CustomSelect
                             value={statusFilter || "default"}
-                            className=" h-[38px]"
+                            className=" h-[38px] text-nowrap"
                             onChange={(value: string) =>
                                 setStatusFilter(value === "default" ? "" : value)
                             }
@@ -267,10 +255,10 @@ export default function OverViewTable() {
 
                         <DateRangePicker className=" h-[38px]" date={date} setDate={setDate} placeholder='Select date range' />
 
-                        <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 py-2 text-white md:w-auto">
+                        {/* <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-primaryColor px-4 py-2 text-white md:w-auto">
                             <ArrowDownToLine className="h-4 w-4" />
                             Export
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </div>
