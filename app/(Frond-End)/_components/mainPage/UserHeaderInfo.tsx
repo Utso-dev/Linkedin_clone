@@ -19,6 +19,7 @@ import {
   LogoutIcon,
   MessageIcon,
   NotificationIcon,
+  OfficeBuildingIcon,
   SettingIcon,
   UserCircleIcon,
 } from "@/public/svgIcons/Icons";
@@ -135,7 +136,7 @@ function UserHeaderInfo() {
             href={`/mu/message`}
             className="flex justify-center relative items-center"
           >
-            {!isMessagePage && newMessagePopup  && (
+            {!isMessagePage && newMessagePopup && (
               <div
                 key={newMessagePopup.key}
                 className="animate-pop-in absolute top-full right-0 mt-2 z-50 w-60 rounded-lg bg-white shadow-lg border border-gray-100 p-3 cursor-pointer"
@@ -241,6 +242,15 @@ function UserHeaderInfo() {
                     >
                       <SettingIcon className="w-5 h-5 text-grayColor1  " />
                       Account Setting
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/mu/settings/general`}
+                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
+                    >
+                      <OfficeBuildingIcon className="w-5 h-5 text-grayColor1  " />
+                      Create a Company Page
                     </Link>
                   </DropdownMenuItem>
                 </div>

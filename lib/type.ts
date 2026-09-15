@@ -32,6 +32,13 @@ export interface UserProfileType {
   title: string | null;
   profile_image: string | null;
   profile_image_url: string | null;
+  subscription: {
+    plan_name: string;
+    status: string;
+    will_renew: boolean;
+    is_subscribed: boolean;
+    features: string[];
+  };
   cover_image: string | null;
   username: string;
   user: any;
