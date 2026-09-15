@@ -3,11 +3,27 @@
 import { useState } from "react";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
+import {
+  useCreateUniversityMutation,
+  useGetAllStateQuery,
+} from "@/feature/slice/admin/academia/UniversitySlice";
+import toast from "react-hot-toast";
 
 interface AddUniversityProps {
   onClose?: () => void;
 }
+
 export default function AddUniversity({ onClose }: AddUniversityProps) {
+  const { data: states } = useGetAllStateQuery({});
+
+  const allsates = states?.data || [];
+
+  const stateOptions = allsates.map((state) => ({
+    label: state.name,
+    value: String(state.id),
+  }));
+  const [createUniversity, { isLoading }] = useCreateUniversityMutation();
+
   const [formData, setFormData] = useState({
     name: "",
     state: "",
@@ -18,13 +34,53 @@ export default function AddUniversity({ onClose }: AddUniversityProps) {
     neuroscienceDegrees: "",
     phoneNumber: "",
     website: "",
+    location: "",
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log(formData);
-    reset();
+
+    try {
+      const payload = {
+        name: formData.name,
+        state_id: Number(formData.state),
+
+        location: formData.location,
+
+        latitude: Number(formData.latitude),
+        longitude: Number(formData.longitude),
+
+        psychology_degrees: formData.psychologyDegrees
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
+
+        counseling_degrees: formData.counselingDegrees
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
+
+        neuroscience_degrees: formData.neuroscienceDegrees
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
+
+        phone: formData.phoneNumber || null,
+        website: formData.website,
+      };
+
+      console.log("Create University Payload:", payload);
+
+      const response = await createUniversity(payload).unwrap();
+      toast.success(response?.message);
+
+      reset();
+      onClose?.();
+    } catch (error: any) {
+      toast.error(error?.data?.message);
+    }
   };
+
   const reset = () => {
     setFormData({
       name: "",
@@ -36,13 +92,13 @@ export default function AddUniversity({ onClose }: AddUniversityProps) {
       neuroscienceDegrees: "",
       phoneNumber: "",
       website: "",
+      location: "",
     });
   };
 
   return (
     <div className="p-4">
       <div className="space-y-5">
-        {/* University Name + State */}
         <div className="grid grid-cols-2 gap-4">
           <CustomInput
             label="University Name"
@@ -60,23 +116,15 @@ export default function AddUniversity({ onClose }: AddUniversityProps) {
             onChange={(val) =>
               setFormData({ ...formData, state: val as string })
             }
-            options={[
-              { label: "California", value: "CA" },
-              { label: "Texas", value: "TX" },
-              { label: "New York", value: "NY" },
-              { label: "Alabama", value: "AL" },
-              { label: "Alaska", value: "AK" },
-              { label: "Arizona", value: "AZ" },
-              { label: "Arkansas", value: "AR" },
-            ]}
+            options={stateOptions}
           />
         </div>
 
-        {/* Map Coordinates */}
-        <div className="bg-[#D3F4EF] rounded-xl p-4">
-          <p className="text-grayColor1  text-base not-italic font-semibold leading-6 tracking-[0.08px] mb-4">
+        <div className="rounded-xl bg-[#D3F4EF] p-4">
+          <p className="mb-4 text-base font-semibold leading-6 tracking-[0.08px] text-grayColor1">
             Map Coordinates
           </p>
+
           <div className="grid grid-cols-2 gap-4">
             <CustomInput
               label="Latitude"
@@ -87,6 +135,7 @@ export default function AddUniversity({ onClose }: AddUniversityProps) {
                 setFormData({ ...formData, latitude: e.target.value })
               }
             />
+
             <CustomInput
               label="Longitude"
               required
@@ -98,26 +147,35 @@ export default function AddUniversity({ onClose }: AddUniversityProps) {
             />
           </div>
         </div>
+
         <div>
-          <div className="flex flex-col  space-y-4">
+          <div className="flex flex-col space-y-4">
             <CustomInput
               label="Psychology Degrees (BA, MS, PhD)"
               required
               placeholder="Enter Psychology Degrees"
               value={formData.psychologyDegrees}
               onChange={(e) =>
-                setFormData({ ...formData, psychologyDegrees: e.target.value })
+                setFormData({
+                  ...formData,
+                  psychologyDegrees: e.target.value,
+                })
               }
             />
+
             <CustomInput
               label="Counseling Degrees (MA, MDiv, PhD)"
               required
               placeholder="Enter Counseling Degrees"
               value={formData.counselingDegrees}
               onChange={(e) =>
-                setFormData({ ...formData, counselingDegrees: e.target.value })
+                setFormData({
+                  ...formData,
+                  counselingDegrees: e.target.value,
+                })
               }
             />
+
             <CustomInput
               label="Neuroscience Degrees (BS, PhD)"
               required
@@ -131,23 +189,30 @@ export default function AddUniversity({ onClose }: AddUniversityProps) {
               }
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <CustomInput
-                label="Phone Number *"
+                label="Phone Number"
                 required
                 placeholder="Enter Phone Number"
                 value={formData.phoneNumber}
                 onChange={(e) =>
-                  setFormData({ ...formData, phoneNumber: e.target.value })
+                  setFormData({
+                    ...formData,
+                    phoneNumber: e.target.value,
+                  })
                 }
               />
+
               <CustomInput
-                label="University Website *"
+                label="University Website"
                 required
                 placeholder="Enter Website"
                 value={formData.website}
                 onChange={(e) =>
-                  setFormData({ ...formData, website: e.target.value })
+                  setFormData({
+                    ...formData,
+                    website: e.target.value,
+                  })
                 }
               />
             </div>
@@ -155,18 +220,21 @@ export default function AddUniversity({ onClose }: AddUniversityProps) {
 
           <div className="flex justify-end gap-2.5 py-4">
             <button
-              className="border border-[#B6B6B6] rounded-lg px-3 py-2 cursor-pointer "
+              className="cursor-pointer rounded-lg border border-[#B6B6B6] px-3 py-2"
               onClick={onClose}
               type="button"
+              disabled={isLoading}
             >
               Cancel
             </button>
+
             <button
               onClick={handleSubmit}
-              className="border cursor-pointer bg-primaryColor text-white rounded-lg px-3 py-2"
+              className="cursor-pointer rounded-lg border bg-primaryColor px-3 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
               type="button"
+              disabled={isLoading}
             >
-              Save University
+              {isLoading ? "Saving..." : "Save University"}
             </button>
           </div>
         </div>

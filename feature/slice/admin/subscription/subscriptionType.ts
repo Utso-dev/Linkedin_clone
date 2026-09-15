@@ -1,5 +1,3 @@
-
-
 export interface Subscriber {
   name: string;
   image: string;
@@ -68,7 +66,6 @@ export interface GetTransactionStatusResponse {
   data: TransactionStatus[];
 }
 
-
 // Transaction History Table
 
 export interface TransactionSubscriber {
@@ -117,7 +114,6 @@ export interface GetTransactionsParams {
     [key: string]: unknown;
   };
 }
-
 
 // plan and pricing
 
@@ -176,7 +172,6 @@ export interface DeletePlanResponse {
   success: boolean;
   message?: string;
 }
-
 
 // features list:
 export type PlanFeatureValue =

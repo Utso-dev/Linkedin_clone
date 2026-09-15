@@ -3,6 +3,9 @@
 import { useState } from "react";
 import CustomInput from "@/components/reusable/dashboard/CustomInput";
 import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
+import { useCreateEmploymentMutation } from "@/feature/slice/admin/academia/EmploymentSlice";
+import { useGetAllStateQuery } from "@/feature/slice/admin/academia/UniversitySlice";
+import toast from "react-hot-toast";
 
 interface AddEmploymentProps {
   onClose?: () => void;
@@ -20,10 +23,37 @@ export default function AddEmployment({ onClose }: AddEmploymentProps) {
     employmentType: "",
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
+  const { data: states } = useGetAllStateQuery({});
+  const [createEmployment, { isLoading }] = useCreateEmploymentMutation();
+
+  const stateOptions =
+    states?.data?.map((state: any) => ({
+      label: state.name,
+      value: String(state.id),
+    })) || [];
+
+  const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log(formData);
-    reset();
+
+    try {
+      const payload = {
+        title: formData.title,
+        company_name: formData.companyName,
+        state_id: Number(formData.state),
+        category: formData.category,
+        location: formData.cityLocation,
+        salary_min: formData.minSalary,
+        salary_max: formData.maxSalary,
+        work_mode: formData.workMode,
+        employment_type: formData.employmentType,
+      };
+      const response = await createEmployment(payload).unwrap();
+      toast.success(response?.message || "Job created successfully");
+      reset();
+      onClose?.();
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to create job");
+    }
   };
   const reset = () => {
     setFormData({
@@ -71,15 +101,7 @@ export default function AddEmployment({ onClose }: AddEmploymentProps) {
             onChange={(val) =>
               setFormData({ ...formData, state: val as string })
             }
-            options={[
-              { label: "California", value: "CA" },
-              { label: "Texas", value: "TX" },
-              { label: "New York", value: "NY" },
-              { label: "Alabama", value: "AL" },
-              { label: "Alaska", value: "AK" },
-              { label: "Arizona", value: "AZ" },
-              { label: "Arkansas", value: "AR" },
-            ]}
+            options={stateOptions}
           />
 
           <CustomSelect
@@ -91,10 +113,8 @@ export default function AddEmployment({ onClose }: AddEmploymentProps) {
               setFormData({ ...formData, category: val as string })
             }
             options={[
-              { label: "Industry", value: "Industry" },
-              { label: "Education", value: "Education" },
-              { label: "Government", value: "Government" },
-              { label: "Non-Profit", value: "Non-Profit" },
+              { label: "State Institution", value: "state_institution" },
+              { label: "Private Practice", value: "private_practice" },
             ]}
           />
         </div>
@@ -179,10 +199,11 @@ export default function AddEmployment({ onClose }: AddEmploymentProps) {
             </button>
             <button
               onClick={handleSubmit}
+              disabled={isLoading}
               className="border cursor-pointer bg-primaryColor text-white rounded-lg px-3 py-2"
               type="button"
             >
-              Save University
+              {isLoading ? "Saving..." : "Save Job"}
             </button>
           </div>
         </div>

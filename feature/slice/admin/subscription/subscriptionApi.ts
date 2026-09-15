@@ -1,10 +1,27 @@
 import baseApiSlice from "../../baseApi";
-import { CancelSubscriptionResponse, CreatePlanResponse, DeletePlanResponse, GetPlansResponse, GetSubscriptionsParams, GetSubscriptionsResponse, GetTransactionsParams, GetTransactionsResponse, GetTransactionStatusResponse, UpdatePlanArgs, PlanPayload, UpdatePlanResponse, GetPlanFeaturesResponse } from "./subscriptionType";
+import {
+  CancelSubscriptionResponse,
+  CreatePlanResponse,
+  DeletePlanResponse,
+  GetPlansResponse,
+  GetSubscriptionsParams,
+  GetSubscriptionsResponse,
+  GetTransactionsParams,
+  GetTransactionsResponse,
+  GetTransactionStatusResponse,
+  UpdatePlanArgs,
+  PlanPayload,
+  UpdatePlanResponse,
+  GetPlanFeaturesResponse,
+} from "./subscriptionType";
 
 const subscriptionSlice = baseApiSlice.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    getMySubscribers: builder.query<GetSubscriptionsResponse, GetSubscriptionsParams>({
+    getMySubscribers: builder.query<
+      GetSubscriptionsResponse,
+      GetSubscriptionsParams
+    >({
       query: ({ query }) => ({
         url: "/admin/subscriptions",
         method: "GET",
@@ -13,14 +30,16 @@ const subscriptionSlice = baseApiSlice.injectEndpoints({
       providesTags: ["subscription"],
     }),
 
-    cancelSubscription: builder.mutation<CancelSubscriptionResponse, { id: number | string }>({
+    cancelSubscription: builder.mutation<
+      CancelSubscriptionResponse,
+      { id: number | string }
+    >({
       query: ({ id }) => ({
         url: `/admin/subscriptions/${id}/cancel`,
         method: "POST",
       }),
       invalidatesTags: ["subscription"],
     }),
-
 
     // ============   Transaction  ============
     getTransactionStats: builder.query<GetTransactionStatusResponse, void>({
@@ -29,7 +48,10 @@ const subscriptionSlice = baseApiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
-    getTransactionList: builder.query<GetTransactionsResponse, GetTransactionsParams>({
+    getTransactionList: builder.query<
+      GetTransactionsResponse,
+      GetTransactionsParams
+    >({
       query: ({ query }: GetTransactionsParams) => ({
         url: `/admin/transactions`,
         method: "GET",
@@ -37,7 +59,6 @@ const subscriptionSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["subscription"],
     }),
-
 
     // ============   Plan and Pricing  ============
     getPlans: builder.query<GetPlansResponse, void>({
@@ -63,13 +84,15 @@ const subscriptionSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["plan"],
     }),
-    deactivePlan: builder.mutation<DeletePlanResponse, { id: number | string }>({
-      query: ({ id }) => ({
-        url: `/admin/plans/${id}/status`,
-        method: "PATCH",
-      }),
-      invalidatesTags: ["plan"],
-    }),
+    deactivePlan: builder.mutation<DeletePlanResponse, { id: number | string }>(
+      {
+        query: ({ id }) => ({
+          url: `/admin/plans/${id}/status`,
+          method: "PATCH",
+        }),
+        invalidatesTags: ["plan"],
+      },
+    ),
 
     // get all features
     getPlanFeatures: builder.query<GetPlanFeaturesResponse, void>({
