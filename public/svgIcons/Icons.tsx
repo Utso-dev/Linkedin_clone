@@ -299,6 +299,21 @@ export const OfficeBuildingIcon = ({ className }: { className?: string }) => (
     />
   </svg>
 );
+export const CompanyIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="17"
+    height="15"
+    viewBox="0 0 17 15"
+    fill="none"
+    className={className}
+  >
+    <path
+      d="M0 14.5833V0H7.91646V3.33333H16.0575V14.5833H0ZM1.24979 13.3333H6.66667V11.25H1.24979V13.3333ZM1.24979 10H6.66667V7.91667H1.24979V10ZM1.24979 6.66667H6.66667V4.58333H1.24979V6.66667ZM1.24979 3.33333H6.66667V1.25H1.24979V3.33333ZM7.91646 13.3333H14.8077V4.58333H7.91646V13.3333ZM9.74354 7.91667V6.66667H12.8204V7.91667H9.74354ZM9.74354 11.25V10H12.8204V11.25H9.74354Z"
+      fill="currentColor"
+    />
+  </svg>
+);
 
 export const ChartIcon = ({ className }: { className?: string }) => (
   <svg
