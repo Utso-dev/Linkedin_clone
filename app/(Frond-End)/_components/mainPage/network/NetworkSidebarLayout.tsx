@@ -2,8 +2,8 @@
 import MainPageLeftSidebar from "@/app/(Frond-End)/_components/mainPage/MainPageLeftSidebar";
 import CustomBackButton from "@/components/reusable/CustomBackButton";
 import { cn } from "@/lib/utils";
-import { LeftArrowIcon, RightArrowIcon } from "@/public/svgIcons/Icons";
-import { usePathname, useRouter } from "next/navigation";
+import { RightArrowIcon } from "@/public/svgIcons/Icons";
+import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 
@@ -35,8 +35,10 @@ function NetworkSidebarLayout({ children }: { children: React.ReactNode }) {
 
       <div
         className={cn(
-          "fixed top-0 left-0 z-999 h-screen w-full bg-blackColor/20 backdrop-blur-xs transform transition-transform duration-300 ease-in-out lg:hidden",
-          menuOpen ? "translate-x-0 opacity-100" : "-translate-x-full",
+          "fixed top-0 left-0 z-999 h-screen w-full backdrop-blur-xs transform transition-transform duration-300 ease-in-out lg:hidden",
+          menuOpen
+            ? "translate-x-0 bg-blackColor/20 opacity-100 "
+            : "-translate-x-full opacity-0  pointer-events-none",
         )}
       >
         <div
