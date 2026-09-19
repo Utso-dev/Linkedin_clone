@@ -102,7 +102,7 @@ export default function page() {
           )}
         </div>
       )}
-      <div className="flex items-center gap-4 justify-end">
+      <div className="flex items-center gap-4 justify-end " >
         <Pagination
           page={page}
           pageSize={limit}
@@ -110,6 +110,7 @@ export default function page() {
           totalPages={data?.total_page || 1}
           onPageChange={(page) => setPage(page)}
         />
+        <div className="mt-5">
         <Select
           value={limit.toString()}
           onValueChange={(value) => setLimit(Number(value))}
@@ -127,6 +128,7 @@ export default function page() {
             </SelectGroup>
           </SelectContent>
         </Select>
+        </div>
       </div>
     </div>
   );
