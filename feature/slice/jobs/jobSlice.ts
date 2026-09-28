@@ -2,10 +2,11 @@ import baseApiSlice from "../baseApi";
 
 const jobSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getJobs: builder.query({
-      query: (data) => ({
+    getJobs: builder.query<any, any | void>({
+      query: (params) => ({
         url: `/industry/my-job-posts`,
         method: "GET",
+        params,
       }),
       providesTags: ["Job"],
     }),

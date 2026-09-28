@@ -625,7 +625,7 @@ function CreateJobsFrom({ onSuccess }: CreateJobsFromProps) {
                     </button>
                   </PopoverTrigger>
                   <PopoverContent
-                    className="w-auto p-0 bg-white z-[100000] rounded-xl shadow-xl border border-borderColor"
+                    className="w-auto p-0 bg-white z-100000 rounded-xl shadow-xl border border-borderColor"
                     align="start"
                   >
                     <Calendar
@@ -672,7 +672,7 @@ function CreateJobsFrom({ onSuccess }: CreateJobsFromProps) {
                     </button>
                   </PopoverTrigger>
                   <PopoverContent
-                    className="w-auto p-0 bg-white z-[100000] rounded-xl shadow-xl border border-borderColor"
+                    className="w-auto p-0 bg-white z-100000 rounded-xl shadow-xl border border-borderColor"
                     align="start"
                   >
                     <Calendar

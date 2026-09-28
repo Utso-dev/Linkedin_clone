@@ -1,9 +1,11 @@
-import React from 'react'
+import React from "react";
+import AllJobList from "../_component/AllJobList";
 
-function page() {
-  return (
-    <div>page</div>
-  )
+export const metadata = {
+  title: "Job Listings | Pro Industry",
+  description: "Manage your job postings and track performance.",
+};
+
+export default function JobListingPage() {
+  return <AllJobList />;
 }
-
-export default page
