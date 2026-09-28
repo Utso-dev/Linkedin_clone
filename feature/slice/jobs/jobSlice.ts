@@ -10,11 +10,11 @@ const jobSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["Job"],
     }),
-    getJobsArchive: builder.query({
-      query: (data) => ({
+    getJobsArchive: builder.query<any, any | void>({
+      query: (params) => ({
         url: `/industry/my-archived-job-posts`,
         method: "GET",
-        body: data,
+        params,
       }),
       providesTags: ["Job"],
     }),

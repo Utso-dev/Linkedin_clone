@@ -1,17 +1,19 @@
 "use client";
 
-import ButtonReuseable from "@/components/reusable/CustomButton";
 import DynamicTable from "@/components/reusable/DynamicTable";
 import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
+import RootDialog from "@/components/reusable/RootDialog";
 import Search from "@/components/reusable/Search";
 import {
-  useGetJobsQuery,
+  useGetJobsArchiveQuery,
   useStatusUpdateForJobsMutation,
 } from "@/feature/slice/jobs/jobSlice";
 import {
   AlertCircle,
   Archive,
+  ArrowLeft,
   Briefcase,
+  Building2,
   Eye,
   FileText,
   Pencil,
@@ -22,10 +24,11 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import CreateJobsFrom from "./CreateJobsFrom";
 import { JobItem } from "./JobListCard";
 import JoblistSkleton from "./JoblistSkleton";
 
-export default function AllJobList() {
+export default function ArchiveJobList() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -43,14 +46,14 @@ export default function AllJobList() {
   // Check if any filter is active in URL
   const hasActiveFilters = Boolean(
     searchParams.get("search") ||
-    (searchParams.get("status") && searchParams.get("status") !== "all") ||
-    searchParams.get("job_id") ||
-    searchParams.get("network_type") ||
-    searchParams.get("work_mode") ||
-    searchParams.get("employment_offering") ||
-    searchParams.get("employment_type") ||
-    searchParams.get("state_id") ||
-    searchParams.get("city_id"),
+      (searchParams.get("status") && searchParams.get("status") !== "all") ||
+      searchParams.get("job_id") ||
+      searchParams.get("network_type") ||
+      searchParams.get("work_mode") ||
+      searchParams.get("employment_offering") ||
+      searchParams.get("employment_type") ||
+      searchParams.get("state_id") ||
+      searchParams.get("city_id"),
   );
 
   // Helper to update any URL search parameter
@@ -136,14 +139,14 @@ export default function AllJobList() {
     return params;
   }, [searchParams]);
 
-  // Fetch jobs from API with queryParams
+  // Fetch archived jobs from API
   const {
     data: responseData,
     isLoading,
     isFetching,
     isError,
     refetch,
-  } = useGetJobsQuery(queryParams);
+  } = useGetJobsArchiveQuery(queryParams);
 
   // Extract jobs array
   const rawJobs: JobItem[] = useMemo(() => {
@@ -372,10 +375,10 @@ export default function AllJobList() {
         {/* Title & Subtitle */}
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-headerColor">
-            Job Listings
+            Archived Job Listings
           </h1>
           <p className="text-sm text-descriptionColor mt-1">
-            Manage your job postings and track performance.
+            Manage your archived job postings and track previous positions.
           </p>
         </div>
 
@@ -383,33 +386,27 @@ export default function AllJobList() {
         <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
           {/* Search Input */}
           <div>
-            <Search
-              placeHolder="Search jobs..."
-              className="rounded-md! py-2.5!"
-            />
+            <Search />
           </div>
+
+          {/* Back to Active Job Listings Button */}
+          <Link
+            href="/mu/job-listing"
+            className="h-10 px-3.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-sm md:text-sm font-medium flex items-center gap-1.5 transition-colors cursor-pointer active:scale-98"
+          >
+            <ArrowLeft className="w-4 h-4 text-gray-500" />
+            <span>Active Jobs</span>
+          </Link>
+
           {/* + Post a job position Button */}
-          <ButtonReuseable
+          <button
             type="button"
             onClick={() => setShowCreateModal(true)}
-            title={
-              <>
-                <Plus className="w-4 h-4" />
-                <span>Create Job</span>
-              </>
-            }
-            className="rounded-md! py-2.5!"
-          />
-
-          {/* Archive Filter Toggle Button */}
-          <Link
-            href={`/mu/job-listing/archive-jobs`}
-            type="button"
-            className={`h-10 px-3.5 rounded-lg border text-sm md:text-sm font-medium flex items-center gap-1.5 transition-colors cursor-pointer active:scale-98`}
+            className="h-10 px-4 rounded-lg bg-[#009dae] hover:bg-[#008999] text-white text-sm md:text-sm font-medium flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer active:scale-98"
           >
-            <Archive className="w-4 h-4 text-gray-500" />
-            <span>Archive</span>
-          </Link>
+            <Plus className="w-4 h-4" />
+            <span>Create Job</span>
+          </button>
 
           {/* Status Dropdown Filter using SelecteInputField */}
           <div className="w-[140px]">
@@ -418,8 +415,8 @@ export default function AllJobList() {
               onChange={(val) => updateUrlParam("status", val)}
               options={[
                 { value: "all", label: "All Status" },
-                { value: "active", label: "Active" },
                 { value: "archive", label: "Archive" },
+                { value: "active", label: "Active" },
                 { value: "expired", label: "Expired" },
                 { value: "rejected", label: "Rejected" },
               ]}
@@ -438,11 +435,11 @@ export default function AllJobList() {
         <div className="bg-white rounded-xl border border-red-100 p-8 text-center max-w-md mx-auto my-8">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
           <h3 className="text-base font-bold text-headerColor">
-            Failed to load jobs
+            Failed to load archived jobs
           </h3>
           <p className="text-sm text-gray-500 mt-1 mb-4">
-            An error occurred while fetching your job listings. Please check
-            your connection and try again.
+            An error occurred while fetching your archived job listings. Please
+            check your connection and try again.
           </p>
           <button
             type="button"
@@ -455,18 +452,18 @@ export default function AllJobList() {
       ) : filteredJobs.length === 0 ? (
         /* Empty State */
         <div className="bg-white rounded-xl border border-gray-200/80 p-12 text-center max-w-lg mx-auto my-8">
-          <div className="w-14 h-14 rounded-full bg-[#dcf4f2] text-[#009dae] flex items-center justify-center mx-auto mb-3">
-            <Briefcase className="w-7 h-7" />
+          <div className="w-14 h-14 rounded-full bg-[#fef4d8] text-[#d97706] flex items-center justify-center mx-auto mb-3">
+            <Archive className="w-7 h-7" />
           </div>
           <h3 className="text-base md:text-lg font-bold text-headerColor">
             {hasActiveFilters
-              ? "No matching jobs found"
-              : "No job postings yet"}
+              ? "No matching archived jobs found"
+              : "No archived job postings yet"}
           </h3>
           <p className="text-sm md:text-sm text-gray-500 mt-1 mb-5">
             {hasActiveFilters
               ? "Try adjusting your search query or status filter to see other jobs."
-              : "Create your first professional job listing to connect with qualified candidates."}
+              : "When you archive job postings, they will appear here for your records."}
           </p>
           <div className="flex items-center justify-center gap-3">
             {hasActiveFilters && (
@@ -478,13 +475,12 @@ export default function AllJobList() {
                 Clear Filters
               </button>
             )}
-            <button
-              type="button"
-              onClick={() => setShowCreateModal(true)}
+            <Link
+              href="/mu/job-listing"
               className="px-4 py-2 rounded-lg bg-[#009dae] hover:bg-[#008999] text-white text-sm font-medium transition-colors flex items-center gap-1.5"
             >
-              <Plus className="w-4 h-4" /> Post a job position
-            </button>
+              <ArrowLeft className="w-4 h-4" /> Go to Active Jobs
+            </Link>
           </div>
         </div>
       ) : (
@@ -507,10 +503,141 @@ export default function AllJobList() {
               hoverbg: "hover:bg-[#F9FAFB]",
               border: "border-b border-gray-100",
             }}
-            noDataMessage="No job positions found."
+            noDataMessage="No archived job positions found."
           />
         </div>
       )}
+
+      {/* View Job Details Dialog */}
+      <RootDialog
+        open={!!selectedJobForView}
+        setOpen={(open) => !open && setSelectedJobForView(null)}
+        ariaLabel="Job Details"
+      >
+        {selectedJobForView && (
+          <div className="p-6">
+            <div className="flex items-start justify-between gap-4 pb-4 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-[#dcf4f2] text-[#009dae] flex items-center justify-center shrink-0 overflow-hidden border border-gray-100">
+                  {selectedJobForView.industry_logo ? (
+                    <img
+                      src={selectedJobForView.industry_logo}
+                      alt={
+                        selectedJobForView.industry_name ||
+                        selectedJobForView.job_title
+                      }
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <Building2 className="w-6 h-6 text-[#009dae]" />
+                  )}
+                </div>
+                <div>
+                  <h3 className="text-base md:text-lg font-bold text-headerColor">
+                    {selectedJobForView.job_title}
+                  </h3>
+                  <p className="text-sm text-gray-500 mt-0.5">
+                    {selectedJobForView.industry_name || "Company"} • Job ID:{" "}
+                    {selectedJobForView.job_id}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="py-4 space-y-4">
+              {/* Badges */}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                  Tags & Category
+                </h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {(selectedJobForView.badges || []).map((badge, idx) => (
+                    <span
+                      key={idx}
+                      className="bg-[#f3f4f6] text-gray-700 text-sm px-3 py-1 rounded-full capitalize font-medium"
+                    >
+                      {badge}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Location & Stats */}
+              <div className="grid grid-cols-3 gap-3 p-3 bg-gray-50 rounded-xl">
+                <div>
+                  <p className="text-[11px] text-grayColor1">Location</p>
+                  <p className="text-sm font-semibold text-gray-700 mt-0.5 truncate">
+                    {selectedJobForView.location || "N/A"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] text-grayColor1">Total Views</p>
+                  <p className="text-sm font-semibold text-gray-700 mt-0.5">
+                    {(selectedJobForView.views_count ?? 0).toLocaleString()}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] text-grayColor1">Applicants</p>
+                  <p className="text-sm font-semibold text-gray-700 mt-0.5">
+                    {(
+                      selectedJobForView.applications_count ?? 0
+                    ).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+
+              {/* Short Description */}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                  Description
+                </h4>
+                <p className="text-sm text-descriptionColor leading-relaxed max-h-48 overflow-y-auto">
+                  {selectedJobForView.short_description ||
+                    "No description provided."}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-gray-100">
+              <button
+                type="button"
+                onClick={() => setSelectedJobForView(null)}
+                className="px-4 py-2 rounded-lg border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const jobId = selectedJobForView.id;
+                  setSelectedJobForView(null);
+                  router.push(`/mu/recruiter-dashboard?job_id=${jobId}`);
+                }}
+                className="px-4 py-2 rounded-lg bg-[#009dae] hover:bg-[#008999] text-white text-sm font-medium transition-colors flex items-center gap-1.5"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>View Applicants</span>
+              </button>
+            </div>
+          </div>
+        )}
+      </RootDialog>
+
+      {/* Post/Edit a Job Position Modal */}
+      <RootDialog
+        open={showCreateModal}
+        setOpen={setShowCreateModal}
+        ariaLabel="Post a Job Position"
+      >
+        <div className="p-4 md:p-6 h-[85vh] max-h-[85vh] overflow-y-auto">
+          <CreateJobsFrom
+            onSuccess={() => {
+              setShowCreateModal(false);
+              refetch();
+            }}
+          />
+        </div>
+      </RootDialog>
     </div>
   );
 }
