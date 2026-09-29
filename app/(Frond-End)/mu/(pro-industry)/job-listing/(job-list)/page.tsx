@@ -1,4 +1,4 @@
-import AllJobList from "../../_component/AllJobList";
+import AllJobList from "../../_component/jobs/AllJobList";
 
 export const metadata = {
   title: "Job Listings | Pro Industry",

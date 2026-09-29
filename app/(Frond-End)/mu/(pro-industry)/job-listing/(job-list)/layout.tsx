@@ -1,4 +1,4 @@
-import JobListFilterSection from "../../_component/JobListFilterSection";
+import JobListFilterSection from "../../_component/jobs/JobListFilterSection";
 
 function layout({ children }: { children: React.ReactNode }) {
   return (

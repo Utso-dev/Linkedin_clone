@@ -1,18 +1,18 @@
 "use client";
 
 import DynamicTable from "@/components/reusable/DynamicTable";
-import { useGetJobsArchiveQuery } from "@/feature/slice/jobs/jobSlice";
-import { Eye, FileText } from "lucide-react";
+import { useGetJobsQuery } from "@/feature/slice/jobs/jobSlice";
+import { AlertCircle, Eye, FileText, RefreshCw } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
+
 import EmptyJobs from "./EmptyJobs";
 import JobListAction from "./JobListAction";
 import { JobItem } from "./JobListCard";
 import JoblistSkleton from "./JoblistSkleton";
-import JobsListError from "./JobsListError";
 import JobStatusChange from "./JobStatusChange";
 
-export default function ArchiveJobList() {
+export default function AllJobList() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -21,6 +21,7 @@ export default function ArchiveJobList() {
     router.replace(pathname, { scroll: false });
   };
 
+  // Construct query parameters for the API from URL searchParams
   const queryParams = useMemo(() => {
     const params: Record<string, any> = {};
 
@@ -59,9 +60,9 @@ export default function ArchiveJobList() {
     data: responseData,
     isLoading,
     isError,
-  } = useGetJobsArchiveQuery(queryParams);
+    refetch,
+  } = useGetJobsQuery(queryParams);
 
-  // Extract jobs array
   const rawJobs: JobItem[] = responseData?.data || [];
 
   const columns = [
@@ -158,10 +159,27 @@ export default function ArchiveJobList() {
       {isLoading ? (
         <JoblistSkleton />
       ) : isError ? (
-        <JobsListError />
+        <div className="bg-white rounded-xl border border-red-100 p-8 text-center max-w-md mx-auto my-8">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
+          <h3 className="text-base font-bold text-headerColor">
+            Failed to load jobs
+          </h3>
+          <p className="text-sm text-gray-500 mt-1 mb-4">
+            An error occurred while fetching your job listings. Please check
+            your connection and try again.
+          </p>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            className="px-4 py-2 rounded-lg bg-[#009dae] text-white text-sm font-medium hover:bg-[#008999] transition-colors inline-flex items-center gap-1.5"
+          >
+            <RefreshCw className="w-3.5 h-3.5" /> Retry
+          </button>
+        </div>
       ) : rawJobs.length === 0 ? (
         <EmptyJobs clearAllFilters={clearAllFilters} />
       ) : (
+        /* Dynamic Table */
         <div className="bg-white rounded-xl border border-gray-200/80 overflow-hidden">
           <DynamicTable
             columns={columns}
@@ -180,7 +198,7 @@ export default function ArchiveJobList() {
               hoverbg: "hover:bg-[#F9FAFB]",
               border: "border-b border-gray-100",
             }}
-            noDataMessage="No archived job positions found."
+            noDataMessage="No job positions found."
           />
         </div>
       )}

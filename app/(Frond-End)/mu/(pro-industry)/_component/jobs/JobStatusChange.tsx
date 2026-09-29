@@ -32,7 +32,6 @@ function JobStatusChange({ value, row }: { value: string; row: JobItem }) {
       : value?.toLowerCase() || "published";
 
   const getBadgeStyle = (status: string) => {
-
     switch (status) {
       case "published":
       case "active":
@@ -49,8 +48,8 @@ function JobStatusChange({ value, row }: { value: string; row: JobItem }) {
     }
   };
   return (
-    <div className="flex justify-center px-2 py-2">
-      <div className="w-30">
+    <div className="flex justify-center ">
+      <div className="w-25.5">
         <SelecteInputField
           value={currentVal}
           onChange={(val) => handleStatusChange(row.id, val)}
@@ -61,7 +60,7 @@ function JobStatusChange({ value, row }: { value: string; row: JobItem }) {
             { value: "expired", label: "Expired" },
             { value: "rejected", label: "Rejected" },
           ]}
-          className={`h-9 text-xs md:text-sm font-medium rounded-lg shadow-none border-0!  ${getBadgeStyle(currentVal)}`}
+          className={`h-10! w-full text-xs md:text-sm font-medium rounded-full shadow-none border-0!  ${getBadgeStyle(currentVal)}`}
         />
       </div>
     </div>

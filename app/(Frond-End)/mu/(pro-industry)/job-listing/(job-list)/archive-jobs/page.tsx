@@ -1,4 +1,4 @@
-import ArchiveJobList from "../../../_component/ArchiveJobList";
+import ArchiveJobList from "../../../_component/jobs/ArchiveJobList";
 
 export const metadata = {
   title: "Archived Jobs | Pro Industry",

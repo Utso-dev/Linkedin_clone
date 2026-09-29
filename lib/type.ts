@@ -225,3 +225,29 @@ export interface IndustryDataType {
   updated_at: string; // ISO Date String
   industry_category: IndustryCategoryType[];
 }
+
+export interface JobDetails {
+  job_id: string;
+  job_title: string;
+  position: string;
+  job_description: string;
+  work_mode: string;
+  employment_type: string;
+  network_type: string;
+  level: string;
+  experience: string;
+  employment_offering: string;
+  email: string;
+  phone_number: string;
+  website: string;
+  salary_min: string;
+  salary_max: string;
+  tags: string[];
+  status: string;
+  applications_count: number;
+  state?: { name: string } | null;
+  city?: { name: string } | null;
+  industry?: { name: string; logo?: string | null } | null;
+  announcement_start_date: string;
+  announcement_end_date: string;
+}

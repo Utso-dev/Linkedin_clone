@@ -1,15 +1,5 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  MapPin,
-  Eye,
-  FileText,
-  Pencil,
-  ChevronDown,
-  Building2,
-  Check,
-} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,28 +7,37 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useStatusUpdateForJobsMutation } from "@/feature/slice/jobs/jobSlice";
+import {
+  Check,
+  ChevronDown,
+  Eye,
+  FileText,
+  MapPin,
+  Pencil,
+} from "lucide-react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 export interface JobItem {
-  id: number;
-  job_id: string;
-  slug: string;
-  job_title: string;
-  industry_name: string;
-  industry_logo: string | null;
-  status: string;
-  badges: string[];
-  short_description: string;
-  location: string;
-  views_count: number;
-  applications_count: number;
+  id: number | string;
+  job_id?: string | number;
+  slug?: string;
+  job_title?: string;
+  industry_name?: string;
+  industry_logo?: string | null;
+  status?: string;
+  badges?: string[];
+  short_description?: string;
+  location?: string;
+  views_count?: number;
+  applications_count?: number;
 }
 
 interface JobListCardProps {
   job: JobItem;
   onView?: (job: JobItem) => void;
   onEdit?: (job: JobItem) => void;
-  onStatusChange?: (id: number, newStatus: string) => void;
+  onStatusChange?: (id: number | string, newStatus: string) => void;
 }
 
 export default function JobListCard({
@@ -231,7 +230,7 @@ export default function JobListCard({
         </div>
 
         {/* Short Description */}
-        <p className="text-xs md:text-[13px] text-gray-500 line-clamp-2 mt-3 leading-relaxed min-h-[36px]">
+        <p className="text-xs md:text-[13px] text-gray-500 line-clamp-2 mt-3 leading-relaxed min-h-9">
           {job.short_description ||
             "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the indust..."}
         </p>

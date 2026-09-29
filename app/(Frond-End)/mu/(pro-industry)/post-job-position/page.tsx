@@ -1,4 +1,4 @@
-import CreateJobsFrom from "../_component/CreateJobsFrom";
+import CreateJobsFrom from "../_component/jobs/CreateJobsFrom";
 
 function page() {
   return (
