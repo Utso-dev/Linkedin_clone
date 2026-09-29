@@ -1,104 +1,23 @@
 "use client";
 
-import ButtonReuseable from "@/components/reusable/CustomButton";
 import DynamicTable from "@/components/reusable/DynamicTable";
-import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
-import Search from "@/components/reusable/Search";
-import {
-  useGetJobsQuery,
-  useStatusUpdateForJobsMutation,
-} from "@/feature/slice/jobs/jobSlice";
-import {
-  AlertCircle,
-  Archive,
-  Briefcase,
-  Eye,
-  FileText,
-  Pencil,
-  Plus,
-  RefreshCw,
-} from "lucide-react";
-import Link from "next/link";
+import { useGetJobsQuery } from "@/feature/slice/jobs/jobSlice";
+import { AlertCircle, Eye, FileText, RefreshCw } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import toast from "react-hot-toast";
+import { useMemo } from "react";
+import EmptyJobs from "./EmptyJobs";
+import JobListAction from "./JobListAction";
 import { JobItem } from "./JobListCard";
 import JoblistSkleton from "./JoblistSkleton";
+import JobStatusChange from "./JobStatusChange";
 
 export default function AllJobList() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [updateStatus, { isLoading: isUpdatingStatus }] =
-    useStatusUpdateForJobsMutation();
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [selectedJobForView, setSelectedJobForView] = useState<JobItem | null>(
-    null,
-  );
-
-  // Status param from URL (defaults to "all")
-  const currentStatusParam = searchParams.get("status") || "all";
-
-  // Check if any filter is active in URL
-  const hasActiveFilters = Boolean(
-    searchParams.get("search") ||
-    (searchParams.get("status") && searchParams.get("status") !== "all") ||
-    searchParams.get("job_id") ||
-    searchParams.get("network_type") ||
-    searchParams.get("work_mode") ||
-    searchParams.get("employment_offering") ||
-    searchParams.get("employment_type") ||
-    searchParams.get("state_id") ||
-    searchParams.get("city_id"),
-  );
-
-  // Helper to update any URL search parameter
-  const updateUrlParam = (key: string, value: string | null) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (value && value !== "all") {
-      params.set(key, value);
-    } else {
-      params.delete(key);
-    }
-    if (key !== "current_page" && params.has("current_page")) {
-      params.set("current_page", "1");
-    }
-    const queryString = params.toString();
-    router.replace(`${pathname}${queryString ? `?${queryString}` : ""}`, {
-      scroll: false,
-    });
-  };
-
-  // Helper to clear all active filters
   const clearAllFilters = () => {
     router.replace(pathname, { scroll: false });
-  };
-
-  // Handle single job row status update
-  const handleStatusChange = async (
-    jobId: number | string,
-    newStatus: string,
-  ) => {
-    const payload: { status: string; rejection_reason?: string } = {
-      status: newStatus,
-    };
-
-    if (newStatus === "rejected") {
-      payload.rejection_reason =
-        "The salary range does not meet the industry standard and company details are incomplete.";
-    }
-
-    try {
-      const res = await updateStatus({
-        id: jobId,
-        data: payload,
-      }).unwrap();
-      toast.success(res?.message || `Job status updated to ${newStatus}`);
-    } catch (error: any) {
-      console.error("Status update error:", error);
-      toast.error(error?.data?.message || "Failed to update job status");
-    }
   };
 
   // Construct query parameters for the API from URL searchParams
@@ -136,71 +55,15 @@ export default function AllJobList() {
     return params;
   }, [searchParams]);
 
-  // Fetch jobs from API with queryParams
   const {
     data: responseData,
     isLoading,
-    isFetching,
     isError,
     refetch,
   } = useGetJobsQuery(queryParams);
 
-  // Extract jobs array
-  const rawJobs: JobItem[] = useMemo(() => {
-    return (responseData?.data || []) as JobItem[];
-  }, [responseData]);
+  const rawJobs: JobItem[] = responseData?.data || [];
 
-  // Client-side search and status filtering (fallback & instant response)
-  const filteredJobs = useMemo(() => {
-    const searchVal = (searchParams.get("search") || "").toLowerCase().trim();
-    const statusVal = searchParams.get("status") || "all";
-
-    return rawJobs.filter((job) => {
-      // Search match
-      const matchesSearch =
-        !searchVal ||
-        job.job_title?.toLowerCase().includes(searchVal) ||
-        job.job_id?.toLowerCase().includes(searchVal) ||
-        job.industry_name?.toLowerCase().includes(searchVal) ||
-        job.location?.toLowerCase().includes(searchVal) ||
-        job.short_description?.toLowerCase().includes(searchVal);
-
-      // Status match
-      let matchesStatus = true;
-      const jobStatus = job.status?.toLowerCase() || "";
-      if (statusVal === "active" || statusVal === "published") {
-        matchesStatus = jobStatus === "published" || jobStatus === "active";
-      } else if (statusVal === "archive" || statusVal === "archived") {
-        matchesStatus = jobStatus === "archive" || jobStatus === "archived";
-      } else if (statusVal === "expired") {
-        matchesStatus = jobStatus === "expired";
-      } else if (statusVal === "rejected") {
-        matchesStatus = jobStatus === "rejected";
-      }
-
-      return matchesSearch && matchesStatus;
-    });
-  }, [rawJobs, searchParams]);
-
-  // Status Filter button style helper
-  const getFilterStyle = (status: string) => {
-    switch (status) {
-      case "active":
-      case "published":
-        return "bg-[#dcf4f2] text-[#009dae] border-[#b2e7e2] [&_svg]:text-[#009dae]";
-      case "archive":
-      case "archived":
-        return "bg-[#fef4d8] text-[#d97706] border-[#fde68a] [&_svg]:text-[#d97706]";
-      case "expired":
-        return "bg-[#f3f4f6] text-[#6b7280] border-[#e5e7eb] [&_svg]:text-[#6b7280]";
-      case "rejected":
-        return "bg-[#fee2e2] text-[#ef4444] border-[#fecaca] [&_svg]:text-[#ef4444]";
-      default:
-        return "bg-[#dcf4f2] text-[#009dae] border-transparent [&_svg]:text-[#009dae]";
-    }
-  };
-
-  // DynamicTable Columns Configuration
   const columns = [
     {
       label: "Job ID",
@@ -218,12 +81,10 @@ export default function AllJobList() {
       position: "justify-start",
       formatter: (_: any, row: JobItem) => (
         <div className=" px-4 py-3.5">
-          {/* Title & Company */}
           <div className="min-w-0">
             <h4
-              className="text-sm font-semibold text-headerColor truncate hover:text-[#009dae] transition-colors cursor-pointer max-w-[200px]"
+              className="text-sm font-semibold text-headerColor truncate hover:text-[#009dae] transition-colors cursor-pointer max-w-50"
               title={row.job_title}
-              onClick={() => setSelectedJobForView(row)}
             >
               {row.job_title}
             </h4>
@@ -242,7 +103,7 @@ export default function AllJobList() {
               ))}
             </div>
             <div className="text-xs text-descriptionColor">
-              <span className=" max-w-[140px]" title={row.location || "N/A"}>
+              <span className=" max-w-35" title={row.location || "N/A"}>
                 {row.location || "N/A"}
               </span>
             </div>
@@ -279,162 +140,24 @@ export default function AllJobList() {
       accessor: "status",
       width: "135px",
       position: "justify-center",
-      formatter: (value: string, row: JobItem) => {
-        const currentVal =
-          value?.toLowerCase() === "active"
-            ? "published"
-            : value?.toLowerCase() || "published";
-
-        const getBadgeStyle = (status: string) => {
-          switch (status) {
-            case "published":
-            case "active":
-              return "bg-[#dcf4f2] text-[#009dae] border-[#b2e7e2] [&_svg]:text-[#009dae]";
-            case "archive":
-            case "archived":
-              return "bg-[#fef4d8] text-[#d97706] border-[#fde68a] [&_svg]:text-[#d97706]";
-            case "rejected":
-              return "bg-[#fee2e2] text-[#ef4444] border-[#fecaca] [&_svg]:text-[#ef4444]";
-            case "expired":
-              return "bg-[#f3f4f6] text-[#6b7280] border-[#e5e7eb] [&_svg]:text-[#6b7280]";
-            default:
-              return "bg-gray-100 text-gray-700 border-gray-200";
-          }
-        };
-
-        return (
-          <div className="flex justify-center px-2 py-2">
-            <div className="w-[120px]">
-              <SelecteInputField
-                value={currentVal}
-                onChange={(val) => handleStatusChange(row.id, val)}
-                disabled={isUpdatingStatus}
-                options={[
-                  { value: "published", label: "Active" },
-                  { value: "archive", label: "Archive" },
-                  { value: "expired", label: "Expired" },
-                  { value: "rejected", label: "Rejected" },
-                ]}
-                className={`h-9 text-xs md:text-sm font-medium rounded-lg shadow-none border ${getBadgeStyle(currentVal)}`}
-              />
-            </div>
-          </div>
-        );
-      },
+      formatter: (value: string, row: JobItem) => (
+        <JobStatusChange value={value} row={row} />
+      ),
     },
     {
       label: "Action",
       accessor: "action",
       width: "130px",
       position: "justify-center",
-      formatter: (_: any, row: JobItem) => (
-        <div className="flex items-center justify-center gap-1.5 px-4 py-3.5">
-          {/* View icon */}
-          <button
-            type="button"
-            onClick={() => setSelectedJobForView(row)}
-            title="View Details"
-            className="w-8 h-8 rounded-lg border border-gray-200 text-[#009dae] hover:bg-[#009dae]/10 hover:border-[#009dae]/30 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
-          >
-            <Eye className="w-4 h-4" />
-          </button>
-
-          {/* Applicants icon */}
-          <button
-            type="button"
-            onClick={() =>
-              router.push(`/mu/recruiter-dashboard?job_id=${row.id}`)
-            }
-            title="View Applicants"
-            className="w-8 h-8 rounded-lg border border-gray-200 text-[#009dae] hover:bg-[#009dae]/10 hover:border-[#009dae]/30 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
-          >
-            <FileText className="w-4 h-4" />
-          </button>
-
-          {/* Edit icon */}
-          <button
-            type="button"
-            onClick={() => setShowCreateModal(true)}
-            title="Edit Job"
-            className="w-8 h-8 rounded-lg border border-gray-200 text-descriptionColor hover:text-headerColor hover:bg-gray-100 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
-          >
-            <Pencil className="w-4 h-4" />
-          </button>
-        </div>
-      ),
+      formatter: (_: any, row: JobItem) => <JobListAction row={row} />,
     },
   ];
 
   return (
     <div className="w-full pb-10">
-      {/* Top Header Section */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 md:mb-8">
-        {/* Title & Subtitle */}
-        <div>
-          <h1 className="text-xl md:text-2xl font-bold text-headerColor">
-            Job Listings
-          </h1>
-          <p className="text-sm text-descriptionColor mt-1">
-            Manage your job postings and track performance.
-          </p>
-        </div>
-
-        {/* Right Header Actions & Filters */}
-        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-          {/* Search Input */}
-          <div>
-            <Search
-              placeHolder="Search jobs..."
-              className="rounded-md! py-2.5!"
-            />
-          </div>
-          {/* + Post a job position Button */}
-          <ButtonReuseable
-            type="button"
-            onClick={() => setShowCreateModal(true)}
-            title={
-              <>
-                <Plus className="w-4 h-4" />
-                <span>Create Job</span>
-              </>
-            }
-            className="rounded-md! py-2.5!"
-          />
-
-          {/* Archive Filter Toggle Button */}
-          <Link
-            href={`/mu/job-listing/archive-jobs`}
-            type="button"
-            className={`h-10 px-3.5 rounded-lg border text-sm md:text-sm font-medium flex items-center gap-1.5 transition-colors cursor-pointer active:scale-98`}
-          >
-            <Archive className="w-4 h-4 text-gray-500" />
-            <span>Archive</span>
-          </Link>
-
-          {/* Status Dropdown Filter using SelecteInputField */}
-          <div className="w-[140px]">
-            <SelecteInputField
-              value={currentStatusParam}
-              onChange={(val) => updateUrlParam("status", val)}
-              options={[
-                { value: "all", label: "All Status" },
-                { value: "active", label: "Active" },
-                { value: "archive", label: "Archive" },
-                { value: "expired", label: "Expired" },
-                { value: "rejected", label: "Rejected" },
-              ]}
-              className={`h-10 text-sm font-medium rounded-lg shadow-none border ${getFilterStyle(currentStatusParam)}`}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Content Section */}
       {isLoading ? (
-        /* Loading Skeleton */
         <JoblistSkleton />
       ) : isError ? (
-        /* Error State */
         <div className="bg-white rounded-xl border border-red-100 p-8 text-center max-w-md mx-auto my-8">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
           <h3 className="text-base font-bold text-headerColor">
@@ -452,47 +175,14 @@ export default function AllJobList() {
             <RefreshCw className="w-3.5 h-3.5" /> Retry
           </button>
         </div>
-      ) : filteredJobs.length === 0 ? (
-        /* Empty State */
-        <div className="bg-white rounded-xl border border-gray-200/80 p-12 text-center max-w-lg mx-auto my-8">
-          <div className="w-14 h-14 rounded-full bg-[#dcf4f2] text-[#009dae] flex items-center justify-center mx-auto mb-3">
-            <Briefcase className="w-7 h-7" />
-          </div>
-          <h3 className="text-base md:text-lg font-bold text-headerColor">
-            {hasActiveFilters
-              ? "No matching jobs found"
-              : "No job postings yet"}
-          </h3>
-          <p className="text-sm md:text-sm text-gray-500 mt-1 mb-5">
-            {hasActiveFilters
-              ? "Try adjusting your search query or status filter to see other jobs."
-              : "Create your first professional job listing to connect with qualified candidates."}
-          </p>
-          <div className="flex items-center justify-center gap-3">
-            {hasActiveFilters && (
-              <button
-                type="button"
-                onClick={clearAllFilters}
-                className="px-4 py-2 rounded-lg border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
-              >
-                Clear Filters
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={() => setShowCreateModal(true)}
-              className="px-4 py-2 rounded-lg bg-[#009dae] hover:bg-[#008999] text-white text-sm font-medium transition-colors flex items-center gap-1.5"
-            >
-              <Plus className="w-4 h-4" /> Post a job position
-            </button>
-          </div>
-        </div>
+      ) : rawJobs.length === 0 ? (
+        <EmptyJobs clearAllFilters={clearAllFilters} />
       ) : (
         /* Dynamic Table */
         <div className="bg-white rounded-xl border border-gray-200/80 overflow-hidden">
           <DynamicTable
             columns={columns}
-            data={filteredJobs}
+            data={rawJobs}
             header={{
               position: "justify-start",
               padding: "12px 16px",
