@@ -1,4 +1,5 @@
 import { Eye, FileText, Pencil } from "lucide-react";
+import Link from "next/link";
 import { JobItem } from "./JobListCard";
 
 function JobListAction({ row }: { row: JobItem }) {
@@ -6,13 +7,13 @@ function JobListAction({ row }: { row: JobItem }) {
     <div>
       <div className="flex items-center justify-center gap-1.5 px-4 py-3.5">
         {/* View icon */}
-        <button
-          type="button"
+        <Link
+          href={`/mu/job-listing/job-details/${row.id}`}
           title="View Details"
           className="w-8 h-8 rounded-lg border border-gray-200 text-[#009dae] hover:bg-[#009dae]/10 hover:border-[#009dae]/30 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
         >
           <Eye className="w-4 h-4" />
-        </button>
+        </Link>
 
         {/* Applicants icon */}
         <button
