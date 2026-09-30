@@ -99,7 +99,7 @@ function JobsDetailsPage({ id }: { id: string }) {
             </p>
             <JobStatusChange value={job.status} row={{ id: id }} />
             <Link
-              href={`/mu/job-listing/edite`}
+              href={`/mu/job-listing/${id}/edite`}
               className="cursor-pointer px-4 rounded-full gap-2 bg-primaryColor text-white flex justify-center items-center"
             >
               <EditeIcon className="w-4 h-4" /> Edit
@@ -123,7 +123,7 @@ function JobsDetailsPage({ id }: { id: string }) {
         </div>
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3  border-grayColor2 ">
           <Link
-            href={`/mu/job-listing/view-application`}
+            href={`/mu/job-listing/${id}/applicants`}
             className="rounded-full bg-primaryColor px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#008999]"
           >
             View Applicants ({job.applications_count ?? 0})
