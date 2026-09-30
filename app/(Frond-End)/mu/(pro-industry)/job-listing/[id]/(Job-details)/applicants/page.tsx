@@ -1,9 +1,12 @@
-import React from 'react'
+import AplicantDetailsPage from "../../../../_component/applicant/AplicantDetailsPage";
 
-function page() {
+async function page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   return (
-    <div>page</div>
-  )
+    <div>
+      <AplicantDetailsPage id={id} />
+    </div>
+  );
 }
 
-export default page
+export default page;

@@ -251,3 +251,27 @@ export interface JobDetails {
   announcement_start_date: string;
   announcement_end_date: string;
 }
+
+export interface ApplicantItemType {
+  id: number | string;
+  job_id: string;
+  application_id: string;
+  applicant_name: string;
+  email: string;
+  avatar: string | null;
+  position: string;
+  applied_on: string;
+  network: string;
+  status: string;
+}
+
+export interface StatusCountsType {
+  all?: number;
+  pending?: number;
+  reviewing?: number;
+  shortlisted?: number;
+  interviewed?: number;
+  offered?: number;
+  hired?: number;
+  rejected?: number;
+}
