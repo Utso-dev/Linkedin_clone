@@ -10,7 +10,7 @@ export default async function FrontEndLayout({
   return (
     <div>
       <div className="">
-        && <Breadcrumb />
+         <Breadcrumb />
         <div className="lg:grid lg:grid-cols-11  sm:pb-8 pb-6 gap-4 xl:gap-6 mb-10">
           <div className="hidden lg:block col-span-3 xl:col-span-2   lg:sticky lg:top-19  lg:overflow-y-auto self-start">
             <JobsLeftSidebar />

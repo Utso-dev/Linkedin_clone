@@ -2,20 +2,25 @@
 
 import { useGetJobDetailsQuery } from "@/feature/slice/jobs/jobSlice";
 import { JobDetails } from "@/lib/type";
-import { PaymentManagementIcon } from "@/public/svgIcons/AdminIcon";
-import { DotIcon, JobsIcon, LocationIcon } from "@/public/svgIcons/Icons";
-import { CalendarDays, Clock3, Globe2, Mail, Phone } from "lucide-react";
+import {
+  EditeIcon,
+  EmailIcon,
+  GlobalIcon,
+  JobsIcon,
+  LocationIcon,
+  PhoneIcon,
+  ScheduleIcon,
+} from "@/public/svgIcons/Icons";
+import { Clock3 } from "lucide-react";
 import Link from "next/link";
 import DetailsSkeleton from "./JobsSIngleSkleton";
 import JobStatusChange from "./JobStatusChange";
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between gap-4 text-sm">
-      <span className="text-descriptionColor">{label}</span>
-      <span className="text-right font-semibold text-descriptionColor">
-        {value}
-      </span>
+    <div className="flex justify-between gap-4 text-descriptionColor text-sm lg:text-base">
+      <span className="">{label}</span>
+      <span className="text-right font-semibold ">{value}</span>
     </div>
   );
 }
@@ -32,19 +37,21 @@ function ContactRow({
   href?: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg bg-[#f5f7f9] px-3 py-3">
+    <div className="flex items-center gap-3 rounded-lg bg-sectionColor px-3 py-3">
       <span className="text-descriptionColor">{icon}</span>
-      <div className="min-w-0 text-sm">
+      <div className="min-w-0 text-sm md:text-base text-descriptionColor">
         <p className="text-descriptionColor">{label}</p>
         {href ? (
-          <a
+          <Link
             href={href}
             className="break-all font-semibold text-primaryColor hover:underline"
           >
             {value}
-          </a>
+          </Link>
         ) : (
-          <span className="break-all font-semibold text-primaryColor">
+          <span
+            className={`break-all font-semibold ${href ? "text-primaryColor" : "text-descriptionColor"}`}
+          >
             {value}
           </span>
         )}
@@ -91,9 +98,12 @@ function JobsDetailsPage({ id }: { id: string }) {
               {job.network_type}
             </p>
             <JobStatusChange value={job.status} row={{ id: id }} />
-            <button className="cursor-pointer px-2">
-              <DotIcon />
-            </button>
+            <Link
+              href={`/mu/job-listing/edite`}
+              className="cursor-pointer px-4 rounded-full gap-2 bg-primaryColor text-white flex justify-center items-center"
+            >
+              <EditeIcon className="w-4 h-4" /> Edit
+            </Link>
           </div>
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-descriptionColor">
@@ -109,19 +119,16 @@ function JobsDetailsPage({ id }: { id: string }) {
             <Clock3 className="h-3.5 w-3.5" />
             {job.employment_type}
           </span>
-          <span className="flex items-center gap-1.5">
-           
-            {salary}
-          </span>
+          <span className="flex items-center gap-1.5">{salary}</span>
         </div>
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-dashed border-grayColor2 pt-4">
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3  border-grayColor2 ">
           <Link
             href={`/mu/job-listing/view-application`}
-            className="rounded-full bg-primaryColor px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-[#008999]"
+            className="rounded-full bg-primaryColor px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#008999]"
           >
             View Applicants ({job.applications_count ?? 0})
           </Link>
-          <span className="text-xs text-descriptionColor">
+          <span className="text-sm md:text-base text-descriptionColor">
             JOB ID #{job.job_id}
           </span>
         </div>
@@ -129,7 +136,7 @@ function JobsDetailsPage({ id }: { id: string }) {
 
       <div className="mt-3 grid grid-cols-1 items-start gap-3 lg:grid-cols-5">
         <section className="rounded-xl border border-grayColor2 bg-white p-5  md:p-6 lg:col-span-3">
-          <h2 className="mb-3 text-base font-bold text-headerColor">
+          <h2 className="mb-3 text-base md:text-lg lg:text-xl font-semibold text-headerColor">
             Job Description
           </h2>
           <p className="whitespace-pre-line text-sm leading-relaxed text-descriptionColor">
@@ -137,7 +144,7 @@ function JobsDetailsPage({ id }: { id: string }) {
           </p>
           <div className="mt-6 grid grid-cols-1 gap-5 text-sm text-descriptionColor md:grid-cols-2">
             <div>
-              <h3 className="mb-2 font-bold text-headerColor">
+              <h3 className="mb-2 font-semibold text-headerColor">
                 Position Details
               </h3>
               <p>
@@ -148,7 +155,9 @@ function JobsDetailsPage({ id }: { id: string }) {
               </p>
             </div>
             <div>
-              <h3 className="mb-2 font-bold text-headerColor">Employment</h3>
+              <h3 className="mb-2 font-semibold text-headerColor">
+                Employment
+              </h3>
               <p>
                 Network: <strong>{job.network_type}</strong>
               </p>
@@ -175,10 +184,10 @@ function JobsDetailsPage({ id }: { id: string }) {
         </section>
         <div className="space-y-3 lg:col-span-2">
           <section className="rounded-xl border border-grayColor2 bg-white p-5 ">
-            <h2 className="mb-4 border-b border-dashed border-grayColor2 pb-3 text-base font-bold text-headerColor">
+            <h2 className="mb-2 border-b border-dashed border-grayColor2 pb-3 text-base md:text-lg lg:text-xl font-semibold text-headerColor">
               Position Overview
             </h2>
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               <InfoRow label="Work Mode" value={job.work_mode} />
               <InfoRow label="Employment Type" value={job.employment_type} />
               <InfoRow label="Career Level" value={job.level} />
@@ -190,41 +199,41 @@ function JobsDetailsPage({ id }: { id: string }) {
             </div>
           </section>
           <section className="rounded-xl border border-grayColor2 bg-white p-5 ">
-            <h2 className="mb-4 border-b border-dashed border-grayColor2 pb-3 text-base font-bold text-headerColor">
+            <h2 className="mb-2 border-b border-dashed border-grayColor2 pb-3 text-base md:text-lg lg:text-xl font-semibold text-headerColor">
               Posting Schedule
             </h2>
             <div className="space-y-2">
               <ContactRow
-                icon={<CalendarDays className="h-5 w-5" />}
+                icon={<ScheduleIcon className="h-5 w-5" />}
                 label="Start Date"
                 value={job.announcement_start_date}
               />
               <ContactRow
-                icon={<CalendarDays className="h-5 w-5" />}
+                icon={<ScheduleIcon className="h-5 w-5" />}
                 label="End Date"
                 value={job.announcement_end_date}
               />
             </div>
           </section>
           <section className="rounded-xl border border-grayColor2 bg-white p-5 ">
-            <h2 className="mb-4 border-b border-dashed border-grayColor2 pb-3 text-base font-bold text-headerColor">
+            <h2 className="mb-2 border-b border-dashed border-grayColor2 pb-3 text-base md:text-lg lg:text-xl font-semibold text-headerColor">
               Contact Us
             </h2>
             <div className="space-y-2">
               <ContactRow
-                icon={<Mail className="h-5 w-5" />}
+                icon={<EmailIcon className="h-5 w-5" />}
                 label="Email Address"
                 value={job.email}
                 href={`mailto:${job.email}`}
               />
               <ContactRow
-                icon={<Phone className="h-5 w-5" />}
+                icon={<PhoneIcon className="h-5 w-5" />}
                 label="Phone Number"
                 value={job.phone_number}
                 href={`tel:${job.phone_number}`}
               />
               <ContactRow
-                icon={<Globe2 className="h-5 w-5" />}
+                icon={<GlobalIcon className="h-5 w-5" />}
                 label="Website"
                 value={job.website}
                 href={job.website}
