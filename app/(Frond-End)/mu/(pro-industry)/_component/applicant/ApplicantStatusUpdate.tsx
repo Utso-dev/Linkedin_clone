@@ -116,9 +116,7 @@ function ApplicantStatusUpdate({ row }: { row: any }) {
           {STATUS_OPTIONS.map((opt) => (
             <DropdownMenuItem
               key={opt.value}
-              onClick={() =>
-                handleStatusChange(row.application_id || row.id, opt.value)
-              }
+              onClick={() => handleStatusChange(row.id || row.id, opt.value)}
               className="text-xs cursor-pointer py-1.5"
             >
               {opt.label}

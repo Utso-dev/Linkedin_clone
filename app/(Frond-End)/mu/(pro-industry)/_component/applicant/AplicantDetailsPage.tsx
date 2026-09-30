@@ -2,21 +2,18 @@
 
 import DynamicTable from "@/components/reusable/DynamicTable";
 import Pagination from "@/components/reusable/Pagination";
-import RootDialog from "@/components/reusable/RootDialog";
 
 import { useGetAllJobApplicantsQuery } from "@/feature/slice/jobs/jobSlice";
-import { Eye, Trash2 } from "lucide-react";
+import { ApplicantItemType } from "@/lib/type";
+import { OpenEyeIcon } from "@/public/svgIcons/Icons";
+import { Trash2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import toast from "react-hot-toast";
 import { HiOutlineSelector } from "react-icons/hi";
 import AllJobList from "../jobs/AllJobList";
 import EmptyJobs from "../jobs/EmptyJobs";
 import ApplicantStatusUpdate from "./ApplicantStatusUpdate";
 import ApplicantsFilter from "./ApplicantsFilter";
-import { ApplicantItemType } from "@/lib/type";
-
-
 
 export interface AplicantDetailsPageProps {
   id?: string | number;
@@ -60,7 +57,6 @@ export default function AplicantDetailsPage({
     { skip: !jobId },
   );
 
-  // Extract data from API response
   const rawApplicants: ApplicantItemType[] = useMemo(() => {
     return (responseData?.data || []) as ApplicantItemType[];
   }, [responseData]);
@@ -94,10 +90,10 @@ export default function AplicantDetailsPage({
     {
       label: renderHeaderLabel("Applicant Name"),
       accessor: "applicant_name",
-      
+
       position: "justify-start",
       formatter: (_: any, row: ApplicantItemType) => (
-        <div className="flex items-center gap-3 px-4 py-3.5">
+        <div className="flex items-center gap-2 px-4 py-3.5">
           <div className="w-10 h-10 rounded-full bg-[#dcf4f2] text-[#009dae] flex items-center justify-center shrink-0 overflow-hidden border border-gray-100 font-semibold text-xs">
             {row.avatar ? (
               <img
@@ -151,7 +147,7 @@ export default function AplicantDetailsPage({
     {
       label: renderHeaderLabel("Applied On"),
       accessor: "applied_on",
-    
+
       position: "justify-start",
       formatter: (_: any, row: ApplicantItemType) => (
         <div className="px-4 py-3.5 text-sm text-descriptionColor whitespace-nowrap">
@@ -162,7 +158,7 @@ export default function AplicantDetailsPage({
     {
       label: renderHeaderLabel("Network"),
       accessor: "network",
-    
+
       position: "justify-start",
       formatter: (_: any, row: ApplicantItemType) => (
         <div className="px-4 py-3.5 text-sm text-descriptionColor whitespace-nowrap">
@@ -177,7 +173,7 @@ export default function AplicantDetailsPage({
         </span>
       ),
       accessor: "status",
-    
+
       position: "justify-center",
       formatter: (_: any, row: ApplicantItemType) => (
         <ApplicantStatusUpdate row={row} />
@@ -190,7 +186,7 @@ export default function AplicantDetailsPage({
         </span>
       ),
       accessor: "action",
-    
+
       position: "justify-center",
       formatter: (_: any, row: ApplicantItemType) => (
         <div className="flex items-center justify-center gap-2.5 px-4 py-3.5">
@@ -199,8 +195,9 @@ export default function AplicantDetailsPage({
             type="button"
             className="p-1 rounded text-gray-400 hover:text-primaryColor transition-colors cursor-pointer"
             title="View Applicant"
+            aria-label="view applicant"
           >
-            <Eye className="w-4 h-4" />
+            <OpenEyeIcon className="w-4.5 h-4.5" />
           </button>
 
           {/* Delete Trash Icon */}
@@ -208,6 +205,7 @@ export default function AplicantDetailsPage({
             type="button"
             className="p-1 rounded text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
             title="Delete Applicant"
+            aria-label="delete applicant"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -279,9 +277,6 @@ export default function AplicantDetailsPage({
           />
         </div>
       )}
-
-     
-   
     </div>
   );
 }
