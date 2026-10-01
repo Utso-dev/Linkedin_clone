@@ -69,7 +69,7 @@ function ApplicantsUserHeader({
             <ApplicantStatusUpdate
               row={{
                 id: applicant.id,
-                application_id: applicant.application_id,
+                application_id: applicant.id,
                 status: applicant.status,
               }}
               className="inline-flex"
