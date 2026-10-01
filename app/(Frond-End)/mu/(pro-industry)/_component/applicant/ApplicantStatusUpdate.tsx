@@ -16,7 +16,13 @@ const STATUS_OPTIONS = [
   { value: "hired", label: "Hired" },
   { value: "rejected", label: "Rejected" },
 ];
-function ApplicantStatusUpdate({ row }: { row: any }) {
+function ApplicantStatusUpdate({
+  row,
+  className,
+}: {
+  row: any;
+  className?: string;
+}) {
   const [updateStatus, { isLoading: isUpdatingStatus }] =
     useStatusUpdateForApplicantsMutation();
   // Handle status update
@@ -43,7 +49,7 @@ function ApplicantStatusUpdate({ row }: { row: any }) {
       case "accepted":
       case "hired":
         return {
-          label: "Accepted",
+          label: "Hired",
           colorClass:
             "bg-[#ecfdf5] text-[#10b981] border-[#a7f3d0] hover:bg-[#d1fae5] [&_svg]:text-[#10b981]",
         };
@@ -56,7 +62,7 @@ function ApplicantStatusUpdate({ row }: { row: any }) {
       case "reviewing":
       case "in progress":
         return {
-          label: "In Progress",
+          label: "Reviewed",
           colorClass:
             "bg-[#fefce8] text-[#d97706] border-[#fde68a] hover:bg-[#fef9c3] [&_svg]:text-[#d97706]",
         };
@@ -97,7 +103,7 @@ function ApplicantStatusUpdate({ row }: { row: any }) {
   };
   const badge = getBadgeConfig(row?.status);
   return (
-    <div className="flex justify-center px-4 py-2">
+    <div className={className || "flex justify-center px-4 py-2"}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
@@ -116,7 +122,9 @@ function ApplicantStatusUpdate({ row }: { row: any }) {
           {STATUS_OPTIONS.map((opt) => (
             <DropdownMenuItem
               key={opt.value}
-              onClick={() => handleStatusChange(row.id || row.id, opt.value)}
+              onClick={() =>
+                handleStatusChange(row.application_id || row.id, opt.value)
+              }
               className="text-xs cursor-pointer py-1.5"
             >
               {opt.label}
