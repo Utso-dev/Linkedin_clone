@@ -1,11 +1,13 @@
 "use client";
 
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import {
   AdvertisementIcon,
   BarChartIcon,
   DashboardIcon,
   JobsIcon,
   MessageIcon,
+  PencileIcon,
   SaveJobIcon,
 } from "@/public/svgIcons/Icons";
 import Link from "next/link";
@@ -17,11 +19,12 @@ import ProIndustrySetting from "./ProIndustrySetting";
 function ProIndustrySidebar({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname();
   const [isMobile, setOpenMobile] = useState(false);
+  const { data, isLoading, isError } = useGetUserProfileQuery("Profile");
 
   const menuItems = [
     {
       label: "Industry Profile",
-      slug: "/mu/industry-profile",
+      slug: `/mu/industry-profile/${data?.user?.company_id}`,
       icon: DashboardIcon,
     },
     {
@@ -53,6 +56,11 @@ function ProIndustrySidebar({ onItemClick }: { onItemClick?: () => void }) {
       label: "Saved job",
       slug: "/mu/saved-jobs",
       icon: SaveJobIcon,
+    },
+    {
+      label: "Post a job position",
+      slug: "/mu/post-job-position",
+      icon: PencileIcon,
     },
   ];
 

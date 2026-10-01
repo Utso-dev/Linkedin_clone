@@ -265,15 +265,18 @@ function UserHeaderInfo() {
                       Account Setting
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/mu/pro-industry`}
-                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
-                    >
-                      <DashboardIcon className="w-5 h-5 text-grayColor1  " />
-                      Dashboard
-                    </Link>
-                  </DropdownMenuItem>
+                  {userProfileData?.user?.company_id && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/mu/industry-profile/${userProfileData?.user?.company_id}`}
+                        className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                      >
+                        <DashboardIcon className="w-5 h-5 text-grayColor1  " />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+
                   <DropdownMenuItem asChild>
                     <Link
                       href={`/mu/create-company-page/`}

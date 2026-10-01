@@ -56,7 +56,7 @@ export default function Breadcrumb({ className = "" }: { className?: string }) {
   const backHref = items.length > 2 ? items[items.length - 2].href : "/mu/home";
 
   return (
-    <div className={`flex gap-6 items-center my-4 md:my-6 ${className}`}>
+    <div className={`flex gap-6 truncate items-center my-4 md:my-6 ${className}`}>
       <Link
         href={backHref}
         className="flex cursor-pointer gap-1.5 font-semibold text-headerColor items-center"
@@ -66,7 +66,7 @@ export default function Breadcrumb({ className = "" }: { className?: string }) {
       </Link>
       <div className="flex gap-2 items-center">
         {items.map((item, i) => (
-          <span key={item.href} className="flex items-center gap-2">
+          <span key={item.href} className="flex text-nowrap items-center gap-2">
             {i > 0 && <DoubleArrowIcon />}
             {i === items.length - 1 ? (
               <span className="text-headerColor font-medium">{item.label}</span>

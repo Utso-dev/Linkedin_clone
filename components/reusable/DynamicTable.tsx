@@ -2,18 +2,13 @@
 
 import Image from "next/image";
 import React from "react";
-import {
-  HiOutlineChevronDown,
-  HiOutlineChevronUp,
-  HiOutlineSelector,
-} from "react-icons/hi";
-import { BsSortUpAlt } from "react-icons/bs";
-import { BsSortUp } from "react-icons/bs";
+import { BsSortUp, BsSortUpAlt } from "react-icons/bs";
+import { HiOutlineSelector } from "react-icons/hi";
 
 interface ColumnConfig {
   label: React.ReactNode;
   position?: "justify-center" | "justify-start" | "justify-end" | string;
-  width: any;
+  width?: any;
   accessor: string;
   sortable?: boolean;
   sortFunction?: () => void;
@@ -120,7 +115,10 @@ export default function DynamicTable({
                       }}
                     >
                       {col?.sortable && (
-                        <button onClick={col.sortFunction} className="cursor-pointer p-px rounded hover:bg-gray-300 transition-colors duration-300">
+                        <button
+                          onClick={col.sortFunction}
+                          className="cursor-pointer p-px rounded hover:bg-gray-300 transition-colors duration-300"
+                        >
                           {renderSortIcon(col.accessor)}
                         </button>
                       )}

@@ -225,3 +225,106 @@ export interface IndustryDataType {
   updated_at: string; // ISO Date String
   industry_category: IndustryCategoryType[];
 }
+
+export interface JobDetails {
+  job_id: string;
+  job_title: string;
+  position: string;
+  job_description: string;
+  work_mode: string;
+  employment_type: string;
+  network_type: string;
+  level: string;
+  experience: string;
+  employment_offering: string;
+  email: string;
+  phone_number: string;
+  website: string;
+  salary_min: string;
+  salary_max: string;
+  tags: string[];
+  status: string;
+  applications_count: number;
+  state?: { name: string } | null;
+  city?: { name: string } | null;
+  industry?: { name: string; logo?: string | null } | null;
+  announcement_start_date: string;
+  announcement_end_date: string;
+}
+
+export interface ApplicantItemType {
+  id: number | string;
+  job_id: string;
+  application_id: string;
+  applicant_name: string;
+  email: string;
+  avatar: string | null;
+  position: string;
+  applied_on: string;
+  network: string;
+  status: string;
+}
+
+export interface StatusCountsType {
+  all?: number;
+  pending?: number;
+  reviewing?: number;
+  shortlisted?: number;
+  interviewed?: number;
+  offered?: number;
+  hired?: number;
+  rejected?: number;
+}
+
+export interface JobApplicationDetailsType {
+  id: number | string;
+  application_id: string;
+  application_type?: string;
+  full_name: string;
+  email: string;
+  phone_number: string;
+  experiences?: string;
+  current_position?: string;
+  expected_salary?: string;
+  location?: string;
+  linkedin_url?: string;
+  portfolio_url?: string;
+  cover_letter?: string;
+  about_yourself?: string;
+  skills?: string[];
+  resume_url?: string;
+  status: string;
+  applied_at?: string;
+  updated_at?: string;
+  navigation?: {
+    status?: string;
+    prev_id?: string | number | null;
+    next_id?: string | number | null;
+    position_label?: string;
+    has_previous?: boolean;
+    has_next?: boolean;
+    current_pos?: number | string;
+    total_count?: number | string;
+  };
+  applicant?: {
+    id?: number | string;
+    name?: string;
+    username?: string;
+    email?: string;
+    profile_image?: string | null;
+  };
+  job?: {
+    id?: number | string;
+    job_id?: string;
+    job_title?: string;
+    position?: string;
+    work_mode?: string;
+    employment_offering?: string;
+    experience?: string;
+    industry?: {
+      id?: number | string;
+      name?: string;
+      slug?: string;
+    };
+  };
+}

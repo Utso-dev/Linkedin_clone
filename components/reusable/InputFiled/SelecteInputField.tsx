@@ -35,7 +35,7 @@ export default function SelecteInputField({
     <Select value={value} onValueChange={handleChange}>
       <SelectTrigger
         id={id}
-        className={` cursor-pointer   w-full ${className}`}
+        className={`cursor-pointer w-full ${className}`}
         disabled={disabled}
       >
         <SelectValue placeholder={placeholder} />
