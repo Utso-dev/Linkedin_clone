@@ -1,4 +1,4 @@
-import { DeleteIcon, EditeIcon } from "@/public/svgIcons/Icons";
+import { DeleteIcon, EditeIcon, PencileIcon } from "@/public/svgIcons/Icons";
 import { useState } from "react";
 import ExpreanceAddFrom from "./ExpreanceAddFrom";
 import ExpreanceDataDelete from "./ExpreanceDataDelete";
@@ -37,7 +37,7 @@ function ProfileExpreanceCard({
                     type="button"
                     className="cursor-pointer"
                   >
-                    <EditeIcon className="h-4 w-4 text-descriptionColor" />
+                    <PencileIcon className="h-4 w-4 text-descriptionColor" />
                   </button>
                 )}
                 {is_own_experience && (

@@ -47,7 +47,7 @@ export default function GenerateNewCode({ onSuccess }: GenerateNewCodeProps) {
       <div className="relative">
         <CustomInput
           label="Enter your Password"
-          placeholder="***********************"
+          placeholder="⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆"
           type={showPassword ? "text" : "password"}
           {...register("password", {
             required: "Password is required",
@@ -60,9 +60,9 @@ export default function GenerateNewCode({ onSuccess }: GenerateNewCodeProps) {
           className="absolute right-3 top-11 cursor-pointer text-end"
         >
           {showPassword ? (
-            <Eye className="h-5 w-5 text-[#4A4C56]" />
+            <Eye className="h-5 w-5 text-grayColor1" />
           ) : (
-            <EyeOff className="h-5 w-5 text-[#4A4C56]" />
+            <EyeOff className="h-5 w-5 text-grayColor1" />
           )}
         </button>
       </div>

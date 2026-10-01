@@ -513,3 +513,18 @@ export const DangerIcon = ({ className }: { className?: string }) => (
     </g>
   </svg>
 );
+
+export const TikIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="10"
+    height="7"
+    viewBox="0 0 10 7"
+    fill="none"
+  >
+    <path
+      d="M2.98967 6.61917L0 3.64617L0.612667 3.01667L2.98967 5.39367L8.4 0L9.01267 0.612834L2.98967 6.61917Z"
+      fill="#04A1B7"
+    />
+  </svg>
+);

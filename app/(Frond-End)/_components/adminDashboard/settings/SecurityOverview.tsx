@@ -97,7 +97,7 @@ export default function SecurityOverview({
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[328px_1fr]">
         {/* Security Score */}
         <div className="flex flex-col items-center justify-center border p-6 rounded-sm">
-          <div className="relative flex h-48 w-48 items-center justify-center">
+          <div className="relative flex h-38 w-38 items-center justify-center">
             {/* Progress Circle */}
             <div
               className="absolute inset-0 rounded-full"
@@ -131,14 +131,17 @@ export default function SecurityOverview({
             Security Score
           </p>
 
-          <p className="text-primaryColor text-center text-2xl font-semibold leading-[130%] tracking-[0.12px] mt-1 ">
+          <p
+            className={` text-center text-2xl font-semibold leading-[130%] tracking-[0.12px] mt-1 ${OverviewData?.security_score?.rating === "Strong" ? "text-primaryColor" : OverviewData?.security_score?.rating === "Medium" ? "text-[#ffc107]" : "text-red-500"}`}
+          >
             {OverviewData?.security_score?.rating}
           </p>
 
           <p className="text-[#4A4C56] text-sm font-normal leading-[140%] tracking-[0.07px] mt-1">
-            {dayjs(OverviewData?.security_score?.last_checked).format(
-              "DD-MM-YYYY, hh:mm A",
-            )}
+            Last checked:{" "}
+            {dayjs(OverviewData?.security_score?.last_checked)
+              .format("DD MMM YYYY, hh:mm A")
+              .toUpperCase()}
           </p>
         </div>
 
@@ -153,7 +156,9 @@ export default function SecurityOverview({
           <SecurityStatus
             title="Two-Factor Authentication"
             value={OverviewData?.two_factor_auth}
-            icon={<CrossIcon />}
+            icon={
+              OverviewData?.two_factor_enabled ? <CorrectIcon /> : <CrossIcon />
+            }
           />
 
           <SecurityStatus
@@ -165,13 +170,20 @@ export default function SecurityOverview({
           <SecurityStatus
             title="Account Recovery"
             value={OverviewData?.account_recovery}
-            icon={<DangerIcon />}
+            icon={
+              OverviewData?.recovery_email_verified ? (
+                <CorrectIcon />
+              ) : (
+                <DangerIcon />
+              )
+            }
           />
-
           <SecurityStatus
             title="Login Activity"
             value={OverviewData?.login_activity}
-            icon={<CorrectIcon />}
+            icon={
+              OverviewData?.is_suspicious ? <DangerIcon /> : <CorrectIcon />
+            }
           />
         </div>
       </div>

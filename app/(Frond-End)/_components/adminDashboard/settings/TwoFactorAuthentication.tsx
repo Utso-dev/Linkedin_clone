@@ -42,7 +42,7 @@ export default function TwoFactorAuthentication() {
   }
 
   return (
-    <section className="rounded-md">
+    <section className="rounded-md h-full">
       <h2 className="text-headerColor text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
         Two-Factor Authentication (2FA)
       </h2>
@@ -51,13 +51,13 @@ export default function TwoFactorAuthentication() {
         Add an extra layer of security to your account.
       </p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-4">
-        <div className="mt-5 border flex flex-col items-center gap-5 md:flex-row p-6 rounded-sm">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-4 h-full">
+        <div className="mt-6 flex flex-col items-center gap-5 rounded-sm border p-6 min-[1095px]:flex-row">
           <div className="flex h-50 w-50 shrink-0 items-center justify-center rounded-full">
             <AdLockIcon className="text-primaryColor" />
           </div>
 
-          <div className="flex-1">
+          <div>
             <p className="text-headerColor text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
               Two-Factor Authentication is{" "}
               <span className="font-semibold text-primaryColor">
@@ -73,15 +73,8 @@ export default function TwoFactorAuthentication() {
             {is2FAEnabled ? (
               <button
                 type="button"
-                onClick={() => {
-                  if (!recoveryEmailVerified) {
-                    setShowVerifyEmailModal(true);
-                    return;
-                  }
-
-                  setShowDisableModal(true);
-                }}
-                className="mt-4 h-8 cursor-pointer rounded-md border border-[#F38B94] bg-[#FBD8DB] px-5 text-[14px] font-semibold text-redColor"
+                onClick={() => setShowDisableModal(true)}
+                className="mt-4 h-8 cursor-pointer rounded-md border border-[#F38B94] bg-[#FBD8DB] px-5 text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-redColor"
               >
                 Disable 2FA
               </button>
@@ -104,7 +97,7 @@ export default function TwoFactorAuthentication() {
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-6 h-full">
           <AuthenticationMethods />
         </div>
       </div>
@@ -132,8 +125,7 @@ export default function TwoFactorAuthentication() {
             <DialogTitle>Verify Your Email</DialogTitle>
 
             <DialogDescription className="pt-2 text-[14px] text-gray-500">
-              Please verify your recovery email before enabling or disabling
-              2FA.
+              Please verify your recovery email before enabling 2FA.
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

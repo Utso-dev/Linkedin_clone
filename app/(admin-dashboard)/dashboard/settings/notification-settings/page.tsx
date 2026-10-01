@@ -196,7 +196,7 @@ export default function NotificationSettings() {
                         Notification Settings
                     </h1>
 
-                    <p className="text-[#4A4C56]  text-[16px] font-normal leading-[150%] tracking-[0.08px] mt-2">
+                    <p className="text-grayColor1  text-[16px] font-normal leading-[150%] tracking-[0.08px] mt-2">
                         Manage how you and your users receive notifications
                         across the platform.
                     </p>
@@ -221,16 +221,16 @@ export default function NotificationSettings() {
                             Notification Preferences
                         </h2>
 
-                        <p className="text-[#4A4C56]  text-[14px] font-normal leading-[140%] tracking-[0.07px] mt-2">
+                        <p className="text-grayColor1  text-[14px] font-normal leading-[140%] tracking-[0.07px] mt-2">
                             Choose which notifications you want to receive
                             and how.
                         </p>
                     </div>
 
                     {/* Global Enable / Disable */}
-                    <div className="flex items-center gap-2 text-[9px] text-[#4A4C56]">
+                    <div className="flex items-center gap-2 text-[9px] text-grayColor1">
 
-                        <span className="text-[#4A4C56]  text-[16px] font-normal leading-[150%] tracking-[0.08px]">Enable all</span>
+                        <span className="text-grayColor1  text-[16px] font-normal leading-[150%] tracking-[0.08px]">Enable all</span>
 
                         <button
                             type="button"
@@ -250,7 +250,7 @@ export default function NotificationSettings() {
 
                         <div className="h-4 w-px bg-[#B6B6B6]" />
 
-                        <span className="text-[#4A4C56]  text-[16px] font-normal leading-[150%] tracking-[0.08px]">Disable all</span>
+                        <span className="text-grayColor1  text-[16px] font-normal leading-[150%] tracking-[0.08px]">Disable all</span>
 
                         <button
                             type="button"
@@ -302,7 +302,7 @@ export default function NotificationSettings() {
                             className="grid grid-cols-[5fr_1fr_1fr_1fr] items-center border-t border-[#E5E5E5] px-2 py-2"
                         >
                             <div>
-                                <p className="overflow-hidden text-ellipsis text-[#4A4C56]  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+                                <p className="overflow-hidden text-ellipsis text-grayColor1  text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
                                     {item.title}
                                 </p>
 
@@ -361,7 +361,7 @@ export default function NotificationSettings() {
                             Quiet Hours
                         </h2>
 
-                        <p className="text-[#4A4C56]  text-[14px] font-normal leading-[140%] tracking-[0.07px] mt-2">
+                        <p className="text-grayColor1  text-[14px] font-normal leading-[140%] tracking-[0.07px] mt-2">
                             Pause non-urgent notifications during specific
                             hours.
                         </p>
@@ -480,7 +480,7 @@ export default function NotificationSettings() {
                 </div>
 
                 {/* Info */}
-                <div className="mt-6 flex items-center gap-2 text-[#4A4C56]  text-[12px] font-normal leading-[132%] tracking-[0.06px]">
+                <div className="mt-6 flex items-center gap-2 text-grayColor1  text-[12px] font-normal leading-[132%] tracking-[0.06px]">
                     <CircleAlert className="rotate-180" size={16} />
                     During quiet hours, you’ll still receive important
                     alerts like security notifications and direct messages.

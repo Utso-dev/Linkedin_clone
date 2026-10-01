@@ -104,7 +104,10 @@ export default function AdvertisementEditForm({
             onChange={(value: string) => setAdvertiser(value)}
             options={[
               { label: "Select Advertiser", value: "" },
-              { label: "Neuroscience Solutions", value: "Neuroscience Solutions" },
+              {
+                label: "Neuroscience Solutions",
+                value: "Neuroscience Solutions",
+              },
               { label: "HealthMind", value: "HealthMind" },
               { label: "BrainBoost Labs", value: "BrainBoost Labs" },
               { label: "Wellness Hub", value: "Wellness Hub" },
@@ -116,8 +119,8 @@ export default function AdvertisementEditForm({
 
       {/* Note */}
       <div className="rounded-md bg-gray-50 px-3 py-2.5 text-sm text-gray-600">
-        Note: A section will only appear here if you have added at least one custom
-        tab in Category Management.
+        Note: A section will only appear here if you have added at least one
+        custom tab in Category Management.
       </div>
 
       {/* Industry + Status */}
@@ -156,7 +159,7 @@ export default function AdvertisementEditForm({
 
       {/* Upload Product Image */}
       <div>
-        <label className="mb-1.5 block text-base font-semibold leading-[150%]  tracking-[0.08px] text-[#4A4C56]">
+        <label className="mb-1.5 block text-base font-semibold leading-[150%]  tracking-[0.08px] text-grayColor1">
           Upload Product Image <span className="">*</span>
         </label>
 
@@ -227,7 +230,7 @@ export default function AdvertisementEditForm({
 
       {/* Description */}
       <div>
-        <label className="mb-1.5 block text-[#4A4C56]  text-[16px] not-italic font-semibold leading-[24px] tracking-[0.08px]">
+        <label className="mb-1.5 block text-grayColor1  text-[16px] not-italic font-semibold leading-[24px] tracking-[0.08px]">
           Description
         </label>
         <textarea

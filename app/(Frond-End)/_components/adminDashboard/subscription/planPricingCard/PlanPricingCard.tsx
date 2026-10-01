@@ -1,99 +1,100 @@
 "use client";
 
+import {
+  useDeactivePlanMutation,
+  useGetPlanFeaturesQuery,
+  useGetPlansQuery,
+} from "@/feature/slice/admin/subscription/subscriptionApi";
+import { Plan } from "@/feature/slice/admin/subscription/subscriptionType";
 import { CorrectIcon } from "@/public/svgIcons/AdminIcon";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import toast from "react-hot-toast";
 
-interface Plan {
-  id: string;
-  name: string;
-  monthlyPrice: number;
-  yearlyPrice: number;
-  description: string;
-  features: string[];
-  isActive: boolean;
-  savePercentage?: string;
-  originalPrice?: string;
-}
+const parseRate = (rate: string) => Number(String(rate).replace(/[^0-9.]/g, "")) || 0;
+
+const formatPrice = (rate: string) => {
+  const value = parseRate(rate);
+  return Number.isInteger(value) ? String(value) : value.toFixed(2);
+};
+
+const formatDiscountDate = (value?: string) => {
+  if (!value) return "";
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return "";
+  return parsed.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+};
 
 export default function PlanPricingCard() {
+  const { data: apiResponse, isLoading, isError } = useGetPlansQuery();
+  const { data: featuresResponse } = useGetPlanFeaturesQuery();
+  const [deactivePlan] = useDeactivePlanMutation();
+
   const [billingType, setBillingType] = useState<"monthly" | "annually">("annually");
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [expandedIds, setExpandedIds] = useState<number[]>([]);
 
-  const [plans, setPlans] = useState<Plan[]>([
-    {
-      id: "1",
-      name: "Basic Free",
-      monthlyPrice: 0,
-      yearlyPrice: 0,
-      description: "Perfect for students and professionals getting started.",
-      features: [
-        "Professional Profile",
-        "Search Members",
-        "Up to 500 Connections",
-        "Within-Network Messaging",
-        "Join up to 3 Groups",
-        "Job Search",
-      ],
-      isActive: true,
-    },
-    {
-      id: "2",
-      name: "Professional",
-      monthlyPrice: 8.99,
-      yearlyPrice: 6.99,
-      description: "Unlock advanced networking and career opportunities.",
-      features: [
-        "Everything in Standard",
-        "Unlimited Connections",
-        "Apply for Jobs",
-        "Connect with Organizations",
-        "Unlimited Messaging",
-        "Profile Insights",
-      ],
-      isActive: true,
-    },
-    {
-      id: "3",
-      name: "Pro Industry",
-      monthlyPrice: 12.99,
-      yearlyPrice: 9.99,
-      description: "Built for organizations, recruiters, and industry partners.",
-      features: [
-        "Everything in Premium",
-        "Product Advertisements",
-        "Organization Profile",
-        "Recruiter Dashboard",
-        "Job Posting & Management",
-        "Candidate Management",
-      ],
-      isActive: true,
-      savePercentage: "Save 20%",
-      originalPrice: "$12.99",
-    },
-  ]);
+  const featureOptions = featuresResponse?.data ?? [];
+  const plans = apiResponse?.data ?? [];
 
-  const handleToggleActive = (id: string) => {
-    setPlans((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, isActive: !p.isActive } : p))
+  const visiblePlans = useMemo(
+    () =>
+      plans.filter((plan) =>
+        billingType === "monthly"
+          ? plan.billing_cycle === "monthly"
+          : plan.billing_cycle === "yearly"
+      ),
+    [plans, billingType]
+  );
+
+  const getFeatureLabel = (feature: string) =>
+    featureOptions.find((option) => option.value === feature || option.label === feature)
+      ?.label ?? feature;
+
+  const getDiscountPercent = (plan: Plan) => Number(plan.discount_percent) || 0;
+
+  const getOriginalPrice = (plan: Plan) => {
+    const discount = getDiscountPercent(plan);
+    const current = parseRate(plan.billing_rate);
+    if (discount <= 0 || discount >= 100 || !current) return null;
+    const original = current / (1 - discount / 100);
+    return Number.isInteger(original) ? String(original) : original.toFixed(2);
+  };
+
+  const handleToggleActive = async (plan: Plan) => {
+    try {
+      await deactivePlan({ id: plan.id }).unwrap();
+      toast.success(
+        plan.status === "active"
+          ? "Plan deactivated successfully."
+          : "Plan activated successfully."
+      );
+    } catch {
+      toast.error(
+        plan.status === "active"
+          ? "Failed to deactivate this plan."
+          : "Failed to activate this plan."
+      );
+    } finally {
+      setOpenMenuId(null);
+    }
+  };
+
+ 
+
+  const toggleExpanded = (id: number) => {
+    setExpandedIds((prev) =>
+      prev.includes(id) ? prev.filter((planId) => planId !== id) : [...prev, id]
     );
-    setOpenMenuId(null);
-  };
-
-  const handleDeletePlan = (id: string) => {
-    setPlans((prev) => prev.filter((p) => p.id !== id));
-    setOpenMenuId(null);
-  };
-
-
-  const getPrice = (plan: Plan) => {
-    return billingType === "monthly" ? plan.monthlyPrice : plan.yearlyPrice;
   };
 
   return (
     <div className="">
-      {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-[#0F172A]">Plan & Pricing</h1>
@@ -110,7 +111,6 @@ export default function PlanPricingCard() {
         </Link>
       </div>
 
-      {/* Billing Toggle */}
       <div className="mb-4 flex justify-center">
         <div className="inline-flex items-center rounded-lg border border-[#E1E4EA] bg-[#F1F2F9] p-1">
           <button
@@ -134,116 +134,132 @@ export default function PlanPricingCard() {
           >
             Annually billing
           </button>
-
-          {billingType === "annually" && (
-            <span className="ml-1.5 rounded-lg bg-[#D9DBE9] px-2.5 py-1.5 text-sm font-semibold leading-[140%] tracking-[0.07px] text-[#6F6C8F]">
-              Save 20%
-            </span>
-          )}
         </div>
       </div>
 
-      {/* Plans Grid */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {plans.map((plan) => (
-          <div
-            key={plan.id}
-            className="relative flex flex-col rounded-2xl border border-[#E1E4EA] bg-white p-6"
-          >
-            {/* 3-dot Menu */}
-            <div className="absolute right-4 top-4">
-              <button
-                onClick={() =>
-                  setOpenMenuId(openMenuId === plan.id ? null : plan.id)
-                }
-                className="rounded-full p-1.5 text-[#64748B] hover:bg-gray-100"
+      {isLoading ? (
+        <p className="py-12 text-center text-sm text-gray-400">Loading plans...</p>
+      ) : isError ? (
+        <p className="py-12 text-center text-sm text-red-500">Failed to load plans.</p>
+      ) : visiblePlans.length === 0 ? (
+        <p className="py-12 text-center text-sm text-gray-400">
+          No {billingType === "monthly" ? "monthly" : "yearly"} plans found.
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {visiblePlans.map((plan) => {
+            const discount = getDiscountPercent(plan);
+            const originalPrice = getOriginalPrice(plan);
+            const isExpanded = expandedIds.includes(plan.id);
+            const features = plan.features ?? [];
+            const visibleFeatures = isExpanded ? features : features.slice(0, 6);
+
+            return (
+              <div
+                key={plan.id}
+                className="relative flex flex-col rounded-2xl border border-[#E1E4EA] bg-white p-6"
               >
-                ⋮
-              </button>
+                <div className="absolute right-4 top-4">
+                  <button
+                    onClick={() =>
+                      setOpenMenuId(openMenuId === plan.id ? null : plan.id)
+                    }
+                    className="rounded-full p-1.5 text-[#64748B] hover:bg-gray-100"
+                  >
+                    ⋮
+                  </button>
 
-              {openMenuId === plan.id && (
-                <div className="absolute right-0 z-20 mt-1 w-48 rounded-lg border border-[#E1E4EA] bg-white py-1 shadow-lg">
-                  <button
-                    onClick={() => handleToggleActive(plan.id)}
-                    className="block w-full px-4 py-2.5 text-left text-sm text-[#0F172A] hover:bg-[#E9FAF7]"
-                  >
-                    {plan.isActive ? "Deactivate this plan" : "Active This Plan"}
-                  </button>
-                  <button
-                    onClick={() => handleDeletePlan(plan.id)}
-                    className="block w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50"
-                  >
-                    Delete
-                  </button>
+                  {openMenuId === plan.id && (
+                    <div className="absolute right-0 z-20 mt-1 w-48 rounded-lg border border-[#E1E4EA] bg-white py-1 shadow-lg">
+                      <button
+                        onClick={() => handleToggleActive(plan)}
+                        className="block w-full px-4 py-2.5 text-left text-sm text-[#0F172A] hover:bg-[#E9FAF7]"
+                      >
+                        {plan.status === "active"
+                          ? "Deactivate this plan"
+                          : "Active This Plan"}
+                      </button>
+                    
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-           {/* Plan Info */}
-<div className="mb-4 min-h-[143px]">
-  <div className="flex items-center gap-2">
-    <h3 className="text-2xl font-semibold leading-[130%] tracking-[0.12px] text-[#170F49]">
-      {plan.name}
-    </h3>
+                <div className="mb-4 min-h-[143px]">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-2xl font-semibold leading-[130%] tracking-[0.12px] text-[#170F49]">
+                      {plan.name}
+                    </h3>
 
-    {plan.savePercentage && billingType === "annually" && (
-      <span className="rounded-full bg-[#E9FAF7] px-2.5 py-0.5 text-xs font-medium text-primaryColor">
-        {plan.savePercentage}
-      </span>
-    )}
-  </div>
+                    {discount > 0 && (
+                      <span className="rounded-full bg-[#E9FAF7] px-2.5 py-0.5 text-xs font-medium text-primaryColor">
+                        Save {discount}%
+                      </span>
+                    )}
+                  </div>
 
-  <div className="mt-3 flex items-end gap-2">
-    <span className="text-[56px] font-semibold leading-[130%] text-[#170F49]">
-      ${getPrice(plan)}
-    </span>
+                  <div className="mt-3 flex items-end gap-2">
+                    <span className="text-[56px] font-semibold leading-[130%] text-[#170F49]">
+                      ${formatPrice(plan.billing_rate)}
+                    </span>
 
-    <div className="flex flex-col">
-      <span className="text-base font-normal leading-[150%] tracking-[0.08px] text-[#A0A3BD]">
-        Per user
-      </span>
+                    <div className="flex flex-col">
+                      <span className="text-base font-normal leading-[150%] tracking-[0.08px] text-[#A0A3BD]">
+                        Per user
+                      </span>
 
-      <p className="text-base font-normal leading-[150%] tracking-[0.08px] text-[#A0A3BD]">
-        {billingType === "monthly" ? "Monthly" : "Yearly"}
-      </p>
-    </div>
-  </div>
+                      <p className="text-base font-normal leading-[150%] tracking-[0.08px] text-[#A0A3BD]">
+                        {plan.billing_cycle === "monthly" ? "Monthly" : "Yearly"}
+                      </p>
+                    </div>
+                  </div>
 
- {plan.originalPrice && billingType === "annually" && (
-  <p className="mt-1 text-sm text-[#94A3B8]">
-    <span className="line-through">{plan.originalPrice}</span>{" "}
-    <span className="text-base text-primaryColor">Until 20th July, 2026</span>
-  </p>
-)}
-</div>
+                  {discount > 0 && (
+                    <p className="mt-1 text-sm text-[#94A3B8]">
+                      {originalPrice && (
+                        <span className="line-through">${originalPrice}</span>
+                      )}{" "}
+                      {plan.discount_duration && (
+                        <span className="text-base text-primaryColor">
+                          Until {formatDiscountDate(plan.discount_duration)}
+                        </span>
+                      )}
+                    </p>
+                  )}
+                </div>
 
-{/* Description */}
-<div className="min-h-[50px] ">
-  <p className="text-base font-normal leading-6 tracking-[0.08px] text-[#514F6E]">
-    {plan.description}
-  </p>
-</div>
+                <div className="min-h-[50px] ">
+                  <p className="text-base font-normal leading-6 tracking-[0.08px] text-[#514F6E]">
+                    {plan.short_description}
+                  </p>
+                </div>
 
-<div className="w-full border-t border-[#E1E4EA]" />
-            {/* Features */}
-            <ul className="space-y-2.5 mt-8">
-              {plan.features.map((feature, idx) => (
-                <li key={idx} className="flex items-center gap-2">
-                  <CorrectIcon />
-                  <span className="text-base font-normal leading-[150%] tracking-[0.08px] text-[#6F6C8F]">
-                    {feature}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                <div className="w-full border-t border-[#E1E4EA]" />
+                <ul className="space-y-2.5 mt-8">
+                  {visibleFeatures.map((feature, idx) => (
+                    <li key={`${plan.id}-${feature}-${idx}`} className="flex items-center gap-2">
+                      <CorrectIcon />
+                      <span className="text-base font-normal leading-[150%] tracking-[0.08px] text-[#6F6C8F]">
+                        {getFeatureLabel(feature)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
 
-            <button className="mt-5 flex items-center gap-1 text-base font-normal leading-[150%] tracking-[0.08px] text-primaryColor hover:underline">
-              <Plus className="h-4 w-4" />
-              Show More
-            </button>
-          </div>
-        ))}
-      </div>
+                {features.length > 6 && (
+                  <button
+                    type="button"
+                    onClick={() => toggleExpanded(plan.id)}
+                    className="mt-5 flex items-center gap-1 text-base font-normal leading-[150%] tracking-[0.08px] text-primaryColor hover:underline"
+                  >
+                    <Plus className="h-4 w-4" />
+                    {isExpanded ? "Show Less" : "Show More"}
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

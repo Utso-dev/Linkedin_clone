@@ -18,9 +18,9 @@ export default function StepQRCode({
   onBack,
   onClose,
 }: StepQRCodeProps) {
-      const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-      const handleCopy = async () => {
+  const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(secret);
 
@@ -40,7 +40,7 @@ export default function StepQRCode({
         Secure your Mind Unite account with two-factor authentication (2FA).
       </p>
       <p className="mt-1 text-sm text-[#777980]">
-        1. Install Microsoft Authenticator app or any other authenticator app of
+        1. Install Google Authenticator app or any other authenticator app of
         your choice on your mobile device.
       </p>
       <p className="mt-1 text-sm text-[#777980]">
@@ -52,12 +52,14 @@ export default function StepQRCode({
       <div className="mt-5 flex flex-col items-center gap-4">
         {/* Real QR Code */}
         <div className="flex h-48 w-48 items-center justify-center rounded-md border bg-white p-2">
-       <QRCodeSVG value={qrCodeUrl} size={180} />
+          <QRCodeSVG value={qrCodeUrl} size={180} />
         </div>
 
         <div className="w-full">
           <div className="mt-1 flex items-center gap-2 rounded-md border bg-gray-50 px-3 py-2">
-            <code className="flex-1 text-sm font-medium break-all">{secret}</code>
+            <code className="flex-1 text-sm font-medium break-all">
+              {secret}
+            </code>
             <button
               type="button"
               onClick={handleCopy}

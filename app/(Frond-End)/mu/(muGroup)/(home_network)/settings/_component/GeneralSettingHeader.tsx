@@ -43,7 +43,7 @@ function GeneralSettingHeader({ data }: { data: UserProfileType }) {
             Account Type
           </span>
           <span className="inline-block bg-lightGreenColor text-primaryColor font-medium text-sm md:text-base px-3 py-1 rounded">
-            Basic Member
+            {data?.subscription?.plan_name || "Basic"} Member
           </span>
         </div>
       </div>

@@ -79,13 +79,13 @@ export default function Disable2FAModal({
             <div className="">
               {showPassword ? (
                 <EyeIcon
-                  className="absolute right-3 top-11 cursor-pointer text-gray-600"
+                  className="absolute right-3 top-11 cursor-pointer text-grayColor1"
                   onClick={() => setShowPassword(false)}
                   size={20}
                 />
               ) : (
                 <EyeOffIcon
-                  className="absolute right-3 top-11 cursor-pointer text-gray-600"
+                  className="absolute right-3 top-11 cursor-pointer text-grayColor1"
                   onClick={() => setShowPassword(true)}
                   size={20}
                 />
@@ -93,19 +93,19 @@ export default function Disable2FAModal({
             </div>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button
+            {/* <button
               type="button"
               onClick={() => onOpenChange(false)}
               className="rounded-md border px-4 py-2 text-sm font-medium cursor-pointer"
             >
               Cancel
-            </button>
+            </button> */}
             <button
               type="submit"
               disabled={loading}
-              className="rounded-md bg-red-500 px-4 cursor-pointer py-2 text-sm font-medium text-white disabled:opacity-60"
+              className="mt-4 h-8 cursor-pointer rounded-md border border-[#F38B94] bg-[#FBD8DB] px-5 text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-redColor disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Disabling..." : "Disable 2FA"}
+              Disable 2FA
             </button>
           </div>
         </form>

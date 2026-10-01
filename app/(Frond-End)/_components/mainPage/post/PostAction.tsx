@@ -13,7 +13,7 @@ import { PostFeedType } from "@/lib/type";
 import {
   DeleteIcon,
   DotIcon,
-  EditeIcon,
+  PencileIcon,
   UserBanIcon,
 } from "@/public/svgIcons/Icons";
 import { useState } from "react";
@@ -30,13 +30,7 @@ type PostCardProps = {
   meta?: any;
 };
 function PostAction({ post, meta }: PostCardProps) {
-  const {
-    can_edit,
-    media,
-    can_delete,
-    relationship_status,
-    user,
-  } = post || {};
+  const { can_edit, media, can_delete, relationship_status, user } = post || {};
   const { id: userId } = user || {};
   const [menuOpen, setMenuOpen] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
@@ -126,7 +120,7 @@ function PostAction({ post, meta }: PostCardProps) {
                   setMenuOpen(false);
                   setIsDeleted(true);
                 }}
-                className={"cursor-pointer px-0 text-nowrap "}
+                className={"cursor-pointer px-1 text-nowrap "}
               >
                 <DeleteIcon />
                 Delete post
@@ -138,9 +132,9 @@ function PostAction({ post, meta }: PostCardProps) {
                     setMenuOpen(false);
                     setIsGroupEdited(true);
                   }}
-                  className={"cursor-pointer px-0"}
+                  className={"cursor-pointer px-1"}
                 >
-                  <EditeIcon />
+                  <PencileIcon />
                   Edit post
                 </DropdownMenuItem>
               )}
@@ -152,9 +146,9 @@ function PostAction({ post, meta }: PostCardProps) {
                     setMenuOpen(false);
                     setIsEdited(true);
                   }}
-                  className={"cursor-pointer px-0"}
+                  className={"cursor-pointer px-1"}
                 >
-                  <EditeIcon />
+                  <PencileIcon />
                   Edit post
                 </DropdownMenuItem>
               )}
@@ -167,7 +161,7 @@ function PostAction({ post, meta }: PostCardProps) {
                       setMenuOpen(false);
                       setIsBanUser(true);
                     }}
-                    className="cursor-pointer px-0"
+                    className="cursor-pointer px-1"
                   >
                     <UserBanIcon /> Ban User
                   </DropdownMenuItem>

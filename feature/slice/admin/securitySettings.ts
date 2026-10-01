@@ -56,8 +56,27 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
       providesTags: ["loginActivities"],
     }),
 
+    //delet alll activity
+
+    DeleteAllLoginActivity: builder.mutation({
+      query: () => ({
+        url: `/security/login-activities/clear-all`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["loginActivities"],
+    }),
+
     //delte activite
     DeleteLoginActivity: builder.mutation({
+      query: (id) => ({
+        url: `/security/sessions/revoke/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["loginActivities"],
+    }),
+
+    //logout user
+    LogoutActiveSessions: builder.mutation({
       query: (id) => ({
         url: `/security/login-activities/${id}`,
         method: "DELETE",
@@ -161,6 +180,15 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["overview"],
     }),
 
+    //singele trusted session
+    SingeleSessionTrusted: builder.mutation({
+      query: (id) => ({
+        url: `/security/resolve/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["loginActivities"],
+    }),
+
     //
   }),
 });
@@ -173,7 +201,9 @@ export const {
   useDeletAllSessionsMutation,
   useDeleteLoginActivityMutation,
   useGetLoginActivityQuery,
+  useLogoutActiveSessionsMutation,
   useEnablePasswordMutation,
+  useDeleteAllLoginActivityMutation,
   useProviderEmailCodeMutation,
   useTwoFactorEmailCodeVerifyMutation,
   useTwoFactorRecoveryEmailMutation,
@@ -185,4 +215,5 @@ export const {
 
   useRecoveryEmailOtpVerifyMutation,
   useRecoveryEmailUpdateMutation,
+  useSingeleSessionTrustedMutation,
 } = securitySettingsSlice;

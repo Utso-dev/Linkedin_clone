@@ -102,11 +102,12 @@ export default function page() {
           totalPages={data?.total_page || 1}
           onPageChange={(page) => setPage(page)}
         />
-        <Select
-          value={limit.toString()}
-          onValueChange={(value) => {
-            setLimit(Number(value));
-            setPage(1);
+        <div className="mt-5">
+          <Select
+            value={limit.toString()}
+            onValueChange={(value) => {
+              setLimit(Number(value));
+              setPage(1);
           }}
         >
           <SelectTrigger className="bg-white min-w-20 focus-visible:border-[#A5A5AB] focus-visible:ring-0">
@@ -122,6 +123,7 @@ export default function page() {
             </SelectGroup>
           </SelectContent>
         </Select>
+        </div>
       </div>
     </div>
   );

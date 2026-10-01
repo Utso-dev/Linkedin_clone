@@ -36,7 +36,7 @@ type MenuItem = {
   dropdownItems?: Array<{ label: string; slug: string }>;
 };
 
-export default function MainNavbar() {
+export default function  MainNavbar() {
   const pathname = usePathname();
   const params = useParams();
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useGetSecurityOverviewQuery } from "@/feature/slice/admin/securitySettings";
+import { BiQr } from "react-icons/bi";
 import { Copy, Monitor, MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import RegenerateCode from "./2FactorAuthentication/RegenerateCode";
@@ -9,12 +10,15 @@ import RecoveryEmail from "./recoverymailSetup/RecoveryEmail";
 import VerifyOtp from "./recoverymailSetup/VerifyOtp";
 import Success from "./recoverymailSetup/Success";
 import RegenerateBackupCode from "./2FactorAuthentication/Enable2FactorModal/RegenerateBackupCode";
+import { divIcon } from "leaflet";
+import { MdOutlineMailLock } from "react-icons/md";
+import { BsKey } from "react-icons/bs";
 
 export default function AuthenticationMethods() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recoveryCodesModalOpen, setRecoveryCodesModalOpen] = useState(false);
   const [recoveryModalOpen, setRecoveryModalOpen] = useState(false);
-
+  const [showVerifyEmailModal, setShowVerifyEmailModal] = useState(false);
   const [recoveryCodes, setRecoveryCodes] = useState<string[]>([]);
   const [step, setStep] = useState(1);
 
@@ -33,17 +37,17 @@ export default function AuthenticationMethods() {
   };
 
   return (
-    <div>
+    <div className="">
       <section className="h-full rounded-md border p-4">
-        <h2 className="text-headerColor text-[20px] font-semibold leading-[130%] tracking-[0.1px]">
+        <h2 className="text-headerColor text-[20px] font-semibold leading-[130%] tracking-[0.1px] ">
           Authentication Method
         </h2>
 
-        <div className="mt-5 space-y-5">
+        <div className="mt-5 space-y-5  ">
           {/* Authenticator App */}
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center">
-              <Monitor size={24} className="text-black" />
+              <BiQr size={24} className="text-black" />
             </div>
 
             <div className="min-w-0 flex-1">
@@ -56,15 +60,19 @@ export default function AuthenticationMethods() {
               </p>
             </div>
 
-            <span className="rounded-full border border-[#287F6E] px-2 py-1 text-center text-[12px] font-semibold leading-[132%] text-[#287F6E]">
-              Primary
-            </span>
+            {securityData?.two_factor_enabled ? (
+              <span className="rounded-full border border-[#287F6E] px-2 py-1 text-center text-[12px] font-semibold leading-[132%] text-[#287F6E]">
+                Active
+              </span>
+            ) : (
+              <span></span>
+            )}
           </div>
 
           {/* Backup Codes */}
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center">
-              <Monitor size={24} className="text-black" />
+              <BsKey size={24} className="text-black" />
             </div>
 
             <div className="min-w-0 flex-1">
@@ -80,7 +88,13 @@ export default function AuthenticationMethods() {
             <button
               type="button"
               className="cursor-pointer"
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                if (securityData?.two_factor_enabled === true) {
+                  setIsModalOpen(true);
+                } else {
+                  setShowVerifyEmailModal(true);
+                }
+              }}
             >
               <MoreHorizontal size={16} className="text-black" />
             </button>
@@ -89,16 +103,10 @@ export default function AuthenticationMethods() {
           {/* Recovery Email */}
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center">
-              <Monitor size={24} className="text-black" />
+              <MdOutlineMailLock size={24} className="text-black" />
             </div>
 
-            <div
-              className="min-w-0 flex-1 cursor-pointer"
-              onClick={() => {
-                setStep(1);
-                setRecoveryModalOpen(true);
-              }}
-            >
+            <div className="min-w-0 flex-1 cursor-pointer">
               <p className="text-black text-[16px] font-semibold leading-[150%] tracking-[0.08px]">
                 Recovery Email
               </p>
@@ -108,12 +116,32 @@ export default function AuthenticationMethods() {
               </p>
             </div>
 
-            <span className="text-[9px] text-[#287F6E]">Verified</span>
+            {securityData?.recovery_email_verified ? (
+              <span className="rounded-full bg-green-100 px-2 py-1 text-[9px] font-semibold text-[#287F6E] border border-[#287F6E]">
+                Verified
+              </span>
+            ) : (
+              <span className="rounded-full bg-gray-100 px-2 py-1 text-[9px] font-semibold text-gray-500 border border-gray-500">
+                Unverified
+              </span>
+            )}
+
+            <button
+              type="button"
+              className="cursor-pointer"
+              onClick={() => {
+                setStep(1);
+                setRecoveryModalOpen(true);
+              }}
+            >
+              <MoreHorizontal size={16} className="text-black" />
+            </button>
           </div>
         </div>
       </section>
 
       {/* Generate Backup Codes Modal */}
+
       <CustomModal
         open={isModalOpen}
         onOpenChange={(open) => setIsModalOpen(open)}
@@ -121,6 +149,19 @@ export default function AuthenticationMethods() {
         size="sm"
       >
         <RegenerateCode onSuccess={handleGenerateSuccess} />
+      </CustomModal>
+
+      <CustomModal
+        open={showVerifyEmailModal}
+        onOpenChange={setShowVerifyEmailModal}
+        title="Verify Recovery Email"
+        size="sm"
+      >
+        <div className="px-3">
+          <p className="text-[14px] text-[#7B7B7B]">
+            Please enable 2FA before generating a backup code.
+          </p>
+        </div>
       </CustomModal>
 
       {/* Generated Recovery Codes Modal */}
@@ -161,9 +202,7 @@ export default function AuthenticationMethods() {
         size="sm"
       >
         {step === 1 && <RecoveryEmail onSuccess={() => setStep(2)} />}
-
         {step === 2 && <VerifyOtp onSuccess={() => setStep(3)} />}
-
         {step === 3 && <Success onClose={() => setRecoveryModalOpen(false)} />}
       </CustomModal>
     </div>

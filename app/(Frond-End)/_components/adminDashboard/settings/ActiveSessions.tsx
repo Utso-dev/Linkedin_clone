@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Monitor, MoreHorizontal } from "lucide-react";
+import { Monitor, MoreHorizontal, Smartphone } from "lucide-react";
 import {
   useDeletAllSessionsMutation,
   useDeleteActiveSessionsMutation,
@@ -10,6 +10,7 @@ import {
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
+import { BiMobile } from "react-icons/bi";
 
 interface Session {
   id: number;
@@ -65,10 +66,16 @@ export default function ActiveSessions() {
           {ActiveSession.map((session) => (
             <div
               key={session.id}
-              className="flex items-center gap-3   pb-3 last:border-0"
+              className="flex justify-between  gap-3   pb-3 last:border-0"
             >
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center ">
-                <Monitor size={24} className="text-black" />
+              <div className="flex h-8 w-8 shrink-0  ">
+                {session?.is_mobile === true ? (
+                  <Smartphone size={16} className="text-black" />
+                ) : (
+                  <div>
+                    <Monitor size={16} className="text-black" />
+                  </div>
+                )}
               </div>
 
               <div className="min-w-0 flex-1">
@@ -85,8 +92,10 @@ export default function ActiveSessions() {
                   className="mt-1 text-[#7B7B7B] text-[14px] font-normal leading-[140%] tracking-[0.07px]
 "
                 >
-                  {session.location} • {session.ip_address} •
-                  {dayjs(session.login_at).format("DD-MM-YYYY, hh:mm A")}
+                  {session.location} • {session.ip_address} •{" "}
+                  {dayjs(session.login_at)
+                    .format("DD MMM YYYY, hh:mm A")
+                    .toUpperCase()}
                 </p>
               </div>
               <div className="flex items-center gap-2 justify-end">
@@ -118,8 +127,7 @@ export default function ActiveSessions() {
         <button
           type="button"
           onClick={logoutAllSessions}
-          className="mt-4 w-full rounded-md border border-[#F3B5B5] bg-[#FFE1E1] py-2 cursor-pointer text-[#EB3D4D] text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px]
- hover:bg-[#ffd5d5]"
+          className="mt-4 w-full rounded-md border border-[#F38B94] bg-[#FBD8DB] cursor-pointer py-2 text-center text-[14px] font-semibold leading-[140%] tracking-[0.07px] text-redColor"
         >
           Sign out all the sessions
         </button>

@@ -36,10 +36,10 @@ export default async function Page({
           <p>Total Connection</p>
         </div>
         <div>
-          <p className="text-[#4A4C56] text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
+          <p className="text-grayColor1 text-[14px] font-semibold leading-[140%] tracking-[0.07px]">
             Company Name & <br /> Logo
           </p>
-          <p className="text-[#4A4C56] text-[14px] font-semibold leading-[140%] tracking-[0.07px] mt-3">
+          <p className="text-grayColor1 text-[14px] font-semibold leading-[140%] tracking-[0.07px] mt-3">
             Graduated institution <br /> Name
           </p>
         </div>

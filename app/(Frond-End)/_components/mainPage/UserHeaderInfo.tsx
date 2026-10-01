@@ -16,16 +16,20 @@ import echo from "@/lib/echo";
 import { clearToken } from "@/lib/token";
 import emptyImage from "@/public/empty_user.jpg";
 import {
+  CompanyIcon,
+  DashboardIcon,
   LogoutIcon,
   MessageIcon,
   NotificationIcon,
   SettingIcon,
+  SingleUserIcon,
   UserCircleIcon,
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { FaCrown } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import { useDispatch } from "react-redux";
 
@@ -114,6 +118,9 @@ function UserHeaderInfo() {
   };
   const isMessagePage = patheName.startsWith("/mu/message");
 
+  const isPremium = userProfileData?.subscription?.plan_type === "premium";
+  const isIndustry = userProfileData?.subscription?.plan_type === "industry";
+  const planName = userProfileData?.subscription?.plan_name || "Basic User";
   return (
     <div>
       <div className="flex items-center gap-2 lg:gap-6 justify-end w-full">
@@ -135,7 +142,7 @@ function UserHeaderInfo() {
             href={`/mu/message`}
             className="flex justify-center relative items-center"
           >
-            {!isMessagePage && newMessagePopup  && (
+            {!isMessagePage && newMessagePopup && (
               <div
                 key={newMessagePopup.key}
                 className="animate-pop-in absolute top-full right-0 mt-2 z-50 w-60 rounded-lg bg-white shadow-lg border border-gray-100 p-3 cursor-pointer"
@@ -144,8 +151,8 @@ function UserHeaderInfo() {
                   <div className="w-10 h-10 overflow-hidden rounded-sm">
                     <Image
                       src={newMessagePopup?.image}
-                      width={40}
-                      height={40}
+                      width={150}
+                      height={150}
                       className="rounded-sm w-full border border-primaryColor h-full object-center object-cover"
                       alt=""
                     />
@@ -176,16 +183,18 @@ function UserHeaderInfo() {
               <DropdownMenuTrigger asChild className="cursor-pointer">
                 <div className="flex gap-2 h-full items-end">
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
-                    <div className=" w-7 h-7 lg:w-12 border border-primaryColor lg:h-12 rounded-full overflow-hidden">
+                    <div
+                      className={`w-7 h-7 lg:w-12 border-2  ${isIndustry ? "border-secondaryColor" : isPremium ? "border-primaryColor" : "border-bgColor"} lg:h-12 rounded-full overflow-hidden`}
+                    >
                       <Image
                         src={
                           userProfileData?.user?.profile_image_url || emptyImage
                         }
                         alt="Admin Avatar"
-                        width={80}
-                        height={80}
+                        width={150}
+                        height={150}
                         unoptimized
-                        className="rounded-full w-full object-cover h-full"
+                        className="rounded-full w-full object-cover  h-full"
                       />
                     </div>
                   </div>
@@ -196,38 +205,51 @@ function UserHeaderInfo() {
                 </div>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end" className="w-50.5 p-3">
+              <DropdownMenuContent align="end" className="w-55.5 p-3">
                 <div className="">
-                  <div className="flex items-center gap-2 pb-3 border-b border-borderColor">
-                    <div className=" w-10 h-10 rounded-md border overflow-hidden mb-2">
+                  <div className="flex items-center gap-2 pb-2 border-b border-borderColor">
+                    <div
+                      className={` w-12 h-12 rounded-full border-2 ${isIndustry ? "border-secondaryColor" : isPremium ? "border-primaryColor" : "border-bgColor"} overflow-hidden `}
+                    >
                       <Image
                         src={
                           userProfileData?.user?.profile_image_url || emptyImage
                         }
                         alt="Admin Avatar"
-                        width={40}
-                        height={40}
-                        className="rounded-md w-full h-full"
+                        width={150}
+                        height={150}
+                        className="rounded-full object-cover w-full h-full"
                       />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-headerColor">
+                      <p className="text-base pl-1 font-semibold text-headerColor mb-0.5">
                         {userProfileData?.user?.first_name +
                           " " +
                           userProfileData?.user?.last_name || "Vin Intini"}
                       </p>
-                      <p className="text-sm  text-grayColor1 line-clamp-1">
-                        {userProfileData?.user?.title ||
-                          "CEO & Founder, MindUnite"}
-                      </p>
+                      <div
+                        className={`flex items-center ${isIndustry ? " bg-secondaryColor/12 text-secondaryColor " : isPremium ? " bg-primaryColor/12 text-primaryColor" : " bg-[#3EA1D6]/15 text-[#3EA1D6] "} justify-center gap-2 px-2.5 py-1 rounded-full `}
+                      >
+                        {isIndustry || isPremium ? (
+                          <FaCrown
+                            size={16}
+                            className={`${isIndustry ? " text-secondaryColor" : isPremium ? " text-primaryColor" : " text-[#3EA1D6] "}`}
+                          />
+                        ) : (
+                          <SingleUserIcon className="w-4 h-4 text-[#3EA1D6]" />
+                        )}
+                        <span className=" text-sm tracking-wide">
+                          {planName}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="py-2 space-y-1">
+                <div className="py-1.5 space-y-0.5">
                   <DropdownMenuItem asChild>
                     <Link
                       href={`/mu/profile`}
-                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
+                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
                     >
                       <UserCircleIcon className="w-5 h-5 text-grayColor1" />
                       Profile
@@ -237,14 +259,35 @@ function UserHeaderInfo() {
                   <DropdownMenuItem asChild>
                     <Link
                       href={`/mu/settings/general`}
-                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1.5 px-2 cursor-pointer"
+                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
                     >
                       <SettingIcon className="w-5 h-5 text-grayColor1  " />
                       Account Setting
                     </Link>
                   </DropdownMenuItem>
+                  {userProfileData?.user?.company_id && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/mu/industry-profile/${userProfileData?.user?.company_id}`}
+                        className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                      >
+                        <DashboardIcon className="w-5 h-5 text-grayColor1  " />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/mu/create-company-page/`}
+                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                    >
+                      <CompanyIcon className="w-5 h-5 text-grayColor1  " />
+                      Create a Company Page
+                    </Link>
+                  </DropdownMenuItem>
                 </div>
-                <div className="pt-3  border-t border-borderColor">
+                <div className="pt-2  border-t border-borderColor">
                   <button
                     onClick={handleLogout}
                     className="text-headerColor  items-center gap-2 group hover:bg-redColor/8 flex  w-full hover:text-redColor py-1 px-2 font-semibold cursor-pointer"

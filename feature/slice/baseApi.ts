@@ -36,6 +36,16 @@ export const baseApiSlice = createApi({
     "Like",
     "experience",
     "study",
+    "university",
+    "state",
+    "residencies",
+    "facilities",
+    "Employment",
+    "subscription",
+    "plan",
+    "category",
+    "Company",
+    "Job",
   ],
 });
 

@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import SubscriptionCard from "../../mu/(jobs)/jobs/_component/SubscriptionCard";
+import SubscriptionCard from "../../mu/(subscription)/_component/SubscriptionCard";
 import MainPageBottomNav from "./MainPageBottomNav";
 
 function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
@@ -82,9 +82,9 @@ function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
       <div className="pt-6  ">
         <MainPageBottomNav onItemClick={onItemClick} />
       </div>
-        {/* <div className="pt-6">
-          <SubscriptionCard />
-        </div> */}
+      <div className="pt-6">
+        <SubscriptionCard />
+      </div>
     </div>
   );
 }

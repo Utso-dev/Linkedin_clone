@@ -10,9 +10,9 @@ import {
 import logoPreview from "@/public/empty_user.jpg";
 import coverPreview from "@/public/images/cover imager.png";
 import {
-  EditeIcon,
   EditeSquareIcon,
   GroupUserIcon,
+  PencileIcon,
 } from "@/public/svgIcons/Icons";
 import { Plus } from "lucide-react";
 import Image from "next/image";
@@ -41,6 +41,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
   const [showImagePreview, setShowImagePreview] = useState(false);
   const coverImgRef = useRef<HTMLInputElement>(null);
   const profileImgRef = useRef<HTMLInputElement>(null);
+  
 
   useEffect(() => {
     if (!coverImageFile) {
@@ -182,7 +183,7 @@ function ProfileHeroSection({ userId }: { userId?: string }) {
                 onClick={() => setIsNotify(true)}
                 className="cursor-pointer"
               >
-                <EditeIcon />
+                <PencileIcon />
               </button>
             </div>
           )}

@@ -11,7 +11,7 @@ export default function SecuritySettings() {
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
 
   return (
-    <main className="min-h-screen bg-[#FAFAFA] ">
+    <main className="min-h-screen  ">
       {/* Header */}
       <div className="mb-5 flex items-start justify-between">
         <div>
@@ -25,7 +25,7 @@ export default function SecuritySettings() {
         </div>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-6">
         {/* Security Overview */}
         <SecurityOverview twoFactorEnabled={twoFactorEnabled} />
 
@@ -36,7 +36,7 @@ export default function SecuritySettings() {
         </div>
 
         {/* 2FA + Authentication Methods */}
-        <div className="">
+        <div className=" ">
           <TwoFactorAuthentication />
         </div>
       </div>

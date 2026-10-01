@@ -65,7 +65,7 @@ export default function RecoveryEmail({ onSuccess }: Props) {
           <CustomInput
             label="Password"
             className="relative"
-            placeholder="****************"
+            placeholder="⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆⋆"
             type={showPassword ? "text" : "password"}
             {...register("password", {
               required: "Password is required",
@@ -76,9 +76,9 @@ export default function RecoveryEmail({ onSuccess }: Props) {
             className="absolute right-3 top-11 cursor-pointer text-end"
           >
             {showPassword ? (
-              <Eye className="h-5 w-5 text-[#4A4C56]" />
+              <Eye className="h-5 w-5 text-grayColor1" />
             ) : (
-              <EyeOff className="h-5 w-5 text-[#4A4C56]" />
+              <EyeOff className="h-5 w-5 text-grayColor1" />
             )}
           </button>
         </div>

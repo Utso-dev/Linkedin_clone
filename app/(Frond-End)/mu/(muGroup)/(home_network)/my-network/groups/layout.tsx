@@ -36,7 +36,7 @@ function GroupLayout({ children }: { children: React.ReactNode }) {
             {children}
           </div>
         </div>
-        <div className="col-span-4 hidden md:block border-l border-[#D2D2D5] md:sticky md:top-19  md:overflow-y-auto self-start pl-4 lg:pl-6 h-full">
+        <div className="col-span-4 hidden md:block border-l border-[#D2D2D5] md:sticky md:top-25  md:overflow-y-auto self-start pl-4 lg:pl-6 h-full">
           <GroupSidbarWrapper />
         </div>
       </div>
