@@ -303,6 +303,8 @@ export interface JobApplicationDetailsType {
     position_label?: string;
     has_previous?: boolean;
     has_next?: boolean;
+    current_pos?: number | string;
+    total_count?: number | string;
   };
   applicant?: {
     id?: number | string;
