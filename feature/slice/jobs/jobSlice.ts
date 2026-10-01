@@ -40,12 +40,14 @@ const jobSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["Job"],
     }),
-    getAllJobApplicants: builder.query({
-      query: ({ applicantId, status }) => {
+    getAllJobApplicants: builder.query<any, any>({
+      query: (arg) => {
+        const id = typeof arg === "object" ? arg.id : arg;
+        const params = typeof arg === "object" ? arg.params : undefined;
         return {
-          url: `/industry/job-post/${applicantId}/applicants`,
+          url: `/industry/job-post/${id}/applicants`,
           method: "GET",
-          params: status ? { status } : {}, // status থাকলে পাঠাবে, না থাকলে প্যারামই বাদ যাবে
+          params,
         };
       },
       providesTags: ["Job"],
