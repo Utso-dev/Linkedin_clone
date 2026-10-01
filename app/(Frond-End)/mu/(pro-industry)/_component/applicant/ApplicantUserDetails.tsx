@@ -37,7 +37,7 @@ function ApplicantUserDetails({ applicantId }: { applicantId: string }) {
 
   return (
     <div>
-      <div className="flex gap-2 justify-end items-center -mt-12 mb-6">
+      <div className="flex gap-2 justify-end items-center md:-mt-12 mb-6">
         <div>
           Applicants {applicant?.navigation?.total_count} of{" "}
           {applicant?.navigation?.current_pos}
@@ -222,7 +222,7 @@ function ApplicantUserDetails({ applicantId }: { applicantId: string }) {
                     {applicant?.linkedin_url && (
                       <div className="bg-sectionColor  rounded-xl p-3 flex items-center gap-3">
                         <div className="">
-                          <TbLinkFilled className="w-4 h-4 md:w-7 md:h-7" />
+                          <TbLinkFilled className="w-4 h-4 md:w-7 md:h-7 text-descriptionColor" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="text-sm md:text-base text-descriptionColor font-medium">
@@ -250,7 +250,7 @@ function ApplicantUserDetails({ applicantId }: { applicantId: string }) {
                     {applicant?.portfolio_url && (
                       <div className="bg-sectionColor  rounded-xl p-3 flex items-center gap-3">
                         <div className="">
-                          <Globe className="w-4 h-4 md:w-7 md:h-7" />
+                          <Globe className="w-4 h-4 md:w-7 text-descriptionColor md:h-7" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="text-sm md:text-base text-descriptionColor font-medium">
