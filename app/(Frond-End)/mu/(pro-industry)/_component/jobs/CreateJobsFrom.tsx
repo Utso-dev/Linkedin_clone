@@ -1,11 +1,5 @@
 "use client";
 
-import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
@@ -21,7 +15,9 @@ import {
 } from "@/components/ui/popover";
 import {
   useCreateJobsMutation,
+  useGetJobDetailsQuery,
   useGetStateByCityQuery,
+  useUpdateJobsMutation,
 } from "@/feature/slice/jobs/jobSlice";
 import { useGetAllStatesQuery } from "@/feature/slice/settingSlice";
 import { JobPositionFormData } from "@/lib/type";
@@ -34,15 +30,25 @@ import {
   locationTypeOptions,
   networkOptions,
 } from "@/public/demoData/RealData";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 interface CreateJobsFromProps {
   onSuccess?: () => void;
   id?: string;
 }
 
+const flatCategoryOptions = categoryOptions.flatMap((group) => group.options);
+
 function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
   const router = useRouter();
   const [createJobs, { isLoading: isCreating }] = useCreateJobsMutation();
+  const [updateJobs, { isLoading: isUpdating }] = useUpdateJobsMutation();
+  const { data: jobResponse } = useGetJobDetailsQuery(id, { skip: !id });
   const { data: statesData, isLoading: isStateLoading } =
     useGetAllStatesQuery(undefined);
   const [startDateOpen, setStartDateOpen] = useState(false);
@@ -118,6 +124,61 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
 
   const watchedDescription = watch("job_description");
 
+  const getOptionValue = (
+    options: { value: string; label: string }[],
+    value: unknown,
+  ) => {
+    if (!value) return "";
+    const normalized = String(value).trim().toLowerCase();
+    return (
+      options.find(
+        (option) =>
+          option.value.trim().toLowerCase() === normalized ||
+          option.label.trim().toLowerCase() === normalized,
+      )?.value || String(value)
+    );
+  };
+
+  useEffect(() => {
+    const job = (jobResponse?.data ?? jobResponse) as any;
+    if (!job || !id) return;
+
+    reset({
+      job_title: job.job_title || "",
+      position: job.position || "",
+      network_type: getOptionValue(networkOptions, job.network_type),
+      category: getOptionValue(flatCategoryOptions, job.category),
+      employment_offering: getOptionValue(
+        employmentOfferingOptions,
+        job.employment_offering,
+      ),
+      work_mode: getOptionValue(locationTypeOptions, job.work_mode),
+      employment_type: getOptionValue(
+        employmentTypeOptions,
+        job.employment_type,
+      ),
+      level: getOptionValue(levelOptions, job.level),
+      experience: job.experience || "",
+      state_id: job.state?.id ? String(job.state.id) : "",
+      city_id: job.city?.id ? String(job.city.id) : "",
+      email: job.email || "",
+      phone_number: job.phone_number || "",
+      salary_min: job.salary_min || "",
+      salary_max: job.salary_max || "",
+      salary_type: job.salary_type || "",
+      website: job.website || "",
+      job_description: job.job_description || "",
+      start_date: job.announcement_start_date
+        ? new Date(`${job.announcement_start_date}T00:00:00`)
+        : undefined,
+      end_date: job.announcement_end_date
+        ? new Date(`${job.announcement_end_date}T00:00:00`)
+        : undefined,
+      tags: Array.isArray(job.tags) ? job.tags.join(", ") : job.tags || "",
+      information_confirmed: Boolean(job.information_confirmed),
+    });
+  }, [jobResponse, id, reset]);
+
   const onSubmit = async (data: JobPositionFormData) => {
     try {
       const parseNumber = (val: any) => {
@@ -151,6 +212,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
         phone_number: data.phone_number,
         salary_min: parseNumber(data.salary_min),
         salary_max: parseNumber(data.salary_max),
+        salary_type: data.salary_type,
         website: data.website || undefined,
         job_description: data.job_description,
         start_date: data.start_date
@@ -163,8 +225,13 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
         information_confirmed: data.information_confirmed ? 1 : 0,
       };
 
-      await createJobs(payload).unwrap();
-      toast.success("Job position posted successfully!");
+      if (id) {
+        await updateJobs({ id, data: payload }).unwrap();
+        toast.success("Job position updated successfully!");
+      } else {
+        await createJobs(payload).unwrap();
+        toast.success("Job position posted successfully!");
+      }
       reset();
       if (onSuccess) {
         onSuccess();
@@ -193,7 +260,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
       {/* Header */}
       <div className="mb-6 md:mb-8">
         <h1 className="text-xl md:text-2xl font-bold text-headerColor">
-          Create new position
+          {id ? "Update position" : "Create new position"}
         </h1>
         <p className="text-sm text-descriptionColor mt-1">
           Complete the information below to publish a professional job
@@ -426,8 +493,9 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   onChange={field.onChange}
                   placeholder="Select salary type"
                   options={[
-                    { value: "monthly", label: "Monthly" },
-                    { value: "yearly", label: "Yearly" },
+                    { value: "Hourly", label: "Hourly" },
+                    { value: "Monthly", label: "Monthly" },
+                    { value: "Yearly", label: "Yearly" },
                   ]}
                   className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
                 />
@@ -758,9 +826,9 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
           <div className="flex justify-center pt-4 pb-2 md:col-span-2">
             <ButtonReuseable
               type="submit"
-              disabled={isSubmitting || isCreating}
-              title={"Post this Position"}
-              sendingMsg={"Posting Position..."}
+              disabled={isSubmitting || isCreating || isUpdating}
+              title={id ? "Update this Position" : "Post this Position"}
+              sendingMsg={id ? "Updating Position..." : "Posting Position..."}
             />
           </div>
         </div>
