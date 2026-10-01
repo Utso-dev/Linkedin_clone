@@ -11,13 +11,13 @@ import { TbLinkFilled } from "react-icons/tb";
 import ApplicantDetailsSkeleton from "./ApplicantDetailsSkeleton";
 import ApplicantError from "./ApplicantError";
 import ApplicantsUserHeader from "./ApplicantsUserHeader";
-function ApplicantUserDetails({ applicantId }: { applicantId: string }) {
+function ApplicantUserDetails({ applicantId, status }: { applicantId: string; status?: string }) {
   const {
     data: responseData,
     isLoading,
     isError,
     refetch,
-  } = useGetJobApplicantsQuery(applicantId, {
+  } = useGetJobApplicantsQuery({applicantId, status}, {
     skip: !applicantId,
   });
 
@@ -39,8 +39,7 @@ function ApplicantUserDetails({ applicantId }: { applicantId: string }) {
     <div>
       <div className="flex gap-2 justify-end items-center md:-mt-12 mb-6">
         <div>
-          Applicants {applicant?.navigation?.total_count} of{" "}
-          {applicant?.navigation?.current_pos}
+           {applicant?.navigation?.position_label}
         </div>
         <Link
           href={

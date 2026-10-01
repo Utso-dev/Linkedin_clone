@@ -6,15 +6,19 @@ import Pagination from "@/components/reusable/Pagination";
 import { useGetAllJobApplicantsQuery } from "@/feature/slice/jobs/jobSlice";
 import { ApplicantItemType } from "@/lib/type";
 import { OpenEyeIcon } from "@/public/svgIcons/Icons";
-import { Trash2 } from "lucide-react";
-import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { useMemo, useState } from "react";
 import { HiOutlineSelector } from "react-icons/hi";
 import AllJobList from "../jobs/AllJobList";
 import EmptyJobs from "../jobs/EmptyJobs";
 import ApplicantStatusUpdate from "./ApplicantStatusUpdate";
 import ApplicantsFilter from "./ApplicantsFilter";
-import Link from "next/link";
 
 export interface AplicantDetailsPageProps {
   id?: string | number;
@@ -36,8 +40,6 @@ export default function AplicantDetailsPage({
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
-  const [applicantToDelete, setApplicantToDelete] =
-    useState<ApplicantItemType | null>(null);
 
   // Construct query params for API
   const queryParams = useMemo(() => {
@@ -199,7 +201,7 @@ export default function AplicantDetailsPage({
       formatter: (_: any, row: ApplicantItemType) => (
         <div className="flex items-center justify-center gap-2.5 px-4 py-3.5">
           <Link
-            href={`/mu/job-listing/applicant/${row.id}`}
+            href={`/mu/job-listing/applicant/${row.id}?status=${urlStatus || "all"}`}
             className="p-1 rounded text-gray-400 hover:text-primaryColor transition-colors cursor-pointer"
             title="View Applicant"
             aria-label="view applicant"

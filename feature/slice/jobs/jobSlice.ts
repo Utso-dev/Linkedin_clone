@@ -33,20 +33,19 @@ const jobSlice = baseApiSlice.injectEndpoints({
       providesTags: ["Job"],
     }),
     getJobApplicants: builder.query({
-      query: (id) => ({
-        url: `/industry/job-applications/${id}`,
+      query: ({ applicantId, status }) => ({
+        url: `/industry/job-applications/${applicantId}`,
         method: "GET",
+        params: status ? { status } : {},
       }),
       providesTags: ["Job"],
     }),
-    getAllJobApplicants: builder.query<any, any>({
-      query: (arg) => {
-        const id = typeof arg === "object" ? arg.id : arg;
-        const params = typeof arg === "object" ? arg.params : undefined;
+    getAllJobApplicants: builder.query({
+      query: ({ applicantId, status }) => {
         return {
-          url: `/industry/job-post/${id}/applicants`,
+          url: `/industry/job-post/${applicantId}/applicants`,
           method: "GET",
-          params,
+          params: status ? { status } : {}, // status থাকলে পাঠাবে, না থাকলে প্যারামই বাদ যাবে
         };
       },
       providesTags: ["Job"],

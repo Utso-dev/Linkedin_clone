@@ -85,9 +85,10 @@ const levelOptions = [
 
 interface CreateJobsFromProps {
   onSuccess?: () => void;
+  id: string;
 }
 
-function CreateJobsFrom({ onSuccess }: CreateJobsFromProps) {
+function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
   const router = useRouter();
   const [createJobs, { isLoading: isCreating }] = useCreateJobsMutation();
   const { data: statesData, isLoading: isStateLoading } =

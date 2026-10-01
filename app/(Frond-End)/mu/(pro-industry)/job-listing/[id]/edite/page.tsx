@@ -1,9 +1,12 @@
-import React from 'react'
+import CreateJobsFrom from "../../../_component/jobs/CreateJobsFrom";
 
-function page() {
+async function page({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
   return (
-    <div>page</div>
-  )
+    <div>
+      <CreateJobsFrom id={id} />
+    </div>
+  );
 }
 
-export default page
+export default page;

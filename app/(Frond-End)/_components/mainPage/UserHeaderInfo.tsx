@@ -228,15 +228,15 @@ function UserHeaderInfo() {
                           userProfileData?.user?.last_name || "Vin Intini"}
                       </p>
                       <div
-                        className={`flex items-center ${isIndustry ? " bg-secondaryColor/12" : isPremium ? " bg-primaryColor/12" : " bg-bgColor "} justify-center text-descriptionColor gap-2 px-2.5 py-1 rounded-full `}
+                        className={`flex items-center ${isIndustry ? " bg-secondaryColor/12 text-secondaryColor " : isPremium ? " bg-primaryColor/12 text-primaryColor" : " bg-[#3EA1D6]/15 text-[#3EA1D6] "} justify-center gap-2 px-2.5 py-1 rounded-full `}
                       >
                         {isIndustry || isPremium ? (
                           <FaCrown
                             size={16}
-                            className={`${isIndustry ? " text-secondaryColor" : isPremium ? " text-primaryColor" : " text-bgColor "}`}
+                            className={`${isIndustry ? " text-secondaryColor" : isPremium ? " text-primaryColor" : " text-[#3EA1D6] "}`}
                           />
                         ) : (
-                          <SingleUserIcon className="w-4 h-4" />
+                          <SingleUserIcon className="w-4 h-4 text-[#3EA1D6]" />
                         )}
                         <span className=" text-sm tracking-wide">
                           {planName}
