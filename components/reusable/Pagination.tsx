@@ -58,7 +58,7 @@ export default function Pagination({
             onPageChange(page - 1);
           }
         }}
-        className={`pr-2 py-1 flex items-center justify-center rounded-md border border-[#A5A5AB] bg-white shadow-sm transition ${
+        className={`pr-2 py-1 flex items-center justify-center rounded-md border border-liteDescriptionColor bg-white shadow-sm transition ${
           isFirstPage
             ? "opacity-40 cursor-not-allowed"
             : "hover:bg-gray-50 cursor-pointer"
@@ -105,7 +105,7 @@ export default function Pagination({
             onPageChange(page + 1);
           }
         }}
-        className={`pl-2 py-1 flex items-center justify-center rounded-md border border-[#A5A5AB] bg-white shadow-sm transition ${
+        className={`pl-2 py-1 flex items-center justify-center rounded-md border border-liteDescriptionColor bg-white shadow-sm transition ${
           isLastPage
             ? "opacity-40 cursor-not-allowed"
             : "hover:bg-gray-50 cursor-pointer"
@@ -117,7 +117,7 @@ export default function Pagination({
 
       {/* Page Size */}
       {showPageSize && onPageSizeChange && (
-        <div className="w-[110px] shrink-0">
+        <div className="w-27.5 shrink-0">
           <CustomSelect
             options={pageSizeOptions.map((size) => ({
               label: `${size} Result`,
@@ -126,7 +126,7 @@ export default function Pagination({
             value={pageSize}
             onChange={(value) => onPageSizeChange(Number(value))}
             placeholder="Select Result"
-            className="h-[40px] w-full"
+            className="h-10 w-full"
           />
         </div>
       )}

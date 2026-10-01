@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
@@ -25,67 +24,20 @@ import {
   useGetStateByCityQuery,
 } from "@/feature/slice/jobs/jobSlice";
 import { useGetAllStatesQuery } from "@/feature/slice/settingSlice";
+import { JobPositionFormData } from "@/lib/type";
 import { cn } from "@/lib/utils";
-
-export interface JobPositionFormData {
-  job_title: string;
-  position: string;
-  network_type: string;
-  employment_offering: string;
-  work_mode: string;
-  employment_type: string;
-  level: string;
-  experience: string;
-  state_id: string;
-  city_id: string;
-  email: string;
-  phone_number: string;
-  salary_min: string;
-  salary_max: string;
-  website?: string;
-  job_description: string;
-  start_date?: Date;
-  end_date?: Date;
-  tags?: string;
-  information_confirmed: boolean;
-}
-
-const networkOptions = [
-  { value: "psychology", label: "Psychology" },
-  { value: "neuroscience", label: "Neuroscience" },
-];
-
-const employmentOfferingOptions = [
-  { value: "state", label: "State and Institution" },
-  { value: "private", label: "Private Practice" },
-];
-
-const workModeOptions = [
-  { value: "Remote", label: "Remote" },
-  { value: "On-site", label: "On-site" },
-  { value: "Hybrid", label: "Hybrid" },
-];
-
-const employmentTypeOptions = [
-  { value: "Full-Time", label: "Full-Time" },
-  { value: "Part-Time", label: "Part-Time" },
-  { value: "Contract", label: "Contract" },
-  { value: "Temporary", label: "Temporary" },
-  { value: "Internship", label: "Internship" },
-];
-
-const levelOptions = [
-  { value: "Entry-Level", label: "Entry-Level" },
-  { value: "Mid-Level", label: "Mid-Level" },
-  { value: "Senior-Level", label: "Senior-Level" },
-  { value: "Lead / Manager", label: "Lead / Manager" },
-  { value: "Director", label: "Director" },
-  { value: "Executive", label: "Executive" },
-];
+import {
+  categoryOptions,
+  employmentOfferingOptions,
+  employmentTypeOptions,
+  levelOptions,
+  locationTypeOptions,
+  networkOptions,
+} from "@/public/demoData/RealData";
 
 interface CreateJobsFromProps {
   onSuccess?: () => void;
-  id: string;
+  id?: string;
 }
 
 function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
@@ -114,6 +66,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
       job_title: "",
       position: "",
       network_type: "Psychology",
+      category: "",
       employment_offering: "State and Institution",
       work_mode: "",
       employment_type: "",
@@ -125,6 +78,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
       phone_number: "",
       salary_min: "",
       salary_max: "",
+      salary_type: "",
       website: "",
       job_description: "",
       tags: "",
@@ -183,6 +137,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
         job_title: data.job_title,
         position: data.position,
         network_type: data.network_type,
+        category: data.category,
         employment_offering: data.employment_offering,
         work_mode: data.work_mode,
         employment_type: data.employment_type,
@@ -248,7 +203,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
 
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+        <div className="md:grid space-y-4 grid-cols-1 md:grid-cols-2 md:space-y-0 md:gap-6">
           {/* Row 1: Job Title & Position */}
           <ReusableInput
             id="job_title"
@@ -282,6 +237,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
             >
               Network <span className="text-redColor">*</span>
             </Label>
+
             <Controller
               control={control}
               name="network_type"
@@ -292,7 +248,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   id="network_type"
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  placeholder="Psychology"
+                  placeholder="Select Network"
                   options={networkOptions}
                   className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
                 />
@@ -302,6 +258,33 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
               <p className="text-redColor text-xs">
                 {errors.network_type.message}
               </p>
+            )}
+          </div>
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="category"
+              className="text-sm text-descriptionColor font-medium"
+            >
+              Categories <span className="text-redColor">*</span>
+            </Label>
+            <Controller
+              control={control}
+              name="category"
+              rules={{ required: "Category is required" }}
+              render={({ field }) => (
+                <SelecteInputField
+                  key={`category-${field.value || "empty"}`}
+                  id="category"
+                  value={field.value || undefined}
+                  onChange={field.onChange}
+                  placeholder="Select Category"
+                  options={categoryOptions}
+                  className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
+                />
+              )}
+            />
+            {errors.category && (
+              <p className="text-redColor text-xs">{errors.category.message}</p>
             )}
           </div>
 
@@ -322,7 +305,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   id="employment_offering"
                   value={field.value || undefined}
                   onChange={field.onChange}
-                  placeholder="State and Institution"
+                  placeholder="Select Employment"
                   options={employmentOfferingOptions}
                   className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
                 />
@@ -354,7 +337,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                   value={field.value || undefined}
                   onChange={field.onChange}
                   placeholder="Select work mode"
-                  options={workModeOptions}
+                  options={locationTypeOptions}
                   className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
                 />
               )}
@@ -424,6 +407,38 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
               <p className="text-redColor text-xs">{errors.level.message}</p>
             )}
           </div>
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="network_type"
+              className="text-sm text-descriptionColor font-medium"
+            >
+              Salary Type <span className="text-redColor">*</span>
+            </Label>
+            <Controller
+              control={control}
+              name="salary_type"
+              rules={{ required: "Salary type is required" }}
+              render={({ field }) => (
+                <SelecteInputField
+                  key={`salary_type-${field.value || "empty"}`}
+                  id="salary_type"
+                  value={field.value || undefined}
+                  onChange={field.onChange}
+                  placeholder="Select salary type"
+                  options={[
+                    { value: "monthly", label: "Monthly" },
+                    { value: "yearly", label: "Yearly" },
+                  ]}
+                  className="h-12! md:h-13! rounded-lg border-borderColor bg-white w-full text-sm font-normal text-headerColor"
+                />
+              )}
+            />
+            {errors.salary_type && (
+              <p className="text-redColor text-xs">
+                {errors.salary_type.message}
+              </p>
+            )}
+          </div>
 
           <ReusableInput
             id="experience"
@@ -461,7 +476,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                     isStateLoading ? "Loading states..." : "Select State"
                   }
                   isDisabled={isStateLoading}
-                  className="h-11 w-full [&_.ant-select-selector]:h-11! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-gray-200! [&_.ant-select-selector]:px-3!"
+                  className=" w-full [&_.ant-select-selector]:h-11! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-gray-200! [&_.ant-select-selector]:px-3!"
                 />
               )}
             />
@@ -495,7 +510,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                         : "Select City"
                   }
                   isDisabled={!selectedStateId || isCitiesLoading}
-                  className="h-11 w-full [&_.ant-select-selector]:h-11! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-gray-200! [&_.ant-select-selector]:px-3!"
+                  className="w-full [&_.ant-select-selector]:h-11! [&_.ant-select-selector]:rounded-lg! [&_.ant-select-selector]:border-gray-200! [&_.ant-select-selector]:px-3!"
                 />
               )}
             />
@@ -560,8 +575,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
             })}
           />
 
-          {/* Row 8: Website (Full width) */}
-          <div className="md:col-span-2">
+          <div className="col-span-2">
             <ReusableInput
               id="website"
               label="Website"
@@ -720,7 +734,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                     id="information_confirmed"
                     checked={field.value}
                     onCheckedChange={field.onChange}
-                    className="mt-0.5 border-[#009dae] data-[state=checked]:bg-[#009dae] data-[state=checked]:border-[#009dae] data-[state=checked]:text-white rounded"
+                    className="mt-0.5 border border-primaryColor  data-[state=checked]:bg-primaryColor  data-[state=checked]:text-white data-[state=checked]:border-primaryColor rounded"
                   />
                 )}
               />

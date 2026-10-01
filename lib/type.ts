@@ -328,3 +328,28 @@ export interface JobApplicationDetailsType {
     };
   };
 }
+
+export interface JobPositionFormData {
+  job_title: string;
+  position: string;
+  network_type: string;
+  category?: string;
+  employment_offering: string;
+  work_mode: string;
+  employment_type: string;
+  level: string;
+  experience: string;
+  state_id: string;
+  city_id: string;
+  email: string;
+  phone_number: string;
+  salary_min: string;
+  salary_max: string;
+  salary_type: string;
+  website?: string;
+  job_description: string;
+  start_date?: Date;
+  end_date?: Date;
+  tags?: string;
+  information_confirmed: boolean;
+}

@@ -321,3 +321,76 @@ export const countries = [
   { iso_code: "ZM", country: "Zambia" },
   { iso_code: "ZW", country: "Zimbabwe" },
 ];
+
+export const networkOptions = [
+  { value: "psychology", label: "Psychology" },
+  { value: "neuroscience", label: "Neuroscience" },
+];
+
+export const categoryOptions = [
+  {
+    group: "Research / Lab",
+    options: [
+      {
+        value: "Clinical Research Director",
+        label: "Clinical Research Director",
+      },
+      { value: "Lab Manager", label: "Lab Manager" },
+      { value: "Research Scientist", label: "Research Scientist" },
+      { value: "Research Coordinator", label: "Research Coordinator" },
+      { value: "Lab Technician", label: "Lab Technician" },
+      { value: "Research Assistant", label: "Research Assistant" },
+      { value: "Postdoctoral Fellow", label: "Postdoctoral Fellow" },
+      { value: "Postbaccalaureate", label: "Postbaccalaureate" },
+    ],
+  },
+  {
+    group: "Academia",
+    options: [
+      { value: "Professor", label: "Professor" },
+      { value: "Adjunct Professor", label: "Adjunct Professor" },
+      { value: "Lecturer", label: "Lecturer" },
+    ],
+  },
+  {
+    group: "Private Practice",
+    options: [
+      { value: "Psychologist", label: "Psychologist" },
+      { value: "Neurologist", label: "Neurologist" },
+      { value: "Psychiatrist", label: "Psychiatrist" },
+      { value: "Therapist", label: "Therapist" },
+      { value: "Counselor", label: "Counselor" },
+    ],
+  },
+  {
+    group: "Industry Professional",
+    options: [
+      {
+        value: "Brain Health Professional Within a Corporate Organization",
+        label: "Brain Health Professional Within a Corporate Organization",
+      },
+      { value: "Biotech Representative", label: "Biotech Representative" },
+      {
+        value: "Psychotropic Representative",
+        label: "Psychotropic Representative",
+      },
+      { value: "Scientific Consultant", label: "Scientific Consultant" },
+      { value: "Science Writer", label: "Science Writer" },
+    ],
+  },
+];
+
+export const employmentOfferingOptions = [
+  { value: "state", label: "State and Institution" },
+  { value: "private", label: "Private Practice" },
+];
+
+
+export const levelOptions = [
+  { value: "Entry-Level", label: "Entry-Level" },
+  { value: "Mid-Level", label: "Mid-Level" },
+  { value: "Senior-Level", label: "Senior-Level" },
+  { value: "Lead / Manager", label: "Lead / Manager" },
+  { value: "Director", label: "Director" },
+  { value: "Executive", label: "Executive" },
+];
