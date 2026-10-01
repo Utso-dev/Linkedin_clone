@@ -9,11 +9,11 @@ import { ChevronDown } from "lucide-react";
 import toast from "react-hot-toast";
 const STATUS_OPTIONS = [
   { value: "pending", label: "Pending" },
-  { value: "reviewing", label: "In Progress" },
+  { value: "reviewing", label: "Reviewed" },
   { value: "interviewed", label: "Interview" },
   { value: "shortlisted", label: "Shortlisted" },
   { value: "offered", label: "Offered" },
-  { value: "hired", label: "Accepted" },
+  { value: "hired", label: "Hired" },
   { value: "rejected", label: "Rejected" },
 ];
 function ApplicantStatusUpdate({ row }: { row: any }) {

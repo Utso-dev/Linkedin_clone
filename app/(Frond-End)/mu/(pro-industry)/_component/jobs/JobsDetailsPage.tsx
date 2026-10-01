@@ -78,8 +78,6 @@ function JobsDetailsPage({ id }: { id: string }) {
 
   return (
     <div className=" pb-5 md:pb-8">
-      
-
       <div className="mt-3 grid grid-cols-1 items-start gap-3 lg:grid-cols-5">
         <section className="rounded-xl border border-grayColor2 bg-white p-5  md:p-6 lg:col-span-3">
           <h2 className="mb-3 text-base md:text-lg lg:text-xl font-semibold text-headerColor">

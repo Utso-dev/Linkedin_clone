@@ -7,7 +7,7 @@ import { useGetAllJobApplicantsQuery } from "@/feature/slice/jobs/jobSlice";
 import { ApplicantItemType } from "@/lib/type";
 import { OpenEyeIcon } from "@/public/svgIcons/Icons";
 import { Trash2 } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { HiOutlineSelector } from "react-icons/hi";
 import AllJobList from "../jobs/AllJobList";
@@ -22,10 +22,17 @@ export interface AplicantDetailsPageProps {
 export default function AplicantDetailsPage({
   id,
 }: AplicantDetailsPageProps = {}) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const params = useParams();
   const jobId = id || (params?.id as string | number) || 1;
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState<string>("all");
+
+  const urlStatus = searchParams.get("status");
+  const urlSearch = searchParams.get("search");
+  const urlPage = searchParams.get("page") || searchParams.get("current_page");
+  const urlLimit = searchParams.get("limit");
+
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [applicantToDelete, setApplicantToDelete] =
@@ -34,17 +41,17 @@ export default function AplicantDetailsPage({
   // Construct query params for API
   const queryParams = useMemo(() => {
     const p: Record<string, any> = {
-      current_page: currentPage,
-      limit: limit,
+      current_page: urlPage ? Number(urlPage) : currentPage,
+      limit: urlLimit ? Number(urlLimit) : limit,
     };
-    if (selectedStatus && selectedStatus !== "all") {
-      p.status = selectedStatus;
+    if (urlStatus && urlStatus !== "all") {
+      p.status = urlStatus;
     }
-    if (searchQuery.trim()) {
-      p.search = searchQuery.trim();
+    if (urlSearch?.trim()) {
+      p.search = urlSearch.trim();
     }
     return p;
-  }, [currentPage, limit, selectedStatus, searchQuery]);
+  }, [urlPage, currentPage, urlLimit, limit, urlStatus, urlSearch]);
 
   // Fetch job applicants from API
   const {
@@ -190,7 +197,6 @@ export default function AplicantDetailsPage({
       position: "justify-center",
       formatter: (_: any, row: ApplicantItemType) => (
         <div className="flex items-center justify-center gap-2.5 px-4 py-3.5">
-          {/* View Details Eye Icon */}
           <button
             type="button"
             className="p-1 rounded text-gray-400 hover:text-primaryColor transition-colors cursor-pointer"
@@ -199,23 +205,13 @@ export default function AplicantDetailsPage({
           >
             <OpenEyeIcon className="w-4.5 h-4.5" />
           </button>
-
-          {/* Delete Trash Icon */}
-          <button
-            type="button"
-            className="p-1 rounded text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
-            title="Delete Applicant"
-            aria-label="delete applicant"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
         </div>
       ),
     },
   ];
 
   return (
-    <div className="w-full pb-10 mt-4">
+    <div className="w-full pb-10 mt-4 border p-2 md:p-4 rounded-xl">
       {/* Top Filter Bar */}
       <ApplicantsFilter status_count={responseData?.status_counts} />
       {/* Content Section */}
@@ -229,9 +225,7 @@ export default function AplicantDetailsPage({
       ) : rawApplicants.length === 0 ? (
         <EmptyJobs
           clearAllFilters={() => {
-            setSearchQuery("");
-            setSelectedStatus("all");
-            setCurrentPage(1);
+            router.replace(pathname, { scroll: false });
           }}
         />
       ) : (
@@ -263,15 +257,28 @@ export default function AplicantDetailsPage({
       {!isLoading && !isError && totalCount > 0 && (
         <div className="mt-5">
           <Pagination
-            page={currentPage}
-            pageSize={limit}
+            page={urlPage ? Number(urlPage) : currentPage}
+            pageSize={urlLimit ? Number(urlLimit) : limit}
             total={totalCount}
             totalPages={totalPages}
-            onPageChange={(p) => setCurrentPage(p)}
+            onPageChange={(p) => {
+              setCurrentPage(p);
+              const params = new URLSearchParams(searchParams.toString());
+              params.set("page", String(p));
+              router.replace(`${pathname}?${params.toString()}`, {
+                scroll: false,
+              });
+            }}
             showPageSize={true}
             onPageSizeChange={(sz) => {
               setLimit(sz);
               setCurrentPage(1);
+              const params = new URLSearchParams(searchParams.toString());
+              params.set("limit", String(sz));
+              params.set("page", "1");
+              router.replace(`${pathname}?${params.toString()}`, {
+                scroll: false,
+              });
             }}
             pageSizeOptions={[10, 20, 50]}
           />

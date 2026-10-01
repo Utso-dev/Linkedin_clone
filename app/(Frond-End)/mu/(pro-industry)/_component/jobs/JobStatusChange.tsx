@@ -58,7 +58,6 @@ function JobStatusChange({ value, row }: { value: string; row: JobItem }) {
             { value: "published", label: "Active" },
             { value: "archive", label: "Archive" },
             { value: "expired", label: "Expired" },
-            { value: "rejected", label: "Rejected" },
           ]}
           className={`h-10! w-full text-xs md:text-sm font-medium rounded-full shadow-none border-0!  ${getBadgeStyle(currentVal)}`}
         />
