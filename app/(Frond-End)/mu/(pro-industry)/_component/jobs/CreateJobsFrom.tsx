@@ -2,9 +2,9 @@
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
 import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
+import JoditEditor from "@/components/reusable/InputFiled/JoditEditor";
 import ReusableInput from "@/components/reusable/InputFiled/ReusableInput";
 import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
-import ReusableTextarea from "@/components/reusable/InputFiled/TextAreaField";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -36,6 +36,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import JobPostConfirmation from "./JobPostConfirmation";
 
 interface CreateJobsFromProps {
   onSuccess?: () => void;
@@ -44,8 +45,16 @@ interface CreateJobsFromProps {
 
 const flatCategoryOptions = categoryOptions.flatMap((group) => group.options);
 
+const getEditorText = (value: string) =>
+  value
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
 function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
   const router = useRouter();
+  const [isCreated, setIsCreated] = useState(false);
   const [createJobs, { isLoading: isCreating }] = useCreateJobsMutation();
   const [updateJobs, { isLoading: isUpdating }] = useUpdateJobsMutation();
   const { data: jobResponse } = useGetJobDetailsQuery(id, { skip: !id });
@@ -53,7 +62,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
     useGetAllStatesQuery(undefined);
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
-
+  const [jobId, setJobId] = useState<string | number | null>(null);
   const stateOptions = (statesData?.data || []).map((s: any) => ({
     value: String(s.id),
     label: s.name,
@@ -226,18 +235,20 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
       };
 
       if (id) {
-        await updateJobs({ id, data: payload }).unwrap();
+        const response = await updateJobs({ id, data: payload }).unwrap();
+        console.log(response, "setJobId");
+
         toast.success("Job position updated successfully!");
+        setJobId(response.data?.id);
+        setIsCreated(true);
       } else {
-        await createJobs(payload).unwrap();
+        const response = await createJobs(payload).unwrap();
         toast.success("Job position posted successfully!");
+        console.log(response, "setJobId");
+        setJobId(response.data?.id);
+        setIsCreated(true);
       }
       reset();
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        router.push("/mu/job-listing");
-      }
     } catch (error: any) {
       console.error("Error creating job position:", error);
       const serverErrors = error?.data?.errors;
@@ -656,24 +667,41 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
 
           {/* Row 9: Job Description (Full width) */}
           <div className="space-y-1.5 md:col-span-2">
-            <ReusableTextarea
-              id="job_description"
-              label="Job Description"
-              required
-              rows={6}
-              placeholder="Describe the role, responsibilities, and requirements..."
-              className="w-full rounded-lg border border-borderColor text-sm text-headerColor p-3 placeholder:text-placeholderColor"
-              error={errors.job_description?.message}
-              {...register("job_description", {
-                required: "Job description is required",
-                maxLength: {
-                  value: 5000,
-                  message: "Description cannot exceed 5000 characters",
+            <Label
+              htmlFor="job_description"
+              className="text-sm text-descriptionColor font-medium"
+            >
+              Job Description <span className="text-redColor">*</span>
+            </Label>
+            <Controller
+              control={control}
+              name="job_description"
+              rules={{
+                validate: (value) => {
+                  const text = getEditorText(value || "");
+                  if (!text) return "Job description is required";
+                  return (
+                    text.length <= 5000 ||
+                    "Description cannot exceed 5000 characters"
+                  );
                 },
-              })}
+              }}
+              render={({ field }) => (
+                <JoditEditor
+                  value={field.value || ""}
+                  placeholder="Describe the role, responsibilities, and requirements..."
+                  onChange={(content) => field.onChange(content)}
+                  onBlur={() => field.onBlur()}
+                />
+              )}
             />
+            {errors.job_description && (
+              <p className="text-redColor text-xs">
+                {errors.job_description.message}
+              </p>
+            )}
             <div className="text-xs text-gray-500 font-normal">
-              {watchedDescription?.length || 0}/5000
+              {getEditorText(watchedDescription || "").length}/5000
             </div>
           </div>
 
@@ -833,6 +861,14 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
           </div>
         </div>
       </form>
+      {isCreated && (
+        <JobPostConfirmation
+          open={isCreated}
+          title={id ? " Updated" : " created"}
+          setOpen={setIsCreated}
+          jobId={jobId}
+        />
+      )}
     </div>
   );
 }

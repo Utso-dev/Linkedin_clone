@@ -121,6 +121,7 @@ function UserHeaderInfo() {
   const isPremium = userProfileData?.subscription?.plan_type === "premium";
   const isIndustry = userProfileData?.subscription?.plan_type === "industry";
   const planName = userProfileData?.subscription?.plan_name || "Basic User";
+ 
   return (
     <div>
       <div className="flex items-center gap-2 lg:gap-6 justify-end w-full">
@@ -265,27 +266,28 @@ function UserHeaderInfo() {
                       Account Setting
                     </Link>
                   </DropdownMenuItem>
-                  {userProfileData?.user?.company_id && (
+                  {userProfileData?.industry?.has_company && (
                     <DropdownMenuItem asChild>
                       <Link
-                        href={`/mu/industry-profile/${userProfileData?.user?.company_id}`}
+                        href={`/mu/industry-profile/${userProfileData?.industry?.company?.id}`}
                         className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
                       >
                         <DashboardIcon className="w-5 h-5 text-grayColor1  " />
-                        Dashboard
+                       Industry Dashboard
                       </Link>
                     </DropdownMenuItem>
                   )}
-
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/mu/create-company-page/`}
-                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
-                    >
-                      <CompanyIcon className="w-5 h-5 text-grayColor1  " />
-                      Create a Company Page
-                    </Link>
-                  </DropdownMenuItem>
+                  {!userProfileData?.industry?.has_company && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/mu/create-company-page/`}
+                        className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                      >
+                        <CompanyIcon className="w-5 h-5 text-grayColor1  " />
+                        Create a Company Page
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                 </div>
                 <div className="pt-2  border-t border-borderColor">
                   <button
@@ -301,6 +303,7 @@ function UserHeaderInfo() {
           </div>
         </div>
       </div>
+      
     </div>
   );
 }

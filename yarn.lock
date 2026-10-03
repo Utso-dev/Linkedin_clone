@@ -3210,6 +3210,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jodit-react@npm:^5.7.1":
+  version: 5.7.1
+  resolution: "jodit-react@npm:5.7.1"
+  dependencies:
+    jodit: "npm:^4.17.1"
+  peerDependencies:
+    react: ~0.14 || ^15 || ^16 || ^17 || ^18 || ^19
+    react-dom: ~0.14 || ^15 || ^16 || ^17 || ^18 || ^19
+  checksum: 10c0/d2dd99d6b5f8d740543bbaa49dcd3db86a425b64143dfe05163bbc11cdb87b19555b03c756d608b2a866caded97907ce7db2b051bf5a1896653bd792c428695e
+  languageName: node
+  linkType: hard
+
+"jodit@npm:^4.17.1":
+  version: 4.17.1
+  resolution: "jodit@npm:4.17.1"
+  checksum: 10c0/8558fb43bffa3e01a7da29f917b6a6e1d140ed6a90dd7f2da2562c5d7cbe99e2cec4d57225cffebe2dcedce7d05fa534ca561b7270b91017359ab47b866cf1a7
+  languageName: node
+  linkType: hard
+
 "js-cookie@npm:^3.0.5":
   version: 3.0.8
   resolution: "js-cookie@npm:3.0.8"
@@ -4681,6 +4700,7 @@ __metadata:
     date-fns: "npm:^4.4.0"
     dayjs: "npm:^1.11.20"
     emoji-picker-react: "npm:^4.18.0"
+    jodit-react: "npm:^5.7.1"
     js-cookie: "npm:^3.0.5"
     laravel-echo: "npm:^2.3.4"
     leaflet: "npm:^1.9.4"

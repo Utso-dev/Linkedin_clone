@@ -24,7 +24,7 @@ function ProIndustrySidebar({ onItemClick }: { onItemClick?: () => void }) {
   const menuItems = [
     {
       label: "Industry Profile",
-      slug: `/mu/industry-profile/${data?.user?.company_id}`,
+      slug: `/mu/industry-profile/${data?.industry?.company?.id}`,
       icon: DashboardIcon,
     },
     {
