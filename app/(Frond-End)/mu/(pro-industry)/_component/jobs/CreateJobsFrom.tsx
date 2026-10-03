@@ -228,24 +228,20 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
       };
 
       if (id) {
-      const response=   await updateJobs({ id, data: payload }).unwrap();
-      console.log(response, "setJobId");
-      
+        const response = await updateJobs({ id, data: payload }).unwrap();
+        console.log(response, "setJobId");
+
         toast.success("Job position updated successfully!");
-        setJobId(response.id);
+        setJobId(response.data?.id);
         setIsCreated(true);
       } else {
-       const response =  await createJobs(payload).unwrap();
+        const response = await createJobs(payload).unwrap();
         toast.success("Job position posted successfully!");
-        setJobId(response.id);
+        console.log(response, "setJobId");
+        setJobId(response.data?.id);
         setIsCreated(true);
       }
       reset();
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        router.push("/mu/job-listing");
-      }
     } catch (error: any) {
       console.error("Error creating job position:", error);
       const serverErrors = error?.data?.errors;
@@ -841,9 +837,13 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
           </div>
         </div>
       </form>
-      {
-        isCreated && jobId &&  <JobPostConfirmation open={isCreated} setOpen={setIsCreated} jobId={jobId} />
-      }
+      {isCreated && (
+        <JobPostConfirmation
+          open={isCreated}
+          setOpen={setIsCreated}
+          jobId={jobId}
+        />
+      )}
     </div>
   );
 }

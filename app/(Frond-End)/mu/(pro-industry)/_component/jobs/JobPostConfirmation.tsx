@@ -9,14 +9,28 @@ function JobPostConfirmation({
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
-    jobId: string | number;
+  jobId: string | number;
 }) {
   return (
     <RootDialog open={open} setOpen={setOpen}>
-      <h2>Your have create job post</h2>
-      <VerifyBadgeIcon className="text-lightGreenColor2 w-16 h-16 " />
-      <p className="text-lightGreenColor2">Post Successfully Created</p>
-      <Link className="w-full px-4 py-2 md:py-3" href={`/mu/job-listing/${jobId}/job-details`} > View Job Details</Link>
+      <div className="text-center flex flex-col justify-center items-center gap-4 p-4 md:p-6">
+        <h2 className="text-lg md:text-2xl text-headerColor font-semibold">
+          Your have create job post
+        </h2>
+        <div className="flex flex-col justify-center items-center">
+          <VerifyBadgeIcon className="text-lightGreenColor2 w-16 h-16 " />
+          <p className="text-lightGreenColor2 pt-4">
+            Post Successfully Created
+          </p>
+        </div>
+        <Link
+          className="w-full px-4 py-2 md:py-3 mt-6 bg-primaryColor text-white rounded-lg hover:bg-primaryColor/90 transition text-sm md:text-base font-medium"
+          href={`/mu/job-listing/${jobId}/job-details`}
+        >
+          {" "}
+          View Job Details
+        </Link>
+      </div>
     </RootDialog>
   );
 }
