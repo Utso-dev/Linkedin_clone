@@ -6,21 +6,23 @@ function JobPostConfirmation({
   open,
   setOpen,
   jobId,
+  title 
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
   jobId: string | number;
+    title: string;
 }) {
   return (
     <RootDialog open={open} setOpen={setOpen}>
       <div className="text-center flex flex-col justify-center items-center gap-4 p-4 md:p-6">
         <h2 className="text-lg md:text-2xl text-headerColor font-semibold">
-          Your have create job post
+          Your have Posted {title} successfully
         </h2>
         <div className="flex flex-col justify-center items-center">
           <VerifyBadgeIcon className="text-lightGreenColor2 w-16 h-16 " />
           <p className="text-lightGreenColor2 pt-4">
-            Post Successfully Created
+            Post Successfully {title}
           </p>
         </div>
         <Link

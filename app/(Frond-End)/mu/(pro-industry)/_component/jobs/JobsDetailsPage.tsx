@@ -3,18 +3,13 @@
 import { useGetJobDetailsQuery } from "@/feature/slice/jobs/jobSlice";
 import { JobDetails } from "@/lib/type";
 import {
-  EditeIcon,
   EmailIcon,
   GlobalIcon,
-  JobsIcon,
-  LocationIcon,
   PhoneIcon,
   ScheduleIcon,
 } from "@/public/svgIcons/Icons";
-import { Clock3 } from "lucide-react";
 import Link from "next/link";
 import DetailsSkeleton from "./JobsSIngleSkleton";
-import JobStatusChange from "./JobStatusChange";
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
@@ -74,8 +69,6 @@ function JobsDetailsPage({ id }: { id: string }) {
       </div>
     );
 
-  ;
-
   return (
     <div className=" pb-5 md:pb-8">
       <div className="mt-3 grid grid-cols-1 items-start gap-3 lg:grid-cols-5">
@@ -83,9 +76,11 @@ function JobsDetailsPage({ id }: { id: string }) {
           <h2 className="mb-3 text-base md:text-lg lg:text-xl font-semibold text-headerColor">
             Job Description
           </h2>
-          <p className="whitespace-pre-line text-sm leading-relaxed text-descriptionColor">
-            {job.job_description}
-          </p>
+          <p
+            dangerouslySetInnerHTML={{ __html: job.job_description }}
+            className="whitespace-pre-line text-sm leading-relaxed text-descriptionColor"
+          />
+
           <div className="mt-6 grid grid-cols-1 gap-5 text-sm text-descriptionColor md:grid-cols-2">
             <div>
               <h3 className="mb-2 font-semibold text-headerColor">
