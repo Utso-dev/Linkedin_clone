@@ -36,6 +36,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import JobPostConfirmation from "./JobPostConfirmation";
 
 interface CreateJobsFromProps {
   onSuccess?: () => void;
@@ -46,6 +47,7 @@ const flatCategoryOptions = categoryOptions.flatMap((group) => group.options);
 
 function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
   const router = useRouter();
+  const [isCreated, setIsCreated] = useState(false);
   const [createJobs, { isLoading: isCreating }] = useCreateJobsMutation();
   const [updateJobs, { isLoading: isUpdating }] = useUpdateJobsMutation();
   const { data: jobResponse } = useGetJobDetailsQuery(id, { skip: !id });
@@ -53,7 +55,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
     useGetAllStatesQuery(undefined);
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
-
+  const [jobId, setJobId] = useState<string | number | null>(null);
   const stateOptions = (statesData?.data || []).map((s: any) => ({
     value: String(s.id),
     label: s.name,
@@ -226,11 +228,17 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
       };
 
       if (id) {
-        await updateJobs({ id, data: payload }).unwrap();
+      const response=   await updateJobs({ id, data: payload }).unwrap();
+      console.log(response, "setJobId");
+      
         toast.success("Job position updated successfully!");
+        setJobId(response.id);
+        setIsCreated(true);
       } else {
-        await createJobs(payload).unwrap();
+       const response =  await createJobs(payload).unwrap();
         toast.success("Job position posted successfully!");
+        setJobId(response.id);
+        setIsCreated(true);
       }
       reset();
       if (onSuccess) {
@@ -833,6 +841,9 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
           </div>
         </div>
       </form>
+      {
+        isCreated && jobId &&  <JobPostConfirmation open={isCreated} setOpen={setIsCreated} jobId={jobId} />
+      }
     </div>
   );
 }
