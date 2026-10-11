@@ -21,6 +21,12 @@ import {
   YAxis,
 } from "recharts";
 
+interface AdGraphPoint {
+  label: string;
+  views: number;
+  likes: number;
+}
+
 export default function AnalyticsAdvertisementPage() {
   const {
     data: response,
@@ -34,45 +40,18 @@ export default function AnalyticsAdvertisementPage() {
   const topProducts = analyticsData?.top_performing_products || [];
   const graph = analyticsData?.graph;
 
-  // Active range filter (Weekly | Monthly | Yearly)
-  const [activeRange, setActiveRange] = useState<string>("monthly");
+  // Active range filter (Weekly | Monthly)
+  const [activeRange, setActiveRange] = useState<"weekly" | "monthly">("weekly");
 
   // Keep active range aligned if graph payload specifies a default
   useEffect(() => {
-    if (graph?.active && ["weekly", "monthly"].includes(graph.active)) {
+    if (graph?.active === "weekly" || graph?.active === "monthly") {
       setActiveRange(graph.active);
     }
   }, [graph?.active]);
 
-  // Current range data from API ranges
-  const currentRangeData = useMemo(() => {
-    if (graph?.ranges?.[activeRange]) {
-      return graph.ranges[activeRange];
-    }
-    return graph;
-  }, [activeRange, graph]);
-
-  const labels: string[] = currentRangeData?.labels || [];
-  const series: any[] = currentRangeData?.series || [];
-
-  // Transform data for Recharts
-  const chartData = useMemo(() => {
-    if (!labels.length) return [];
-    return labels.map((label, index) => {
-      const row: Record<string, any> = { name: label, views: 0, likes: 0 };
-      series.forEach((s) => {
-        const val = s.data?.[index] ?? 0;
-        const key = s.key?.toLowerCase();
-        if (key === "views" || key === "view") {
-          row.views = val;
-        } else if (key === "likes" || key === "like") {
-          row.likes = val;
-        }
-        row[s.key] = val;
-      });
-      return row;
-    });
-  }, [labels, series]);
+  // Direct array from graph response
+  const chartData: AdGraphPoint[] = (graph?.[activeRange] || []) as AdGraphPoint[];
 
   // Dynamic Y-axis scale and ticks matching design
   const { maxChartVal, yTicks } = useMemo(() => {
@@ -170,7 +149,6 @@ export default function AnalyticsAdvertisementPage() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        {/* Skeleton for 4 State Cards */}
         <StateCardSkleton />
         <GraphSkeleton />
       </div>
@@ -281,10 +259,10 @@ export default function AnalyticsAdvertisementPage() {
               </div>
 
               <div className="flex flex-col sm:items-end gap-3">
-                {/* Range Toggle: Weekly | Monthly | Yearly */}
-                <div className="inline-flex items-center bg-bgLightColor p-1 rounded-sm  ">
-                  {["weekly", "monthly"].map((rangeKey) => {
-                    const isSelected = activeRange.toLowerCase() === rangeKey;
+                {/* Range Toggle: Weekly | Monthly */}
+                <div className="inline-flex items-center bg-bgLightColor p-1 rounded-sm">
+                  {(["weekly", "monthly"] as const).map((rangeKey) => {
+                    const isSelected = activeRange === rangeKey;
                     return (
                       <button
                         key={rangeKey}
@@ -329,7 +307,7 @@ export default function AnalyticsAdvertisementPage() {
                     strokeDasharray="3 3"
                   />
                   <XAxis
-                    dataKey="name"
+                    dataKey="label"
                     axisLine={false}
                     tickLine={false}
                     tick={{ fill: "#9CA3AF", fontSize: 12 }}

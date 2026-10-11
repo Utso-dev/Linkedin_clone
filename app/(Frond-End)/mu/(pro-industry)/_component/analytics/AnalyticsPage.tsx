@@ -21,18 +21,11 @@ import {
   YAxis,
 } from "recharts";
 
-interface SeriesItem {
-  name: string;
-  key: string;
-  data: number[];
-}
-
-interface RangeData {
-  labels: string[];
-  series: SeriesItem[];
-  total_applicants?: number;
-  total_views?: number;
-  total_positions?: number;
+interface GraphPoint {
+  label: string;
+  total_applicants: number;
+  job_views: number;
+  active_positions: number;
 }
 
 const SERIES_META: Record<string, { color: string; label: string }> = {
@@ -40,6 +33,11 @@ const SERIES_META: Record<string, { color: string; label: string }> = {
   job_views: { color: "#F59E0B", label: "Job Views" },
   active_positions: { color: "#EF4444", label: "Active Positions" },
 };
+
+const RANGE_OPTIONS = [
+  { value: "weekly", label: "Weekly" },
+  { value: "monthly", label: "Monthly" },
+];
 
 export default function AnalyticsPage() {
   const {
@@ -53,74 +51,33 @@ export default function AnalyticsPage() {
   const cards = overviewData?.cards;
   const graph = overviewData?.graph;
 
-  // Active range selection for chart (weekly, monthly, etc.)
-  const availableRanges = useMemo(() => {
-    if (graph?.ranges && typeof graph.ranges === "object") {
-      return Object.keys(graph.ranges);
-    }
-    return ["weekly", "monthly"];
-  }, [graph?.ranges]);
+  const [activeRange, setActiveRange] = useState<"weekly" | "monthly">("weekly");
 
-  const [activeRange, setActiveRange] = useState<string>("weekly");
-
-  const rangeOptions = useMemo(
-    () =>
-      availableRanges.map((r) => ({
-        value: r,
-        label:
-          r === "weekly"
-            ? "Weekly"
-            : r === "monthly"
-              ? "Monthly"
-              : r.charAt(0).toUpperCase() + r.slice(1),
-      })),
-    [availableRanges],
-  );
-
-  // Update default range if provided by graph
+  // Sync default range if specified by graph
   useEffect(() => {
-    if (graph?.active && availableRanges.includes(graph.active)) {
+    if (graph?.active === "weekly" || graph?.active === "monthly") {
       setActiveRange(graph.active);
     }
-  }, [graph?.active, availableRanges]);
+  }, [graph?.active]);
 
-  // Active range data
-  const currentRangeData: RangeData | undefined = useMemo(() => {
-    if (graph?.ranges?.[activeRange]) {
-      return graph.ranges[activeRange];
-    }
-    return graph;
-  }, [graph, activeRange]);
-
-  // Labels and Series
-  const labels: string[] = currentRangeData?.labels || [];
-  const series: SeriesItem[] = currentRangeData?.series || [];
-
-  // Transform data for Recharts
-  const chartData = useMemo(() => {
-    if (!labels.length) return [];
-    return labels.map((label, index) => {
-      const row: Record<string, any> = { name: label };
-      series.forEach((s) => {
-        row[s.key] = s.data?.[index] ?? 0;
-      });
-      return row;
-    });
-  }, [labels, series]);
+  // Direct array from graph response (no complex matrix transformations needed)
+  const chartData: GraphPoint[] = (graph?.[activeRange] || []) as GraphPoint[];
 
   // Max value calculation for Y-axis
   const maxChartVal = useMemo(() => {
     let max = 0;
     chartData.forEach((row) => {
-      series.forEach((s) => {
-        const val = Number(row[s.key]) || 0;
-        if (val > max) max = val;
-      });
+      max = Math.max(
+        max,
+        Number(row.total_applicants) || 0,
+        Number(row.job_views) || 0,
+        Number(row.active_positions) || 0,
+      );
     });
     if (max === 0) return 40;
     if (max <= 10) return 12;
     return Math.ceil(max * 1.25);
-  }, [chartData, series]);
+  }, [chartData]);
 
   // Y-axis tick formatter (e.g., 30k, 40k or raw numbers)
   const formatYAxis = (val: number) => {
@@ -136,30 +93,42 @@ export default function AnalyticsPage() {
       id: "job_views",
       title: "Job Views",
       total: cards?.job_views?.total ?? 0,
-      growthPercentage: cards?.job_views?.growth_percentage ?? 0,
+      growthPercentage: cards?.job_views?.growth_percentage,
+      badgeText: cards?.job_views?.growth
+        ? cards.job_views.growth.split(" ")[0]
+        : undefined,
       isPositive: cards?.job_views?.is_positive ?? true,
+      growthText: "From last month",
       icon: OpenEyeIcon,
     },
     {
       id: "total_applicants",
       title: "Total Applicant",
       total: cards?.total_applicants?.total ?? 0,
-      growthPercentage: cards?.total_applicants?.growth_percentage ?? 0,
+      growthPercentage: cards?.total_applicants?.growth_percentage,
+      badgeText: cards?.total_applicants?.growth
+        ? cards.total_applicants.growth.split(" ")[0]
+        : undefined,
       isPositive: cards?.total_applicants?.is_positive ?? true,
+      growthText: "From last month",
       icon: ApplicantIcon,
     },
     {
       id: "active_positions",
       title: "Active Positions",
       total: cards?.active_positions?.total ?? 0,
-      growthPercentage: cards?.active_positions?.growth_percentage ?? 0,
+      growthPercentage: cards?.active_positions?.growth_percentage,
+      badgeText: cards?.active_positions?.growth
+        ? cards.active_positions.growth.split(" ")[0]
+        : undefined,
       isPositive: cards?.active_positions?.is_positive ?? true,
+      growthText: "From last month",
       icon: ActiveIcon,
     },
   ];
 
-  // Custom Tooltip matching the screenshot design
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  // Custom Tooltip matching design
+  const CustomTooltip = ({ active, payload }: any) => {
     if (!active || !payload || !payload.length) return null;
     return (
       <div className="bg-white rounded-xl shadow-xl border border-borderColor/80 p-3.5 min-w-42.5 text-xs">
@@ -200,9 +169,7 @@ export default function AnalyticsPage() {
   if (isLoading) {
     return (
       <div className="space-y-6 animate-pulse">
-        {/* Skeleton Cards */}
         <StateCardSkleton />
-        {/* Skeleton Graph */}
         <GraphSkeleton />
       </div>
     );
@@ -216,7 +183,7 @@ export default function AnalyticsPage() {
         </p>
         <button
           onClick={() => refetch()}
-          className="text-xs bg-primaryColor text-white px-4 py-2 rounded-lg hover:bg-primaryColor/90 transition-colors"
+          className="text-xs bg-primaryColor text-white px-4 py-2 rounded-lg hover:bg-primaryColor/90 transition-colors cursor-pointer"
         >
           Try Again
         </button>
@@ -234,7 +201,9 @@ export default function AnalyticsPage() {
             title={item.title}
             total={item.total}
             growthPercentage={item.growthPercentage}
+            badgeText={item.badgeText}
             isPositive={item.isPositive}
+            growthText={item.growthText}
             icon={item.icon}
           />
         ))}
@@ -265,11 +234,11 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Range Dropdown Filter using SelecteInputField */}
-          <div className="w-25=8 self-start sm:self-auto">
+          <div className="w-32 self-start sm:self-auto">
             <SelecteInputField
               value={activeRange}
-              onChange={(val) => setActiveRange(val)}
-              options={rangeOptions}
+              onChange={(val) => setActiveRange(val as "weekly" | "monthly")}
+              options={RANGE_OPTIONS}
               className="h-9 text-xs font-medium rounded-sm border-borderColor bg-white"
             />
           </div>
@@ -288,7 +257,7 @@ export default function AnalyticsPage() {
                 strokeDasharray="3 3"
               />
               <XAxis
-                dataKey="name"
+                dataKey="label"
                 axisLine={false}
                 tickLine={false}
                 tick={{ fill: "#9CA3AF", fontSize: 12 }}
