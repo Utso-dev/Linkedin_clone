@@ -21,39 +21,61 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
   const [isApplying, setIsApplying] = useState(false);
   const { data } = useGetUserProfileQuery("");
   const planName = data?.subscription?.plan_type || "basic_user";
+  const isPublished = jobData.status === "published";
+  const hasApplied = Boolean(jobData.job_apply);
+  const isPremiumUser = planName === "premium";
+  const isBasicUser = planName === "basic_user";
+
+  const renderApplyAction = () => {
+    if (!isPublished) {
+      return (
+        <ButtonReuseable
+          title="Expired"
+          disabled
+          className="px-5 font-semibold! py-2! rounded-full! disabled:bg-redColor/10! disabled:text-redColor! border-redColor! cursor-not-allowed! text-sm!"
+        />
+      );
+    }
+
+    if (hasApplied) {
+      return (
+        <ButtonReuseable
+          title="Applied"
+          disabled
+          icon={<IoMdDoneAll className="w-4 h-4 text-lightGreenColor2" />}
+          className="px-5 font-semibold! py-2! rounded-full! disabled:bg-lightGreenColor2/10! disabled:text-lightGreenColor2! disabled:border-lightGreenColor2! cursor-not-allowed! text-sm!"
+        />
+      );
+    }
+
+    if (isPremiumUser) {
+      return (
+        <ButtonReuseable
+          title="Apply Now"
+          onClick={() => setIsApplying(true)}
+          className="px-5 font-semibold! py-2! rounded-full! hover:bg-primaryColor! hover:text-whiteColor! bg-white! text-primaryColor! border border-primaryColor text-sm!"
+        />
+      );
+    }
+
+    if (isBasicUser) {
+      return (
+        <Link
+          href="/mu/subscription?billing=monthly"
+          className="px-5 font-semibold! py-2! rounded-full! hover:bg-primaryColor! hover:text-whiteColor! bg-white! text-primaryColor! border border-primaryColor text-sm!"
+        >
+          Apply Now
+        </Link>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <div>
       <div className="flex items-center gap-2 lg:gap-3 flex-wrap">
-        {jobData?.status !== "published" ? (
-          <ButtonReuseable
-            title="Expired"
-            disabled
-            className="px-5 font-semibold! py-2! rounded-full!  disabled:bg-redColor/10! disabled:text-redColor! border-redColor! cursor-not-allowed! text-sm!"
-          />
-        ) : jobData?.job_apply ? (
-          <ButtonReuseable
-            title="Applied"
-            disabled
-            icon={<IoMdDoneAll className="w-4 h-4 text-lightGreenColor2" />}
-            className="px-5 font-semibold! py-2! rounded-full!  disabled:bg-lightGreenColor2/10! disabled:text-lightGreenColor2! disabled:border-lightGreenColor2! cursor-not-allowed! text-sm!"
-          />
-        ) : planName == "premium" ? (
-          <ButtonReuseable
-            title="Apply Now"
-            onClick={() => setIsApplying(true)}
-            className="px-5 font-semibold! py-2! rounded-full! hover:bg-primaryColor! hover:text-whiteColor! bg-white! text-primaryColor! border border-primaryColor  text-sm!"
-          />
-        ) : planName == "basic_user" ? (
-          <Link
-            href={`/mu/subscription?billing=monthly`}
-            className="px-5 font-semibold! py-2! rounded-full! hover:bg-primaryColor! hover:text-whiteColor! bg-white! text-primaryColor! border border-primaryColor  text-sm!"
-          >
-            Apply Now
-          </Link>
-        ) : (
-          ""
-        )}
+        {renderApplyAction()}
         <Link
           className="text-sm font-semibold text-primaryColor"
           href={`/mu/industry-profile/${jobData?.company_id}`}
