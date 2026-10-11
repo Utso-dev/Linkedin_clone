@@ -629,30 +629,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
             })}
           />
 
-          {/* Row 7: Salary Range min & Salary Range Max */}
-          <ReusableInput
-            id="salary_min"
-            label="Salary Range min"
-            required
-            placeholder="e.g. $20,000 USD"
-            className="rounded-lg border-borderColor text-sm text-headerColor"
-            error={errors.salary_min?.message}
-            {...register("salary_min", {
-              required: "Minimum salary range is required",
-            })}
-          />
 
-          <ReusableInput
-            id="salary_max"
-            label="Salary Range Max"
-            required
-            placeholder="e.g. $90,000 USD"
-            className="rounded-lg border-borderColor text-sm text-headerColor"
-            error={errors.salary_max?.message}
-            {...register("salary_max", {
-              required: "Maximum salary range is required",
-            })}
-          />
 
           <div className="col-span-2">
             <ReusableInput
@@ -799,6 +776,30 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
               )}
             />
           </div>
+                    {/* Row 7: Salary Range min & Salary Range Max */}
+          <ReusableInput
+            id="salary_min"
+            label="Salary Range min"
+            required
+            placeholder="e.g. $20,000 USD"
+            className="rounded-lg border-borderColor text-sm text-headerColor"
+            error={errors.salary_min?.message}
+            {...register("salary_min", {
+              required: "Minimum salary range is required",
+            })}
+          />
+
+          <ReusableInput
+            id="salary_max"
+            label="Salary Range Max"
+            required
+            placeholder="e.g. $90,000 USD"
+            className="rounded-lg border-borderColor text-sm text-headerColor"
+            error={errors.salary_max?.message}
+            {...register("salary_max", {
+              required: "Maximum salary range is required",
+            })}
+          />
 
           {/* Row 11: Add Tags (Full width) */}
           <div className="md:col-span-2">

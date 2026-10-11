@@ -8,7 +8,6 @@ import {
   JobsIcon,
   MessageIcon,
   PencileIcon,
-  SaveJobIcon,
 } from "@/public/svgIcons/Icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -53,11 +52,11 @@ function ProIndustrySidebar({ onItemClick }: { onItemClick?: () => void }) {
       slug: "/mu/message",
       icon: MessageIcon,
     },
-    {
-      label: "Saved job",
-      slug: "/mu/saved-jobs",
-      icon: SaveJobIcon,
-    },
+    // {
+    //   label: "Saved job",
+    //   slug: "/mu/saved-jobs",
+    //   icon: SaveJobIcon,
+    // },
     {
       label: "Post a job position",
       slug: "/mu/post-job-position",

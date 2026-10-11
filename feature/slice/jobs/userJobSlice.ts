@@ -27,9 +27,10 @@ const userJobSlice = baseApiSlice.injectEndpoints({
       providesTags: ["UserJob"],
     }),
     getAllSavedJobs: builder.query<any, any | void>({
-      query: () => ({
+      query: (params) => ({
         url: `/industry/saved-jobs`,
         method: "GET",
+        params,
       }),
       providesTags: ["UserJob"],
     }),
