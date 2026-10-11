@@ -1,9 +1,8 @@
 "use client";
 
 import { MultiUserIcon } from "@/public/svgIcons/Icons";
-import { Clock } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -14,23 +13,18 @@ import {
   YAxis,
 } from "recharts";
 
-interface RangeData {
-  labels?: string[];
-  series?: number[];
-  total?: number;
+interface GraphPoint {
+  label: string;
+  total_applicants?: number;
+  job_views?: number;
+  active_positions?: number;
 }
 
 interface ApplicantsChartData {
   active?: string;
-  active_range?: string;
-  labels?: string[];
-  series?: number[];
-  ranges?: {
-    weekly?: RangeData;
-    monthly?: RangeData;
-    yearly?: RangeData;
-    daily?: RangeData;
-  };
+  weekly?: GraphPoint[];
+  monthly?: GraphPoint[];
+  yearly?: GraphPoint[];
 }
 
 interface ActivityFeedItem {
@@ -52,20 +46,26 @@ function RecruiterApplicantOverview({
   applicantsChart,
   activityFeed = [],
 }: RecruiterApplicantOverviewProps) {
-  // Chart range toggle state
   const [chartRange, setChartRange] = useState<"weekly" | "monthly" | "yearly">(
     "weekly",
   );
 
-  // Format data for Recharts based on active range
-  const chartData = useMemo(() => {
-    const rangeData = applicantsChart?.ranges?.[chartRange] || applicantsChart;
-    const labels = rangeData?.labels || [];
-    const series = rangeData?.series || [];
+  useEffect(() => {
+    if (
+      applicantsChart?.active === "weekly" ||
+      applicantsChart?.active === "monthly" ||
+      applicantsChart?.active === "yearly"
+    ) {
+      setChartRange(applicantsChart.active);
+    }
+  }, [applicantsChart?.active]);
 
-    return labels.map((label: string, index: number) => ({
-      name: label,
-      applicants: series[index] ?? 0,
+  const chartData = useMemo(() => {
+    const rangeData = applicantsChart?.[chartRange] || [];
+
+    return rangeData.map((item) => ({
+      name: item.label,
+      applicants: item.total_applicants ?? 0,
     }));
   }, [applicantsChart, chartRange]);
 
@@ -151,15 +151,13 @@ function RecruiterApplicantOverview({
                   if (active && payload && payload.length) {
                     return (
                       <div className="bg-blackColor text-white px-3.5 py-2 rounded-md shadow-xl text-xs font-medium space-y-0.5">
-                        <p className="font-bold text-sm">
-                          {payload[0].value} Applicant
-                          {Number(payload[0].value) !== 1 ? "s" : ""}
+                        <p className="font-bold text-sm flex items-center gap-1">
+                          <MultiUserIcon className="w-4 h-4" />{" "}
+                          {payload[0].value} 
                         </p>
                         <p className="text-gray-300 text-[11px] flex items-center gap-1">
-                          <span>
-                            <MultiUserIcon className="w-4 h-4" />
-                          </span>{" "}
-                          {label}
+                        Applicant
+                          {Number(payload[0].value) !== 1 ? "s" : ""}
                         </p>
                       </div>
                     );
@@ -207,12 +205,12 @@ function RecruiterApplicantOverview({
             </Link>
           </div>
 
-          <div className="divide-y divide-borderColor/60 space-y-3.5">
+          <div className="  ">
             {activityFeed.length > 0 ? (
               activityFeed.map((item) => (
                 <div
                   key={item.id}
-                  className="pt-3.5 first:pt-0 flex items-start gap-3"
+                  className="pt-3.5 first:pt-0 border-b pb-4 flex items-start gap-3"
                 >
                   <span className="w-2.5 h-2.5 rounded-full bg-buttonColor shrink-0 mt-1.5 shadow-xs" />
                   <div className="min-w-0 flex-1">
@@ -237,8 +235,6 @@ function RecruiterApplicantOverview({
             )}
           </div>
         </div>
-
-        
       </div>
     </div>
   );

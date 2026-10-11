@@ -2,6 +2,7 @@
 
 import { useSaveUserJobMutation } from "@/feature/slice/jobs/userJobSlice";
 import { userJobType } from "@/lib/type";
+import { Bookmark } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { memo } from "react";
@@ -9,7 +10,6 @@ import toast from "react-hot-toast";
 import { FiBookmark } from "react-icons/fi";
 import { HiOutlineCheckBadge } from "react-icons/hi2";
 import JobApplyAaction from "./JobApplyAaction";
-import { Bookmark } from "lucide-react";
 
 export const JobCard = memo(({ job }: { job: userJobType }) => {
   const [saveUserJob, { isLoading, isSuccess, isError }] =
@@ -55,8 +55,8 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
 
             <HiOutlineCheckBadge className="text-primaryColor text-base shrink-0" />
           </div>
-          <span className="px-3 py-1 rounded-full text-sm font-medium bg-primaryColor/20 text-primaryColor">
-            {job?.work_mode}
+          <span className="px-3 py-1 rounded-full text-sm capitalize font-medium bg-primaryColor/20 text-primaryColor">
+            {job?.work_mode.split("_").join(" ")}
           </span>
         </div>
         <div className="">
@@ -103,10 +103,10 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
                 aria-label={`Save ${job.job_title}`}
                 className="flex-col text-grayColor1 justify-center disabled:cursor-not-allowed items-center cursor-pointer gap-1 hover:text-primaryColor transition-colors"
               >
-                 {job?.is_saved ? (
-                <Bookmark className="w-6 h-6 fill-primaryColor ml-0.75 text-primaryColor" />
+                {job?.is_saved ? (
+                  <Bookmark className="w-6 h-6 fill-primaryColor ml-0.75 text-primaryColor" />
                 ) : (
-                <FiBookmark className="w-6 h-6 ml-0.75" />
+                  <FiBookmark className="w-6 h-6 ml-0.75" />
                 )}
                 Save
               </button>

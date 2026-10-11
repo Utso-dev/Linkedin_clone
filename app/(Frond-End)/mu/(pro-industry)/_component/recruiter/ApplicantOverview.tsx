@@ -5,6 +5,7 @@ import { OpenEyeIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import ApplicantStatusUpdate from "../applicant/ApplicantStatusUpdate";
+import { getBadgeConfig } from "@/public/demoData/RealData";
 
 interface ApplicantOverviewProps {
   recentApplicants?: any[];
@@ -84,17 +85,17 @@ export default function ApplicantOverview({
       label: "Status",
       accessor: "status",
       position: "justify-center",
-      formatter: (_: any, row: any) => (
-        <div className="px-3">
-          <ApplicantStatusUpdate row={row} className="flex justify-center" />
-        </div>
+      formatter: (value: any, row: any) => (
+        <p className={`px-3 py-1 capitalize text-sm rounded-sm text-center border leading-[140%] ${getBadgeConfig(row.status)?.colorClass}`}>
+          {value}
+        </p>
       ),
     },
     {
       label: "Action",
       accessor: "action",
       position: "justify-center",
-      formatter: () => (
+      formatter: (_, row: any) => (
         <div className="flex items-center justify-center gap-3 px-3">
           <button
             type="button"

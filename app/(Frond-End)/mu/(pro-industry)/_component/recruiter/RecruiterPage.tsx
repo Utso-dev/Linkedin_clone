@@ -20,7 +20,7 @@ export default function RecruiterPage() {
   const dashboardData = response?.data;
   const cards = dashboardData?.cards;
   const recentJobs = dashboardData?.recent_jobs || [];
-  const applicantsChart = dashboardData?.applicants_chart;
+  const applicantsChart = dashboardData?.graph;
   const activityFeed = dashboardData?.activity_feed || [];
   const recentApplicants = dashboardData?.recent_applicants || [];
 
