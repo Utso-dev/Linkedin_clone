@@ -29,8 +29,8 @@ function JobDetailsHeader() {
     <div>
       <section className="rounded-xl border border-grayColor2 bg-white p-4  md:p-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="">
-            <h1 className="text-base font-bold text-headerColor md:text-lg lg:text-xl 2xl:text-2xl">
+          <div className="xl:max-w-145 md:max-w-90 lg:max-w-85">
+            <h1 className="text-base font-bold text-headerColor md:text-lg xl:text-xl ">
               {job.job_title}
             </h1>
             <p className="mt-1 text-base text-descriptionColor">

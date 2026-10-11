@@ -1,5 +1,5 @@
 import React from "react";
-import AdvertisementPage from "../../_component/analytics/AdvertisementPage";
+import AdvertisementPage from "../../_component/analytics/AnalyticsAdvertisementPage";
 
 function page() {
   return (
