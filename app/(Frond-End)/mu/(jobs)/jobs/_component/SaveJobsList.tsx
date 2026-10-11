@@ -3,9 +3,15 @@ import { useGetAllSavedJobsQuery } from "@/feature/slice/jobs/userJobSlice";
 import SaveJobcard from "./SaveJobcard";
 import { SaveJobcardSkeleton } from "./SaveJobcardSkeleton";
 import SaveJobsNotFound from "./SaveJobsNotFound";
+import { useUrlQueryParams } from "@/hooks/useUrlQueryParams";
 
 function SaveJobsList() {
-  const { data, isLoading, isError } = useGetAllSavedJobsQuery("saved-jobs");
+  const { params } = useUrlQueryParams();
+  const search = params.search?.trim();
+  
+  const { data, isLoading, isError } = useGetAllSavedJobsQuery(
+    search ? { search } : {},
+  );
   const savedJobs = data?.data || data || [];
   return (
     <div>
