@@ -88,6 +88,7 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
                 jobTitle: job?.job_title,
                 jobId: job?.id,
                 job_apply: job?.is_applied,
+                status: job?.status,
               }}
             />
             <div className="flex items-end gap-3 text-sm  ">

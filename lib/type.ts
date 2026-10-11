@@ -376,6 +376,7 @@ export interface userJobType {
   created_at_human: string;
   is_saved: boolean;
   is_liked: boolean;
+  status: string;
   is_applied: boolean;
   application_status: string | null;
   network_type: string;

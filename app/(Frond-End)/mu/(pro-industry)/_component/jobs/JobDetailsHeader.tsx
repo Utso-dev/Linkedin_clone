@@ -94,6 +94,7 @@ function JobDetailsHeader() {
                   jobTitle: job?.job_title,
                   jobId: id,
                   job_apply: job?.is_applied,
+                  status: job?.status,
                 }}
               />
             </div>
