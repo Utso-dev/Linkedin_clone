@@ -1,5 +1,4 @@
-import { Briefcase, Plus } from "lucide-react";
-import Link from "next/link";
+import { Briefcase } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
 function EmptyJobs({ clearAllFilters }: { clearAllFilters: () => void }) {
@@ -24,13 +23,9 @@ function EmptyJobs({ clearAllFilters }: { clearAllFilters: () => void }) {
           <Briefcase className="w-7 h-7" />
         </div>
         <h3 className="text-base md:text-lg font-bold text-headerColor">
-          {hasActiveFilters ? "No matching jobs found" : "No job postings yet"}
+          No Item found yet
         </h3>
-        <p className="text-sm md:text-sm text-gray-500 mt-1 mb-5">
-          {hasActiveFilters
-            ? "Try adjusting your search query or status filter to see other jobs."
-            : "Create your first professional job listing to connect with qualified candidates."}
-        </p>
+
         <div className="flex items-center justify-center gap-3">
           {hasActiveFilters && (
             <button
@@ -41,12 +36,6 @@ function EmptyJobs({ clearAllFilters }: { clearAllFilters: () => void }) {
               Clear Filters
             </button>
           )}
-          <Link
-            href={"/mu/post-job-position"}
-            className="px-4 py-2 rounded-lg bg-[#009dae] hover:bg-[#008999] text-white text-sm font-medium transition-colors flex items-center gap-1.5"
-          >
-            <Plus className="w-4 h-4" /> Post a job position
-          </Link>
         </div>
       </div>
     </div>
