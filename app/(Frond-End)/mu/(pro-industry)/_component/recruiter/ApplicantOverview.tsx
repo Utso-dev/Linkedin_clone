@@ -59,8 +59,9 @@ export default function ApplicantOverview({
     {
       label: "Position",
       accessor: "position",
+      with: "250px",
       formatter: (val: any, row: any) => (
-        <span className="text-sm text-headerColor font-medium px-3">
+        <span className="text-sm text-headerColor wrap-break-word max-w-50 font-medium px-3">
           {val || row.job_title}
         </span>
       ),

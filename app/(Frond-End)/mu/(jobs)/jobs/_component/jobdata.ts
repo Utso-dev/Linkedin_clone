@@ -21,10 +21,10 @@ export interface JobItem {
 export const JOB_TYPE_OPTIONS = [
   { label: "All", value: "all" },
   { label: "Full-Time", value: "full_time" },
-  { label: "Short-Term", value: "short_term" },
-  { label: "Contract", value: "contract" },
   { label: "Part-Time", value: "part_time" },
   { label: "Internship", value: "internship" },
+  { label: "Short-Term", value: "short_term" },
+  { label: "Contract", value: "contract" },
 ];
 export const WORKPLACE_TYPE_OPTIONS = [
   { label: "On-site", value: "on_site" },

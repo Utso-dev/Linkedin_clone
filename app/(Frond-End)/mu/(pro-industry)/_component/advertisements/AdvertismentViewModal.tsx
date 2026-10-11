@@ -1,8 +1,10 @@
 "use client";
 
+import ButtonReuseable from "@/components/reusable/CustomButton";
 import RootDialog from "@/components/reusable/RootDialog";
 import { useGetAdvertisemetEditeQuery } from "@/feature/slice/jobs/advertisementSlice";
 import dayjs from "dayjs";
+import { X } from "lucide-react";
 import Image from "next/image";
 
 interface AdvertismentViewModalProps {
@@ -32,15 +34,24 @@ export default function AdvertismentViewModal({
       ariaLabel="View Product Advertisement"
       ariaDescription="Detailed view of product advertisement"
     >
-      <div className="p-5 md:p-7 overflow-y-auto max-h-[90vh] space-y-6">
+      <div className="flex max-h-[90vh] flex-col overflow-hidden">
         {/* Header Title */}
-        <div>
+        <div className="sticky top-0 z-10 shrink-0 border-b flex justify-between items-center border-borderColor/60 bg-white px-5 py-4 md:px-7">
           <h2 className="text-lg md:text-xl font-bold text-headerColor">
             View Product
           </h2>
+            <ButtonReuseable
+                      type="button"
+                      onClick={() => setOpen(false)}
+                      icon={<X size={20}/>}
+                      
+                      className="w-10 h-10 p-0! rounded-full bg-transparent! text-descriptionColor! shadow-none! hover:bg-bgColor transition-colors "
+                    />
         </div>
 
-        {isLoading ? (
+        <div className="flex-1 overflow-y-auto p-5 md:p-7">
+          <div className="space-y-6">
+            {isLoading ? (
           <div className="py-16 flex flex-col items-center justify-center space-y-3">
             <span className="inline-block w-8 h-8 border-3 border-primaryColor border-t-transparent rounded-full animate-spin" />
             <p className="text-sm text-descriptionColor">
@@ -234,6 +245,8 @@ export default function AdvertismentViewModal({
             No details found for this advertisement.
           </div>
         )}
+          </div>
+        </div>
       </div>
     </RootDialog>
   );

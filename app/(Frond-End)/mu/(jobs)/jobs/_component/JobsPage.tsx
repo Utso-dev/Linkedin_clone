@@ -34,9 +34,11 @@ export default function JobsPage() {
         ? "Full Time"
         : activeFilter === "part_time"
           ? "Part Time"
-          : activeFilter === "short-term"
+          : activeFilter === "short_term"
             ? "Short Term"
-            : "Remote";
+            : activeFilter === "internship"
+              ? "Internship"
+              : "Contract";
 
   return (
     <main className="w-full">

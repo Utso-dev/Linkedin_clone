@@ -147,7 +147,7 @@ export default function AplicantDetailsPage({
       position: "justify-start",
       formatter: (_: any, row: ApplicantItemType) => (
         <div
-          className="px-4 py-3.5 text-sm text-descriptionColor truncate"
+          className="px-4 py-3.5 text-sm wrap-break-word max-w-45 text-descriptionColor truncate"
           title={row.position}
         >
           {row.position || "N/A"}
