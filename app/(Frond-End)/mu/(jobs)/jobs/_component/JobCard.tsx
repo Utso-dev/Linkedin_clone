@@ -101,7 +101,9 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
                 disabled={isLoading}
                 aria-busy={isLoading}
                 aria-label={`Save ${job.job_title}`}
-                className="flex-col text-grayColor1 justify-center disabled:cursor-not-allowed items-center cursor-pointer gap-1 hover:text-primaryColor transition-colors"
+                className={`flex flex-col text-grayColor1 justify-center items-center gap-1 hover:text-primaryColor transition-colors disabled:opacity-50 ${
+                  isLoading ? "cursor-not-allowed" : "cursor-pointer"
+                }`}
               >
                 {job?.is_saved ? (
                   <Bookmark className="w-6 h-6 fill-primaryColor ml-0.75 text-primaryColor" />

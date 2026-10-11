@@ -218,14 +218,14 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
               <ReusableInput
                 id="fullName"
                 label="Full name"
-                placeholder="Enter your full name"
+                placeholder="Enter full name"
                 error={errors.fullName?.message}
                 {...register("fullName", { required: "Full name is required" })}
                 className="rounded-lg h-11! md:h-12!"
               />
               <ReusableInput
                 id="email"
-                label="Enter your email"
+                label="Enter email"
                 type="email"
                 placeholder="example@email.com"
                 error={errors.email?.message}
@@ -246,7 +246,7 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
                 id="phone"
                 label="Phone number"
                 type="tel"
-                placeholder="Enter your phone number"
+                placeholder="Enter phone number"
                 error={errors.phone?.message}
                 {...register("phone")}
                 className="rounded-lg h-11! md:h-12!"
@@ -266,7 +266,7 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
               <ReusableInput
                 id="currentPosition"
                 label="Current Position"
-                placeholder="Enter your Location"
+                placeholder="Enter current position"
                 error={errors.currentPosition?.message}
                 {...register("currentPosition")}
                 className="rounded-lg h-11! md:h-12!"
@@ -276,7 +276,7 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
                 label="Expected Salary"
                 required
                 type="number"
-                placeholder="Enter your Location"
+                placeholder="Enter expected salary"
                 error={errors.expectedSalary?.message}
                 {...register("expectedSalary", {
                   required: "Expected salary is required",
@@ -286,7 +286,7 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
               <ReusableInput
                 id="location"
                 label="Location"
-                placeholder="Enter your Location"
+                placeholder="Enter Location"
                 error={errors.location?.message}
                 {...register("location")}
                 className="rounded-lg h-11! md:h-12!"
@@ -297,7 +297,7 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
             <ReusableInput
               id="linkedinUrl"
               label="LinkedIn URL"
-              placeholder="Link to your LinkedIn URL"
+              placeholder="Link to LinkedIn URL"
               error={errors.linkedinUrl?.message}
               {...register("linkedinUrl")}
               className="rounded-lg h-11! md:h-12!"
@@ -307,7 +307,7 @@ function CustomApplyForm({ jobId }: CustomApplyFormProps) {
             <ReusableInput
               id="portfolioUrl"
               label="Portfolio URL"
-              placeholder="Link to your portfolio URL"
+              placeholder="Link to portfolio URL"
               error={errors.portfolioUrl?.message}
               {...register("portfolioUrl")}
               className="rounded-lg h-11! md:h-12!"
