@@ -91,8 +91,8 @@ function JobDetailsHeader() {
             <div>
               <JobApplyAaction
                 jobData={{
-                  company_name: job?.industry?.name,
-                  company_id: job?.industry?.id,
+                  industry_name: job?.industry?.name,
+                  industry_id: job?.industry?.id,
                   jobTitle: job?.job_title,
                   jobId: id,
                   job_apply: job?.is_applied,

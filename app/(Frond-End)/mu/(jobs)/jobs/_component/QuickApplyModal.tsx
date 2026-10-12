@@ -151,13 +151,13 @@ function QuickApplyModal({
       open={open}
       setOpen={setOpen}
       className="max-w-135! rounded-2xl! overflow-hidden"
-      ariaLabel={`Apply to ${jobData?.company_name || "Company"}?`}
+      ariaLabel={`Apply to ${jobData?.industry_name || "Company"}?`}
     >
       <div className="flex h-[85vh] max-h-[85vh] flex-col bg-white">
         {/* Fixed Header (Does not scroll) */}
         <div className="px-5 sm:px-6 pt-5 pb-4 border-b border-borderColor/60 pr-12 shrink-0">
           <h3 className="text-lg sm:text-xl font-bold text-headerColor">
-            Apply to {jobData?.company_name || "Company"}?
+            Apply to {jobData?.industry_name || "Company"}?
           </h3>
         </div>
 

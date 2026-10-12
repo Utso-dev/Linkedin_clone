@@ -5,7 +5,7 @@ export function useInfiniteScroll(
   isFetching,
   isLoading,
   observerOptions = {},
-  resetKey,
+  resetKey = undefined,
 ) {
   const [page, setPage] = useState(1);
   const [combinedData, setCombinedData] = useState([]);
