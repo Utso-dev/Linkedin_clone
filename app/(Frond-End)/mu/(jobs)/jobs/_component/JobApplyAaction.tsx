@@ -25,6 +25,7 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
   const hasApplied = Boolean(jobData.job_apply);
   const isPremiumUser = planName === "premium";
   const isBasicUser = planName === "basic_user";
+console.log(data,"data");
 
   const renderApplyAction = () => {
     if (!isPublished) {

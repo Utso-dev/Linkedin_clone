@@ -82,7 +82,9 @@ function JobDetailsHeader() {
               {job.employment_type.split("_").join(" ")}
             </span>
           </span>
-          <span className="flex items-center gap-1.5">{salary}</span>
+          <span className="flex items-center gap-1.5">
+            {salary}/{job?.salary_type}
+          </span>
         </div>
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3  border-grayColor2 ">
           {pathName.includes("mu/jobs-details") ? (

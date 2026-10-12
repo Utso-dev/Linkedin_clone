@@ -242,6 +242,7 @@ export interface JobDetails {
   website: string;
   salary_min: string;
   salary_max: string;
+  salary_type: string;
   is_applied: boolean;
   tags: string[];
   status: string;
@@ -388,5 +389,5 @@ export interface userJobType {
   salary_max: string;
   state_id: number;
   city_id: number;
-  company:  CompanyType;
+  company: CompanyType;
 }
