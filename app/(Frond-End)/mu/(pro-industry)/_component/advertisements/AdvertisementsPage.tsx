@@ -21,6 +21,7 @@ import Link from "next/link";
 import { useState } from "react";
 import AdvertisementDeleteModal from "./AdvertisementDeleteModal";
 import AdvertismentViewModal from "./AdvertismentViewModal";
+import AdvertismentStatusUpdate from "./AdvertismentStatusUpdate";
 
 export default function AdvertisementsPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -173,31 +174,9 @@ export default function AdvertisementsPage() {
     {
       label: "Status",
       accessor: "status",
-      formatter: (val: string) => {
-        const lower = val?.toLowerCase();
-        const isActive = lower === "active";
-        const isInactive = lower === "inactive";
-        return (
-          <div className="px-3">
-            <span
-              className={`inline-flex items-center gap-1.5 leading-[120%] text-sm font-medium px-2.5 py-0.5 rounded-full capitalize ${
-                isActive
-                  ? "bg-lightGreenColor2/10 text-lightGreenColor2 text-shadow-lightGreenColor2 border border-lightGreenColor2/30"
-                  : isInactive
-                    ? "bg-redColor/10 text-redColor border border-redColor/30"
-                    : "bg-redColor/10 text-redColor border border-redColor/30"
-              }`}
-            >
-              <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  isActive ? "bg-lightGreenColor2" : "bg-redColor"
-                }`}
-              />
-              {val || "Active"}
-            </span>
-          </div>
-        );
-      },
+      formatter: (_: string, row: any) => (
+        <AdvertismentStatusUpdate row={row} />
+      ),
     },
     {
       label: "Views",

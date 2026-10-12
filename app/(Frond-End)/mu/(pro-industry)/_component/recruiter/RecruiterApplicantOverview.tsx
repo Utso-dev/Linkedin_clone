@@ -24,7 +24,6 @@ interface ApplicantsChartData {
   active?: string;
   weekly?: GraphPoint[];
   monthly?: GraphPoint[];
-  yearly?: GraphPoint[];
 }
 
 interface ActivityFeedItem {
@@ -46,15 +45,15 @@ function RecruiterApplicantOverview({
   applicantsChart,
   activityFeed = [],
 }: RecruiterApplicantOverviewProps) {
-  const [chartRange, setChartRange] = useState<"weekly" | "monthly" | "yearly">(
+  const [chartRange, setChartRange] = useState<"weekly" | "monthly" >(
     "weekly",
   );
 
   useEffect(() => {
     if (
       applicantsChart?.active === "weekly" ||
-      applicantsChart?.active === "monthly" ||
-      applicantsChart?.active === "yearly"
+      applicantsChart?.active === "monthly"
+      
     ) {
       setChartRange(applicantsChart.active);
     }
@@ -89,7 +88,7 @@ function RecruiterApplicantOverview({
 
           {/* Range Toggle Tabs */}
           <div className="bg-bgLightColor border border-bgColor rounded-md p-0.75 flex items-center gap-1 self-start sm:self-auto">
-            {(["weekly", "monthly", "yearly"] as const).map((range) => {
+            {(["weekly", "monthly"] as const).map((range) => {
               const isActive = chartRange === range;
               return (
                 <button

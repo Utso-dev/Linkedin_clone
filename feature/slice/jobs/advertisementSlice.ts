@@ -56,6 +56,16 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
       },
         invalidatesTags: ["Advertisement"],
     }),
+    updateAdvertisementStatus: builder.mutation({
+      query: ({ id, data }) => {
+        return {
+          url: `industry/advertisements/${id}/status`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+        invalidatesTags: ["Advertisement"],
+    }),
     updateAdvertisement: builder.mutation({
       query: ({ id, data }) => {
         return {
@@ -81,6 +91,7 @@ export const {
   useGetAdvertisementDashboardQuery,
   useGetAdvertisementDataQuery,
   useGetAdvertisemetSectionQuery,
+  useUpdateAdvertisementStatusMutation,
   useGetAdvertisemetCategoriesQuery,
   useCreateAdvertisementMutation,
   useUpdateAdvertisementMutation,

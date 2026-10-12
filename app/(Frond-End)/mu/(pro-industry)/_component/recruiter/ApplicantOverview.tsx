@@ -1,11 +1,10 @@
 "use client";
 
 import DynamicTable from "@/components/reusable/DynamicTable";
+import { getBadgeConfig } from "@/public/demoData/RealData";
 import { OpenEyeIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
-import ApplicantStatusUpdate from "../applicant/ApplicantStatusUpdate";
-import { getBadgeConfig } from "@/public/demoData/RealData";
 
 interface ApplicantOverviewProps {
   recentApplicants?: any[];
@@ -87,7 +86,9 @@ export default function ApplicantOverview({
       accessor: "status",
       position: "justify-center",
       formatter: (value: any, row: any) => (
-        <p className={`px-3 py-1 capitalize text-sm rounded-sm text-center border leading-[140%] ${getBadgeConfig(row.status)?.colorClass}`}>
+        <p
+          className={`px-3 py-1 capitalize text-sm rounded-sm text-center border leading-[140%] ${getBadgeConfig(row.status)?.colorClass}`}
+        >
           {value}
         </p>
       ),
@@ -98,13 +99,13 @@ export default function ApplicantOverview({
       position: "justify-center",
       formatter: (_, row: any) => (
         <div className="flex items-center justify-center gap-3 px-3">
-          <button
-            type="button"
+          <Link
+            href={`/mu/job-listing/${row?.job_post_id}/applicants`}
             className="text-gray-400 hover:text-primaryColor transition-colors cursor-pointer"
             title="View Applicant"
           >
             <OpenEyeIcon className="w-4 h-4" />
-          </button>
+          </Link>
         </div>
       ),
     },
@@ -121,12 +122,12 @@ export default function ApplicantOverview({
             Review and manage latest candidate applications across all jobs
           </p>
         </div>
-        <Link
+        {/* <Link
           href="/mu/job-listing"
           className="text-sm font-medium text-headerColor border border-borderColor px-4 py-1.5 rounded-sm hover:bg-bgColor transition-colors"
         >
           View All
-        </Link>
+        </Link> */}
       </div>
 
       <div className="overflow-hidden ">
