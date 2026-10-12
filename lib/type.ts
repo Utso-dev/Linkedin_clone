@@ -370,6 +370,7 @@ export interface CompanyType {
   name: string;
   slug: string;
   logo: string;
+  is_own_industry: boolean;
   website: string;
 }
 
@@ -389,6 +390,7 @@ export interface userJobType {
   status: string;
   is_applied: boolean;
   application_status: string | null;
+  
   network_type: string;
   employment_offering: string;
   category: string;

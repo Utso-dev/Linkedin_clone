@@ -17,7 +17,7 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
   const handleSaveJob = async (id) => {
     try {
       const response = await saveUserJob(id).unwrap();
-      console.log(response, "response");
+
       toast.success(response?.message || "Job saved successfully!");
     } catch (error) {
       console.error("Error saving job:", error);
@@ -89,6 +89,7 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
                 jobId: job?.id,
                 job_apply: job?.is_applied,
                 status: job?.status,
+                is_own_industry: job?.industry?.is_own_industry,
               }}
             />
             <div className="flex items-end gap-3 text-sm  ">

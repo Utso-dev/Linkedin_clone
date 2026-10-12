@@ -11,6 +11,7 @@ export interface ApplyActionType {
   industry_id: string | number;
   job_apply?: boolean;
   status?: string;
+  is_own_industry?: boolean;
 }
 
 interface JobApplyAactionProps {
@@ -25,7 +26,7 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
   const hasApplied = Boolean(jobData.job_apply);
   const isPremiumUser = planName === "premium";
   const isBasicUser = planName === "basic_user";
-console.log(data,"data");
+  console.log(data, "data");
 
   const renderApplyAction = () => {
     if (!isPublished) {
@@ -79,7 +80,11 @@ console.log(data,"data");
         {renderApplyAction()}
         <Link
           className="text-sm font-semibold text-primaryColor"
-          href={`/mu/industry-profile/${jobData?.industry_id}`}
+          href={
+            jobData?.is_own_industry
+              ? `/mu/industry-profile/${jobData?.industry_id}`
+              : `/mu/industry/${jobData?.industry_id}`
+          }
         >
           View Company
         </Link>
