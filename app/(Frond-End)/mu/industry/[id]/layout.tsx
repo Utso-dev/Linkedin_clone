@@ -26,12 +26,16 @@ async function layout({
       title: "Products advertisement",
       href: `/mu/industry/${id}/products-advertisement`,
     },
-   
   ];
   return (
-    <div className="py-10 md:py-14 xl:py-20">
+    <div className="pt-6 md:pt-8 pb-10 md:pb-14 xl:pb-20">
       <IndustryHeroSection userId={id} />
-      <AnalyticsMenue menuData={menuData} initialPath={`/mu/industry/${id}`} />
+      <div className="mt-3">
+        <AnalyticsMenue
+          menuData={menuData}
+          initialPath={`/mu/industry/${id}`}
+        />
+      </div>
       {children}
     </div>
   );
