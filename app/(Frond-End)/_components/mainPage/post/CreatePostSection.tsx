@@ -8,13 +8,15 @@ import {
   SendIcon,
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import CreatePostDialog from "../profile/CreatePostDialog";
 
 function CreatePostSection() {
   const [isOpen, setIsOpen] = useState(false);
-
+  
   const { data } = useGetUserProfileQuery("user");
+ 
 
   const [postText, setPostText] = useState("");
 
@@ -81,7 +83,7 @@ function CreatePostSection() {
           </button>
         </div>
       </div>
-      {isOpen && <CreatePostDialog isOpen={isOpen} setIsOpen={setIsOpen} />}
+      {isOpen && <CreatePostDialog  isOpen={isOpen} setIsOpen={setIsOpen} />}
     </div>
   );
 }

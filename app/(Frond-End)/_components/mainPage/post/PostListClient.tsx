@@ -9,14 +9,28 @@ import PostCardSkleton from "./PostCardSkleton";
 
 type Props = {
   initialData: any;
+  initialUrl?: string;
   limit?: number;
 };
 
-export default function PostListClient({ initialData, limit = 10 }: Props) {
+function getPageUrl(url: string, page: number, limit: number) {
+  const [pathname, query = ""] = url.split("?");
+  const params = new URLSearchParams(query);
+
+  params.set("page", String(page));
+  params.set("per_page", String(limit));
+
+  return `${pathname}?${params.toString()}`;
+}
+
+export default function PostListClient({
+  initialData,
+  initialUrl = "/newsfeed",
+  limit = 10,
+}: Props) {
   const [dataResponse, setDataResponse] = useState<any>(
     initialData ?? { data: [] },
   );
-
 
   const [isFetching, setIsFetching] = useState(false);
 
@@ -28,6 +42,8 @@ export default function PostListClient({ initialData, limit = 10 }: Props) {
     dataResponse,
     isFetching,
     false,
+    {},
+    initialUrl,
   );
 
   useEffect(() => {
@@ -37,9 +53,7 @@ export default function PostListClient({ initialData, limit = 10 }: Props) {
     const fetchPage = async () => {
       setIsFetching(true);
       try {
-        const res = await fetchWrapper(
-          `/newsfeed?page=${page}&per_page=${limit}`,
-        );
+        const res = await fetchWrapper(getPageUrl(initialUrl, page, limit));
         if (!cancelled && res) setDataResponse(res);
       } catch (err) {
         console.error(err);
@@ -53,7 +67,7 @@ export default function PostListClient({ initialData, limit = 10 }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [page, limit]);
+  }, [initialUrl, page, limit]);
 
   return (
     <section className="space-y-4">

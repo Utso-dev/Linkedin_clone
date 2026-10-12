@@ -13,6 +13,7 @@ import {
 } from "@/public/svgIcons/Icons";
 import { useDispatch, useSelector } from "react-redux";
 
+import { useCreateIndustryPostMutation } from "@/feature/slice/jobs/industrySlice";
 import {
   resetPostComposeState,
   setPostText,
@@ -20,7 +21,7 @@ import {
 import { ImageUploadIcon } from "@/public/svgIcons/Icons";
 import { Loader, X } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -41,8 +42,12 @@ function PostModal({
   setPostType?: (type: string) => void;
   postData?: any;
 }) {
-  const { postText = "", postVisibility, commentControl, selectedGroupIds } =
-    useSelector((state: any) => state.postCompose);
+  const {
+    postText = "",
+    postVisibility,
+    commentControl,
+    selectedGroupIds,
+  } = useSelector((state: any) => state.postCompose);
   const [previewMedia, setPreviewMedia] = useState<PreviewMedia[]>([]);
   const [removedMediaIds, setRemovedMediaIds] = useState<number[]>([]);
   const { data } = useGetUserProfileQuery("user");
@@ -50,7 +55,12 @@ function PostModal({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const dispatch = useDispatch();
   const router = useRouter();
-  const [createPost, { isLoading, isError }] = useCreatePostMutation();
+  const pathName = usePathname();
+  const idustry = pathName.includes("industry");
+  console.log(idustry, "idustry");
+  const [createPost, { isLoading, isError }] = idustry
+    ? useCreateIndustryPostMutation()
+    : useCreatePostMutation();
   const [updatePost, { isLoading: isUpdating, isError: isUpdateError }] =
     useUpdatePostMutation();
   useEffect(() => {
@@ -154,8 +164,10 @@ function PostModal({
     if (!trimmedText && previewMedia.length === 0) {
       return;
     }
-
     const formData = new FormData();
+    if (idustry) {
+      formData.append("content", trimmedText);
+    }
     formData.append("description", trimmedText);
     formData.append(
       "visibility",
