@@ -20,7 +20,6 @@ type PostCardProps = {
 
 function PostCard({ post, meta }: PostCardProps) {
   const { user, media, group, industry } = post || {};
-  console.log(post, "=============");
 
   const mediaItems = media ?? [];
   const [isLiked, setIsLiked] = useState(Boolean(post?.liked_by_me));

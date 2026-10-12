@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSendRequestMutation } from "@/feature/slice/connect/connectSlice";
+import { useFollowIndustryMutation } from "@/feature/slice/jobs/industrySlice";
 import { setPostType } from "@/feature/slice/postCompose/postComposeSlice";
 import { useGetProfileByIdQuery } from "@/feature/slice/user/userSlice";
 import { PostFeedType } from "@/lib/type";
@@ -16,7 +17,7 @@ import {
   PencileIcon,
   UserBanIcon,
 } from "@/public/svgIcons/Icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteGroup from "../group/DeleteGroup";
@@ -30,7 +31,8 @@ type PostCardProps = {
   meta?: any;
 };
 function PostAction({ post, meta }: PostCardProps) {
-  const { can_edit, media, can_delete, relationship_status, user ,industry } = post || {};
+  const { can_edit, media, can_delete, relationship_status, user, industry } =
+    post || {};
   const { id: userId } = user || {};
   const [menuOpen, setMenuOpen] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
@@ -40,11 +42,40 @@ function PostAction({ post, meta }: PostCardProps) {
   const dispatch = useDispatch();
   const { postType } = useSelector((state: any) => state.postCompose);
   const [sendRequest, { isLoading }] = useSendRequestMutation();
+  const [followIndustry, { isLoading: isFollowingIndustry }] =
+    useFollowIndustryMutation();
   const { data: userProfile } = useGetProfileByIdQuery(userId);
   const handleSetPostType = (type: string) => {
     dispatch(setPostType(type as any));
   };
   const [isBanUser, setIsBanUser] = useState(false);
+  const [isIndustryFollowing, setIsIndustryFollowing] = useState(
+    Boolean(industry?.is_following),
+  );
+
+  useEffect(() => {
+    setIsIndustryFollowing(Boolean(industry?.is_following));
+  }, [industry?.is_following]);
+
+  const handleFollowIndustry = async () => {
+    if (!industry?.id || isFollowingIndustry) return;
+
+    const nextFollowingState = !isIndustryFollowing;
+
+    try {
+      await followIndustry({ id: industry.id }).unwrap();
+      setIsIndustryFollowing(nextFollowingState);
+      toast.success(
+        nextFollowingState
+          ? "Following industry successfully!"
+          : "Unfollowed industry successfully!",
+      );
+    } catch (error: any) {
+      toast.error(
+        error?.data?.message || "Failed to follow industry. Please try again.",
+      );
+    }
+  };
 
   const handleConnect = async () => {
     const payload = {
@@ -75,26 +106,43 @@ function PostAction({ post, meta }: PostCardProps) {
   return (
     <div>
       <div className="flex items-center relative gap-1.5">
-        {((relationship_status === "not_connected" &&
-          !meta?.is_own_profile &&
-          !meta?.is_connected) ||
-          isRequestSent) && (
+        {industry && !can_edit && !can_delete && (
           <button
-            onClick={handleConnect}
-            disabled={isLoading || action_label !== "Connect" || isRequestSent}
             type="button"
-            className={`h-7 disabled:bg-bgColor text-nowrap disabled:cursor-not-allowed disabled:tracking-normal disabled:text-grayColor1 disabled:border-0  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:tracking-widest cursor-pointer 
+            onClick={handleFollowIndustry}
+            disabled={isFollowingIndustry}
+            className="h-7 text-nowrap cursor-pointer rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:border-buttonColor hover:bg-buttonColor hover:text-whiteColor disabled:cursor-not-allowed disabled:border-borderColor disabled:bg-bgColor disabled:text-grayColor1"
+          >
+            {isFollowingIndustry
+              ? "Updating..."
+              : isIndustryFollowing
+                ? "Unfollow"
+                : "Follow"}
+          </button>
+        )}
+        {!industry &&
+          ((relationship_status === "not_connected" &&
+            !meta?.is_own_profile &&
+            !meta?.is_connected) ||
+            isRequestSent) && (
+            <button
+              onClick={handleConnect}
+              disabled={
+                isLoading || action_label !== "Connect" || isRequestSent
+              }
+              type="button"
+              className={`h-7 disabled:bg-bgColor text-nowrap disabled:cursor-not-allowed disabled:tracking-normal disabled:text-grayColor1 disabled:border-0  rounded-full border px-3 text-sm font-medium transition-all duration-200 hover:shadow-md cursor-pointer 
              hover:border-buttonColor hover:bg-buttonColor hover:text-whiteColor
                
             `}
-          >
-            {isLoading
-              ? "Sending..."
-              : isRequestSent
-                ? "Request sent"
-                : action_label}
-          </button>
-        )}
+            >
+              {isLoading
+                ? "Sending..."
+                : isRequestSent
+                  ? "Request sent"
+                  : action_label}
+            </button>
+          )}
         {(can_edit ||
           can_delete ||
           meta?.is_creator ||

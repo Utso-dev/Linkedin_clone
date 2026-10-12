@@ -23,6 +23,13 @@ export const postApi = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Post"],
     }),
+    followIndustry: builder.mutation({
+      query: ({ id }) => ({
+        url: `/industry/follow/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Post"],
+    }),
 
     deleteIndustryPost: builder.mutation({
       query: (postId) => ({
@@ -31,8 +38,6 @@ export const postApi = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Post"],
     }),
-
-   
   }),
 });
 
@@ -41,5 +46,5 @@ export const {
   useCreateIndustryPostMutation,
   useUpdateIndustryPostMutation,
   useDeleteIndustryPostMutation,
-
+  useFollowIndustryMutation,
 } = postApi;
