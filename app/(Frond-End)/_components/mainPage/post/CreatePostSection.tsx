@@ -14,10 +14,7 @@ import CreatePostDialog from "../profile/CreatePostDialog";
 
 function CreatePostSection() {
   const [isOpen, setIsOpen] = useState(false);
-  
   const { data } = useGetUserProfileQuery("user");
- 
-
   const [postText, setPostText] = useState("");
 
   return (

@@ -188,6 +188,15 @@ export interface PostFeedType {
   is_connected: boolean;
   media: PostMediaType[];
   group: any;
+  industry: {
+    id: number;
+    name: string;
+    logo?: string | null;
+    tagline?: string | null;
+    is_following?: boolean;
+    slug?: string | null;
+  } 
+
   created_at: string;
   can_edit: boolean;
   can_delete: boolean;

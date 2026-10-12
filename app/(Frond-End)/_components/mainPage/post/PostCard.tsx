@@ -3,7 +3,7 @@ import { useTruncatedText } from "@/hooks/useTruncatedText";
 import { PostFeedType } from "@/lib/type";
 import { formatPostDate } from "@/lib/utils";
 import emptyImage from "@/public/empty_user.jpg";
-import { CommentIcon, LikeIcon } from "@/public/svgIcons/Icons";
+import { CommentIcon, IndustryIcon, LikeIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -11,6 +11,7 @@ import PostAction from "./PostAction";
 import PostComment from "./PostComment";
 import PostImageRender from "./PostImageRender";
 import PostLikeList from "./PostLikeList";
+import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 
 type PostCardProps = {
   post?: PostFeedType;
@@ -18,15 +19,15 @@ type PostCardProps = {
 };
 
 function PostCard({ post, meta }: PostCardProps) {
-  const { user, media, group } = post || {};
+  const { user, media, group, industry } = post || {};
+  console.log(post, "=============");
+
   const mediaItems = media ?? [];
   const [isLiked, setIsLiked] = useState(Boolean(post?.liked_by_me));
   const [isCommented, setIsCommented] = useState(false);
   const [likeList, setLikeList] = useState(false);
-  const { displayText, isExpanded, toggleExpanded, shouldShowButton } = useTruncatedText(
-    post?.description,
-    { maxLength: 200 },
-  );
+  const { displayText, isExpanded, toggleExpanded, shouldShowButton } =
+    useTruncatedText(post?.description, { maxLength: 200 });
 
   const [postToggleLike] = usePostToggleLikeMutation();
   const likedByMe = Boolean(post?.liked_by_me);
@@ -52,7 +53,38 @@ function PostCard({ post, meta }: PostCardProps) {
     <article className="rounded-xl border border-borderColor p-2.5 md:p-3">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-2.5">
-          {group ? (
+          {industry ? (
+            <>
+              <div className="relative md:h-14 h-10 w-10 md:w-14  rounded-md border border-borderColor bg-whiteColor shadow-sm">
+                <Image
+                  src={industry?.logo || emptyImage}
+                  alt="Profile"
+                  width={128}
+                  height={128}
+                  sizes="80px"
+                  className="h-full w-full object-cover rounded-md"
+                />
+                <HiOutlineBuildingOffice2
+                  className="absolute -bottom-1 bg-white  -right-1 h-7 w-7 rounded-sm border-2 border-whiteColor object-contain shadow-sm"
+                />
+              </div>
+              <div>
+                <Link
+                  href={`/mu/industry/${industry?.id}`}
+                  className="line-clamp-1 text-base font-semibold leading-5 text-headerColor"
+                >
+                  {industry?.name || "CEO & Founder, MindUnite"}{" "}
+                  {/* <span className="text-primaryColor">{group ? group?.name : ""}</span> */}
+                </Link>
+                <p className="line-clamp-1 text-sm leading-5 text-descriptionColor">
+                  {industry?.tagline || "CEO & Founder, MindUnite"}
+                </p>
+                <p className="text-[14px] leading-5 text-grayColor1">
+                  {formatPostDate(post?.created_at || new Date().toISOString())}
+                </p>
+              </div>
+            </>
+          ) : group ? (
             <>
               <div className="relative md:h-14 h-10 w-10 md:w-14  rounded-md border border-borderColor bg-whiteColor shadow-sm">
                 <Image

@@ -13,7 +13,10 @@ import {
 } from "@/public/svgIcons/Icons";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useCreateIndustryPostMutation } from "@/feature/slice/jobs/industrySlice";
+import {
+  useCreateIndustryPostMutation,
+  useUpdateIndustryPostMutation,
+} from "@/feature/slice/jobs/industrySlice";
 import {
   resetPostComposeState,
   setPostText,
@@ -62,7 +65,7 @@ function PostModal({
     ? useCreateIndustryPostMutation()
     : useCreatePostMutation();
   const [updatePost, { isLoading: isUpdating, isError: isUpdateError }] =
-    useUpdatePostMutation();
+    idustry ? useUpdateIndustryPostMutation() : useUpdatePostMutation();
   useEffect(() => {
     if (postData?.description) {
       dispatch(setPostText(postData.description));
@@ -167,8 +170,9 @@ function PostModal({
     const formData = new FormData();
     if (idustry) {
       formData.append("content", trimmedText);
+    } else {
+      formData.append("description", trimmedText);
     }
-    formData.append("description", trimmedText);
     formData.append(
       "visibility",
       postVisibility === "group" ? "groups" : postVisibility,
@@ -223,6 +227,7 @@ function PostModal({
       );
     }
   };
+
 
   return (
     <section className="relative  px-4 pb-4 pt-4 md:px-5 md:pb-5 md:pt-4">
@@ -382,7 +387,10 @@ function PostModal({
             ) : (
               <SendIcon className=" h-4 w-4" />
             )}
-            Post
+            {
+              postData?.id ? "Update" : "Post"
+            }
+           
           </button>
         </div>
       </div>

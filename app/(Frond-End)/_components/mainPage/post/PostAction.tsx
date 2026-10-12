@@ -30,7 +30,7 @@ type PostCardProps = {
   meta?: any;
 };
 function PostAction({ post, meta }: PostCardProps) {
-  const { can_edit, media, can_delete, relationship_status, user } = post || {};
+  const { can_edit, media, can_delete, relationship_status, user ,industry } = post || {};
   const { id: userId } = user || {};
   const [menuOpen, setMenuOpen] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
