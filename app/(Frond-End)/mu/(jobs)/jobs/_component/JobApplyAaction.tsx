@@ -5,10 +5,10 @@ import { useState } from "react";
 import { IoMdDoneAll } from "react-icons/io";
 import ApplyTypeModal from "./ApplyTypeModal";
 export interface ApplyActionType {
-  company_name: string;
+  industry_name: string;
   jobTitle: string;
   jobId: string | number;
-  company_id: string | number;
+  industry_id: string | number;
   job_apply?: boolean;
   status?: string;
 }
@@ -25,6 +25,7 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
   const hasApplied = Boolean(jobData.job_apply);
   const isPremiumUser = planName === "premium";
   const isBasicUser = planName === "basic_user";
+console.log(data,"data");
 
   const renderApplyAction = () => {
     if (!isPublished) {
@@ -78,7 +79,7 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
         {renderApplyAction()}
         <Link
           className="text-sm font-semibold text-primaryColor"
-          href={`/mu/industry-profile/${jobData?.company_id}`}
+          href={`/mu/industry-profile/${jobData?.industry_id}`}
         >
           View Company
         </Link>

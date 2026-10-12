@@ -1,6 +1,6 @@
 "use client";
 
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { useCursorPagination } from "@/hooks/useCursorPagination";
 import { useEffect, useState } from "react";
 
 import { fetchWrapper } from "@/src/utils/fetchWrapper";
@@ -9,14 +9,29 @@ import PostCardSkleton from "./PostCardSkleton";
 
 type Props = {
   initialData: any;
+  initialUrl?: string;
   limit?: number;
 };
 
-export default function PostListClient({ initialData, limit = 10 }: Props) {
+function getCursorUrl(url: string, cursor: string, limit: number) {
+  const [pathname, query = ""] = url.split("?");
+  const params = new URLSearchParams(query);
+
+  params.delete("page");
+  params.set("per_page", String(limit));
+  params.set("cursor", cursor);
+
+  return `${pathname}?${params.toString()}`;
+}
+
+export default function PostListClient({
+  initialData,
+  initialUrl = "/newsfeed",
+  limit = 10,
+}: Props) {
   const [dataResponse, setDataResponse] = useState<any>(
     initialData ?? { data: [] },
   );
-
 
   const [isFetching, setIsFetching] = useState(false);
 
@@ -24,22 +39,25 @@ export default function PostListClient({ initialData, limit = 10 }: Props) {
     setDataResponse(initialData ?? { data: [] });
   }, [initialData]);
 
-  const { page, combinedData, lastElementRef } = useInfiniteScroll(
-    dataResponse,
-    isFetching,
-    false,
-  );
+  const [cursor, setCursor] = useState<string | null>(null);
+  const { combinedData, hasMore, nextCursor, observerRef } =
+    useCursorPagination({
+      data: dataResponse,
+      isFetching,
+      cursor,
+      setCursor,
+      resetKey: initialUrl,
+    });
 
   useEffect(() => {
-    if (page === 1) return;
+    if (!cursor) return;
+
     let cancelled = false;
 
     const fetchPage = async () => {
       setIsFetching(true);
       try {
-        const res = await fetchWrapper(
-          `/newsfeed?page=${page}&per_page=${limit}`,
-        );
+        const res = await fetchWrapper(getCursorUrl(initialUrl, cursor, limit));
         if (!cancelled && res) setDataResponse(res);
       } catch (err) {
         console.error(err);
@@ -53,15 +71,12 @@ export default function PostListClient({ initialData, limit = 10 }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [page, limit]);
+  }, [initialUrl, cursor, limit]);
 
   return (
     <section className="space-y-4">
-      {combinedData.map((post: any, index: number) => (
-        <div
-          key={post.id}
-          ref={combinedData.length === index + 1 ? lastElementRef : null}
-        >
+      {combinedData.map((post: any) => (
+        <div key={post.id}>
           <PostCard post={post} />
         </div>
       ))}
@@ -71,6 +86,10 @@ export default function PostListClient({ initialData, limit = 10 }: Props) {
           <PostCardSkleton />
           <PostCardSkleton />
         </div>
+      )}
+
+      {hasMore && nextCursor && !isFetching && (
+        <div ref={observerRef} className="h-2 w-full" />
       )}
 
       {!isFetching && combinedData.length === 0 && (

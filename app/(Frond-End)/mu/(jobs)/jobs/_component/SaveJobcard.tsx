@@ -72,6 +72,9 @@ function SaveJobcard({
     }
   };
 
+
+  
+
   return (
     <div className="bg-white rounded-2xl border border-borderColor/80 p-4  hover:shadow-md transition-shadow duration-200 flex flex-col justify-between">
       <div>
@@ -162,7 +165,7 @@ function SaveJobcard({
         </div>
       ) : (
         <div className="flex items-center justify-between gap-2 mt-4 pt-2 border-t border-gray-50 text-sm">
-          <div className="flex items-center gap-1.5 text-xs sm:text-sm text-grayColor1 min-w-0 truncate">
+          <div title={location} className="flex items-center gap-1.5 text-xs sm:text-sm text-grayColor1 min-w-0 truncate">
             <MapPin className="w-4 h-4 text-grayColor1 shrink-0" />
             <span className="truncate">{location}</span>
           </div>
@@ -171,8 +174,8 @@ function SaveJobcard({
               {salaryDisplay}
             </span>
             <span className="text-xs sm:text-sm text-grayColor1 font-normal">
-              {" "}
-              /month
+               /{jobData?.salary_type}
+             
             </span>
           </div>
         </div>

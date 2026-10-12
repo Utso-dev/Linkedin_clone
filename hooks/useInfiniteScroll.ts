@@ -5,9 +5,15 @@ export function useInfiniteScroll(
   isFetching,
   isLoading,
   observerOptions = {},
+  resetKey,
 ) {
   const [page, setPage] = useState(1);
   const [combinedData, setCombinedData] = useState([]);
+
+  useEffect(() => {
+    setPage(1);
+    setCombinedData(data?.data || []);
+  }, [resetKey]);
 
   // Reset or append data when the API response changes
   useEffect(() => {

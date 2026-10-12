@@ -188,6 +188,15 @@ export interface PostFeedType {
   is_connected: boolean;
   media: PostMediaType[];
   group: any;
+  industry: {
+    id: number;
+    name: string;
+    logo?: string | null;
+    tagline?: string | null;
+    is_following?: boolean;
+    slug?: string | null;
+  } 
+
   created_at: string;
   can_edit: boolean;
   can_delete: boolean;
@@ -242,6 +251,7 @@ export interface JobDetails {
   website: string;
   salary_min: string;
   salary_max: string;
+  salary_type: string;
   is_applied: boolean;
   tags: string[];
   status: string;
@@ -388,5 +398,5 @@ export interface userJobType {
   salary_max: string;
   state_id: number;
   city_id: number;
-  company:  CompanyType;
+  industry: CompanyType;
 }

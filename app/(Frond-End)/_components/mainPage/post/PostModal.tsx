@@ -14,13 +14,17 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import {
+  useCreateIndustryPostMutation,
+  useUpdateIndustryPostMutation,
+} from "@/feature/slice/jobs/industrySlice";
+import {
   resetPostComposeState,
   setPostText,
 } from "@/feature/slice/postCompose/postComposeSlice";
 import { ImageUploadIcon } from "@/public/svgIcons/Icons";
 import { Loader, X } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -41,8 +45,12 @@ function PostModal({
   setPostType?: (type: string) => void;
   postData?: any;
 }) {
-  const { postText = "", postVisibility, commentControl, selectedGroupIds } =
-    useSelector((state: any) => state.postCompose);
+  const {
+    postText = "",
+    postVisibility,
+    commentControl,
+    selectedGroupIds,
+  } = useSelector((state: any) => state.postCompose);
   const [previewMedia, setPreviewMedia] = useState<PreviewMedia[]>([]);
   const [removedMediaIds, setRemovedMediaIds] = useState<number[]>([]);
   const { data } = useGetUserProfileQuery("user");
@@ -50,9 +58,14 @@ function PostModal({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const dispatch = useDispatch();
   const router = useRouter();
-  const [createPost, { isLoading, isError }] = useCreatePostMutation();
+  const pathName = usePathname();
+  const idustry = pathName.includes("industry");
+  console.log(idustry, "idustry");
+  const [createPost, { isLoading, isError }] = idustry
+    ? useCreateIndustryPostMutation()
+    : useCreatePostMutation();
   const [updatePost, { isLoading: isUpdating, isError: isUpdateError }] =
-    useUpdatePostMutation();
+    idustry ? useUpdateIndustryPostMutation() : useUpdatePostMutation();
   useEffect(() => {
     if (postData?.description) {
       dispatch(setPostText(postData.description));
@@ -154,9 +167,12 @@ function PostModal({
     if (!trimmedText && previewMedia.length === 0) {
       return;
     }
-
     const formData = new FormData();
-    formData.append("description", trimmedText);
+    if (idustry) {
+      formData.append("content", trimmedText);
+    } else {
+      formData.append("description", trimmedText);
+    }
     formData.append(
       "visibility",
       postVisibility === "group" ? "groups" : postVisibility,
@@ -211,6 +227,7 @@ function PostModal({
       );
     }
   };
+
 
   return (
     <section className="relative  px-4 pb-4 pt-4 md:px-5 md:pb-5 md:pt-4">
@@ -370,7 +387,10 @@ function PostModal({
             ) : (
               <SendIcon className=" h-4 w-4" />
             )}
-            Post
+            {
+              postData?.id ? "Update" : "Post"
+            }
+           
           </button>
         </div>
       </div>
