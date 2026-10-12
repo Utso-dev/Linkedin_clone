@@ -389,5 +389,5 @@ export interface userJobType {
   salary_max: string;
   state_id: number;
   city_id: number;
-  company: CompanyType;
+  industry: CompanyType;
 }

@@ -5,10 +5,10 @@ import { useState } from "react";
 import { IoMdDoneAll } from "react-icons/io";
 import ApplyTypeModal from "./ApplyTypeModal";
 export interface ApplyActionType {
-  company_name: string;
+  industry_name: string;
   jobTitle: string;
   jobId: string | number;
-  company_id: string | number;
+  industry_id: string | number;
   job_apply?: boolean;
   status?: string;
 }
@@ -79,7 +79,7 @@ console.log(data,"data");
         {renderApplyAction()}
         <Link
           className="text-sm font-semibold text-primaryColor"
-          href={`/mu/industry-profile/${jobData?.company_id}`}
+          href={`/mu/industry-profile/${jobData?.industry_id}`}
         >
           View Company
         </Link>

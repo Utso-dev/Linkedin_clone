@@ -27,8 +27,8 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
     <div className="py-5! first:pt-0 w-full  flex gap-3 last:pb-0 ">
       <div className="relative hidden md:block w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100">
         <Image
-          src={job?.company?.logo}
-          alt={job?.company?.name}
+          src={job?.industry?.logo}
+          alt={job?.industry?.name}
           fill
           sizes="48px"
           className="object-cover"
@@ -38,8 +38,8 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
         <div className="flex items-start w-full justify-between gap-3.5">
           <div className="relative md:hidden w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100">
             <Image
-              src={job?.company?.logo}
-              alt={job?.company?.name}
+              src={job?.industry?.logo}
+              alt={job?.industry?.name}
               fill
               sizes="48px"
               className="object-cover"
@@ -61,7 +61,7 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
         </div>
         <div className="">
           <div className="space-y-1">
-            <p className="text-xs text-grayColor1">{job?.company?.name}</p>
+            <p className="text-xs text-grayColor1">{job?.industry?.name}</p>
 
             <p className="text-sm text-grayColor1 flex items-center gap-1 flex-wrap pt-1">
               <span>{job?.location}</span>
@@ -83,8 +83,8 @@ export const JobCard = memo(({ job }: { job: userJobType }) => {
           <div className="gap-3 flex justify-between items-center mt-3 h-full ">
             <JobApplyAaction
               jobData={{
-                company_name: job?.company?.name,
-                company_id: job?.company?.id,
+                industry_name: job?.industry?.name,
+                industry_id: job?.industry?.id,
                 jobTitle: job?.job_title,
                 jobId: job?.id,
                 job_apply: job?.is_applied,
