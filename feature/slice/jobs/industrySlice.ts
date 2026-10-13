@@ -6,6 +6,49 @@ export const postApi = baseApiSlice.injectEndpoints({
       query: () => ({ url: "/posts", method: "GET" }),
       providesTags: ["Post"],
     }),
+    getIndustryJobPost: builder.query({
+      query: (arg) => {
+        const {
+          industryId,
+          cursor,
+          per_page = 10,
+        } =
+          typeof arg === "object" && arg !== null
+            ? arg
+            : { industryId: arg };
+
+        return {
+          url: `/industry/${industryId}/jobs`,
+          method: "GET",
+          params: {
+            per_page,
+            ...(cursor ? { cursor } : {}),
+          },
+        };
+      },
+      providesTags: ["Post" ,"UserJob"],
+    }),
+    getIndustryProductPost: builder.query({
+      query: (industryId) => ({
+        url: `/industry/${industryId}/products`,
+        method: "GET",
+      }),
+      providesTags: ["Post"],
+    }),
+    getIndustryPublicationPost: builder.query({
+      query: (industryId) => ({
+        url: `/industry/${industryId}/publications`,
+        method: "GET",
+      }),
+      providesTags: ["Post"],
+    }),
+    getRelatedIndustry: builder.query({
+      query: (industryId) => ({
+        url: `/industry/${industryId}/related`,
+        method: "GET",
+      }),
+      providesTags: ["Post"],
+    }),
     createIndustryPost: builder.mutation({
       query: (postData) => ({
         url: "/industry/post/create",
@@ -44,6 +87,10 @@ export const postApi = baseApiSlice.injectEndpoints({
 export const {
   useGetIndustryPostQuery,
   useCreateIndustryPostMutation,
+  useGetIndustryJobPostQuery,
+  useGetIndustryProductPostQuery,
+  useGetIndustryPublicationPostQuery,
+  useGetRelatedIndustryQuery,
   useUpdateIndustryPostMutation,
   useDeleteIndustryPostMutation,
   useFollowIndustryMutation,

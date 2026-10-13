@@ -1,5 +1,6 @@
 "use client";
 
+import { scrollToTop } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -24,6 +25,7 @@ function AnalyticsMenue({
           <Link
             key={menu.id}
             href={menu.href}
+            onClick={scrollToTop}
             className={`text-sm  border text-nowrap font-semibold hover:shadow-md rounded-full text-grayColor1  py-2 px-3 ${isActive(menu.href) ? "text-whiteColor bg-primaryColor border-primaryColor transition-all duration-200" : ""}`}
           >
             {menu.title}

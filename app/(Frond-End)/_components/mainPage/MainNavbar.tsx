@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
-import { cn } from "@/lib/utils";
+import { cn, scrollToTop } from "@/lib/utils";
 import mainLogo from "@/public/logo.png";
 import {
   AboutIcon,
@@ -113,7 +113,7 @@ export default function  MainNavbar() {
   return (
     <header className="py-2.5 md:px-4 sticky top-0 left-0 w-full bg-whiteColor shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)] z-99">
       <div className="container mx-auto flex items-center justify-between">
-        <Link href="/mu/home">
+        <Link href="/mu/home" onClick={scrollToTop}>
           <Image
             src={mainLogo}
             alt="Logo"
@@ -192,6 +192,9 @@ export default function  MainNavbar() {
               <Link
                 key={item.slug}
                 href={item.slug}
+                onClick={
+                  item.slug === "/mu/home" ? scrollToTop : undefined
+                }
                 className={cn(
                   "flex w-fit flex-col items-center gap-1 text-sm transition hover:text-headerColor",
                   isActive(item.slug) ? "text-headerColor" : "text-grayColor1",
@@ -312,6 +315,7 @@ export default function  MainNavbar() {
                 onClick={() => {
                   setMenuOpen(false);
                   setOpenMobileDropdownSlug(null);
+                  if (item.slug === "/mu/home") scrollToTop();
                 }}
               >
                 <item.icon className="h-4.5 w-4.5" />

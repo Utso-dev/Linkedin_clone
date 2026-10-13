@@ -5,6 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function scrollToTop() {
+  if (typeof window === "undefined") return;
+
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+
 export function normalizeSkillsList(skills?: unknown): string[] {
   if (!Array.isArray(skills)) return [];
 

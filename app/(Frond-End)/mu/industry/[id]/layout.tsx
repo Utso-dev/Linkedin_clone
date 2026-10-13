@@ -30,7 +30,7 @@ async function layout({
   return (
     <div className="pt-6 md:pt-8 pb-10 md:pb-14 xl:pb-20">
       <IndustryHeroSection userId={id} />
-      <div className="mt-3">
+      <div className="pb-2 border-b border-borderColor">
         <AnalyticsMenue
           menuData={menuData}
           initialPath={`/mu/industry/${id}`}

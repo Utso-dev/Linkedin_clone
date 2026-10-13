@@ -4,9 +4,9 @@ import { useGetCompanyQuery } from "@/feature/slice/companySlice";
 import logoPreview from "@/public/empty_user.jpg";
 import coverPreview from "@/public/images/cover imager.png";
 import {
-    CompanyIcon,
-    GroupUserIcon,
-    PencileIcon,
+  CompanyIcon,
+  GroupUserIcon,
+  PencileIcon,
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -63,7 +63,7 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
             )}
           </div>
         </div>
-        <div className="mt-12 border-b border-borderColor pb-3">
+        <div className="mt-12 ">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
             <div className="col-span-2">
               <h4 className="text-lg font-semibold text-headerColor leading-[150%]">
@@ -71,8 +71,14 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
               </h4>
 
               <div className="flex items-center gap-2.5 my-2 text-grayColor1">
-                <CompanyIcon className="w-4 h-4" />
+                <IoPricetagsOutline className="w-4 h-4" />
                 <p className="text-sm   line-clamp-3">
+                  {industryData?.tagline || ""}
+                </p>
+              </div>
+              <div className="flex items-center gap-2.5 my-2 text-grayColor1">
+                <CompanyIcon className="w-4 h-4" />
+                <p className="text-sm  uppercase line-clamp-3">
                   {industryData?.industry || ""}
                 </p>
               </div>
@@ -80,12 +86,6 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
                 <GrLocation className="w-4 h-4" />
                 <p className="text-sm   line-clamp-3">
                   {industryData?.address || ""}
-                </p>
-              </div>
-              <div className="flex items-center gap-2.5 my-2 text-grayColor1">
-                <IoPricetagsOutline className="w-4 h-4" />
-                <p className="text-sm   line-clamp-3">
-                  {industryData?.tagline || ""}
                 </p>
               </div>
               <div className="flex items-center gap-2.5 my-2 text-grayColor1">
