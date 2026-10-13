@@ -13,8 +13,9 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import ApplyTypeModal from "./ApplyTypeModal";
 import { FiBookmark } from "react-icons/fi";
+import { IoMdDoneAll } from "react-icons/io";
+import ApplyTypeModal from "./ApplyTypeModal";
 
 export interface SaveJobcardProps {
   job: any;
@@ -189,22 +190,34 @@ function SaveJobcard({
           </div>
         </div>
       )}
-      <div className=" flex items-center gap-2 mt-4">
-        <ButtonReuseable
-          title="Apply Now"
-          onClick={() => setIsOpen(true)}
-          icon={<ApplicantIcon className="w-4 h-4" />}
-          className="w-full bg-primaryColor py-2!"
-        />
+      {isApply && (
+        <div className=" flex items-center gap-2 mt-4">
+          {jobData?.is_applied ? (
+            <ButtonReuseable
+              title="Applied"
+              disabled
+              icon={<IoMdDoneAll className="w-4 h-4 text-lightGreenColor2" />}
+              className="px-5 font-semibold! py-2! rounded-full! disabled:bg-lightGreenColor2/10! disabled:text-lightGreenColor2! disabled:border-lightGreenColor2! cursor-not-allowed! text-sm!"
+            />
+          ) : (
+            <ButtonReuseable
+              title="Apply Now"
+              onClick={() => setIsOpen(true)}
+              icon={<ApplicantIcon className="w-4 h-4" />}
+              className="w-full bg-primaryColor py-2!"
+            />
+          )}
 
-        <Link
-          href={`/mu/jobs-details/${jobId}`}
-          className="w-full bg-transparent py-2! text-primaryColor border border-primaryColor rounded-lg flex items-center justify-center gap-2 "
-        >
-          <OpenEyeIcon />
-          View
-        </Link>
-      </div>
+          <Link
+            href={`/mu/jobs-details/${jobId}`}
+            className="w-full bg-transparent py-2! text-primaryColor border border-primaryColor rounded-lg flex items-center justify-center gap-2 "
+          >
+            <OpenEyeIcon />
+            View
+          </Link>
+        </div>
+      )}
+
       <ApplyTypeModal open={isOpen} setOpen={setIsOpen} />
     </div>
   );
