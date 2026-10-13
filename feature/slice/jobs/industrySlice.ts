@@ -12,10 +12,7 @@ export const postApi = baseApiSlice.injectEndpoints({
           industryId,
           cursor,
           per_page = 10,
-        } =
-          typeof arg === "object" && arg !== null
-            ? arg
-            : { industryId: arg };
+        } = typeof arg === "object" && arg !== null ? arg : { industryId: arg };
 
         return {
           url: `/industry/${industryId}/jobs`,
@@ -26,13 +23,25 @@ export const postApi = baseApiSlice.injectEndpoints({
           },
         };
       },
-      providesTags: ["Post" ,"UserJob"],
+      providesTags: ["Post", "UserJob"],
     }),
     getIndustryProductPost: builder.query({
-      query: (industryId) => ({
-        url: `/industry/${industryId}/products`,
-        method: "GET",
-      }),
+      query: (arg) => {
+        const {
+          industryId,
+          cursor,
+          per_page = 10,
+        } = typeof arg === "object" && arg !== null ? arg : { industryId: arg };
+
+        return {
+          url: `/industry/${industryId}/products`,
+          method: "GET",
+          params: {
+            per_page,
+            ...(cursor ? { cursor } : {}),
+          },
+        };
+      },
       providesTags: ["Post"],
     }),
     getIndustryPublicationPost: builder.query({
@@ -73,6 +82,13 @@ export const postApi = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Post"],
     }),
+    likebyIndustryProduct: builder.mutation({
+      query: (id) => ({
+        url: `/industry/products/${id}/like`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Post"],
+    }),
 
     deleteIndustryPost: builder.mutation({
       query: (postId) => ({
@@ -91,6 +107,7 @@ export const {
   useGetIndustryProductPostQuery,
   useGetIndustryPublicationPostQuery,
   useGetRelatedIndustryQuery,
+  useLikebyIndustryProductMutation,
   useUpdateIndustryPostMutation,
   useDeleteIndustryPostMutation,
   useFollowIndustryMutation,

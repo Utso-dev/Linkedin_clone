@@ -206,10 +206,17 @@ export interface IndustryItemType {
   id: number;
   category_id: number;
   title: string;
+  product_name: string;
+  network_type: string;
+  industry_type: string;
+  product_id:string | number;
   tag: string | null;
   sub_title: string;
   description: string;
   image: string;
+  is_liked: boolean;
+  views_count: number;
+  likes_count: number;
   extra_tag: string | null;
   pub_date: string;
   moa: string;
