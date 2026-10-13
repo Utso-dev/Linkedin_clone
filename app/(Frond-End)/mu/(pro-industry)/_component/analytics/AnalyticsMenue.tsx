@@ -19,7 +19,7 @@ function AnalyticsMenue({
     return pathName.startsWith(href);
   };
   return (
-    <div className=" overflow-x-auto">
+    <div className="overflow-x-auto scrollbar-hide">
       <div className=" my-2 max-w-full md:max-w-auto w-full flex gap-3  items-center  ">
         {menuData.map((menu) => (
           <Link
