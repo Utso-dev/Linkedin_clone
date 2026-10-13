@@ -30,6 +30,7 @@ import {
   PencileIcon,
   GeneralSettingIcon,
   SecurityIcon,
+  SettingIcon,
   PsychologyMenuIcon,
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
@@ -211,6 +212,7 @@ export default function  MainNavbar() {
   const renderMobileSection = (
     title: string,
     sectionSlug: string,
+    sectionIcon: ComponentType<{ className?: string }>,
     items: Array<{
       label: string;
       slug: string;
@@ -218,6 +220,7 @@ export default function  MainNavbar() {
     }>,
   ) => {
     const isOpen = openMobileDropdownSlug === sectionSlug;
+    const SectionIcon = sectionIcon;
 
     return (
       <div key={sectionSlug} className="py-1">
@@ -235,7 +238,10 @@ export default function  MainNavbar() {
               : "text-white",
           )}
         >
-          <span>{title}</span>
+          <span className="flex items-center gap-2">
+            <SectionIcon className="h-4.5 w-4.5" />
+            {title}
+          </span>
           <MenueArrowDownIcon
             className={cn(
               "h-3 w-3 transition-transform duration-200",
@@ -487,16 +493,23 @@ export default function  MainNavbar() {
           {renderMobileSection(
             "Network",
             "mobile-network",
+            MultiUserIcon,
             networkMenuItems,
           )}
-          {renderMobileSection("Jobs", "mobile-jobs", jobsMenuItems)}
+          {renderMobileSection("Jobs", "mobile-jobs", JobsIcon, jobsMenuItems)}
           {isIndustry &&
             renderMobileSection(
               "Pro Industry",
               "mobile-pro-industry",
+              DashboardIcon,
               proIndustryMenuItems,
             )}
-          {renderMobileSection("Settings", "mobile-settings", settingsMenuItems)}
+          {renderMobileSection(
+            "Settings",
+            "mobile-settings",
+            SettingIcon,
+            settingsMenuItems,
+          )}
         </div>
       </div>
     </header>
