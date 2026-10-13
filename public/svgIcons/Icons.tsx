@@ -2969,3 +2969,12 @@ export const ActiveIcon = ({ className }: { className?: string }) => (
     />
   </svg>
 );
+export const SaveJobBaseIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" className={className}>
+  <path d="M7.49962 4L3 6.86673L7.49962 9.73346L12 6.86673L7.49962 4Z" fill="#04A1B7"/>
+  <path d="M16.5 4L12 6.86699L16.5 9.73398L21.0001 6.86699L16.5 4Z" fill="#04A1B7"/>
+  <path d="M3 12.6011L7.49962 15.4678L12 12.6011L7.49962 9.73438L3 12.6011Z" fill="#04A1B7"/>
+  <path d="M16.5 9.73438L12 12.6013L16.5 15.4683L21 12.6013L16.5 9.73438Z" fill="#04A1B7"/>
+  <path d="M7.5 16.4292L12.0004 19.296L16.5 16.4292L12.0004 13.5625L7.5 16.4292Z" fill="#04A1B7"/>
+</svg>
+);

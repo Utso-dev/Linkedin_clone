@@ -1,6 +1,7 @@
 "use client";
 
 import { DoubleArrowIcon, LeftArrowIcon } from "@/public/svgIcons/Icons";
+import { scrollToTop } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -71,7 +72,12 @@ export default function Breadcrumb({ className = "" }: { className?: string }) {
             {i === items.length - 1 ? (
               <span className="text-headerColor font-medium">{item.label}</span>
             ) : (
-              <Link href={item.href}>{item.label}</Link>
+              <Link
+                href={item.href}
+                onClick={item.href === "/mu/home" ? scrollToTop : undefined}
+              >
+                {item.label}
+              </Link>
             )}
           </span>
         ))}

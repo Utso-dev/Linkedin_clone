@@ -6,39 +6,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
-import { cn } from "@/lib/utils";
-import mainLogo from "@/public/logo.png";
 import {
-  AboutIcon,
-  ClinicalIcon,
-  ContactUsIcon,
-  GlobalIcon,
-  HomeIcon,
-  JobsIcon,
+  getProIndustryMenuItems,
+  jobsMenuItems,
+  mainMenuItems,
+  networkMenuItems,
+  sectionMenuIcons,
+  settingsMenuItems,
+  type MenuItem,
   MenueArrowDownIcon,
-  MultiUserIcon,
-  PsychologyMenuIcon,
-} from "@/public/svgIcons/Icons";
+} from "@/components/reusable/Allmenus";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
+import { cn, scrollToTop } from "@/lib/utils";
+import mainLogo from "@/public/logo.png";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState, type ComponentType } from "react";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { useRealtimeNotifications } from "../../mu/(muGroup)/(home_network)/notification/_components/useRealtimeNotifications";
 import UserHeaderInfo from "./UserHeaderInfo";
 
-type MenuItem = {
-  label: string;
-  slug: string;
-  icon: ComponentType<{ className?: string }>;
-  isDropdown?: boolean;
-  dropdownItems?: Array<{ label: string; slug: string }>;
-};
-
-export default function  MainNavbar() {
+export default function MainNavbar() {
   const pathname = usePathname();
-  const params = useParams();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdownSlug, setOpenDropdownSlug] = useState<string | null>(null);
@@ -47,61 +37,9 @@ export default function  MainNavbar() {
   >(null);
 
   const user = useGetUserProfileQuery("userProfile").data;
+  const isIndustry = user?.subscription?.plan_type === "industry";
 
   useRealtimeNotifications(user?.user.id);
-
-  const menuItems: MenuItem[] = [
-    { label: "Home", slug: "/mu/home", icon: HomeIcon },
-    { label: "About Us", slug: "/mu/about-us", icon: AboutIcon },
-
-    { label: "Academia", slug: "/mu/academia?redirect=home", icon: GlobalIcon },
-    {
-      label: "My Network",
-      slug: "/mu/my-network/my-connection",
-      icon: MultiUserIcon,
-    },
-    {
-      label: "Psychology Network",
-      slug: "/mu/psychology-network",
-      icon: PsychologyMenuIcon,
-      isDropdown: true,
-      dropdownItems: [
-        { label: "Psychology Fields", slug: "/mu/psychology-network/fields" },
-        {
-          label: "Psychology Careers",
-          slug: "/mu/psychology-network/careers",
-        },
-        {
-          label: "Industry",
-          slug: "/mu/psychology-network/industry/biotechnology",
-        },
-        { label: "Jobs", slug: "/mu/psychology-network/jobs" },
-      ],
-    },
-    {
-      label: "Neuroscience Network",
-      slug: "/mu/neuroscience-network",
-      icon: ClinicalIcon,
-      isDropdown: true,
-      dropdownItems: [
-        {
-          label: "Neuroscience Fields",
-          slug: "/mu/neuroscience-network/fields",
-        },
-        {
-          label: "Neuroscience Careers",
-          slug: "/mu/neuroscience-network/careers",
-        },
-        {
-          label: "Industry",
-          slug: "/mu/neuroscience-network/industry/biotechnology",
-        },
-        { label: "Jobs", slug: "/mu/neuroscience-network/jobs" },
-      ],
-    },
-    { label: "Jobs", slug: "/mu/jobs", icon: JobsIcon },
-    { label: "Contact Us", slug: "/mu/contact-us", icon: ContactUsIcon },
-  ];
 
   const isActive = (href: string): boolean => {
     if (href === "/mu/home") {
@@ -110,10 +48,83 @@ export default function  MainNavbar() {
     return pathname.startsWith(href);
   };
 
+  const proIndustryMenuItems = getProIndustryMenuItems(
+    user?.industry?.company?.id,
+  );
+  const mobileMenuItems = mainMenuItems.filter(
+    (item) =>
+      item.slug !== "/mu/my-network/my-connection" &&
+      item.slug !== "/mu/jobs",
+  );
+
+  const renderMobileSection = (
+    title: string,
+    sectionSlug: string,
+    sectionIcon: ComponentType<{ className?: string }>,
+    items: MenuItem[],
+  ) => {
+    const isOpen = openMobileDropdownSlug === sectionSlug;
+    const SectionIcon = sectionIcon;
+
+    return (
+      <div key={sectionSlug} className="py-1">
+        <button
+          type="button"
+          onClick={() =>
+            setOpenMobileDropdownSlug((previous) =>
+              previous === sectionSlug ? null : sectionSlug,
+            )
+          }
+          className={cn(
+            "flex w-full items-center justify-between gap-2 rounded-sm p-2 text-base",
+            isOpen || items.some((item) => isActive(item.slug))
+              ? "bg-whiteColor text-primaryColor"
+              : "text-white",
+          )}
+        >
+          <span className="flex items-center gap-2">
+            <SectionIcon className="h-4.5 w-4.5" />
+            {title}
+          </span>
+          <MenueArrowDownIcon
+            className={cn(
+              "h-3 w-3 transition-transform duration-200",
+              isOpen ? "rotate-180" : "",
+            )}
+          />
+        </button>
+
+        {isOpen && (
+          <div className="ml-3 mt-1 space-y-0.5 border-l border-white/20 pl-3">
+            {items.map((item) => (
+              <Link
+                key={item.slug}
+                href={item.slug}
+                className={cn(
+                  "flex items-center gap-2 rounded-sm p-1.5 text-sm transition hover:bg-white hover:text-primaryColor",
+                  isActive(item.slug)
+                    ? "bg-whiteColor text-primaryColor"
+                    : "text-white/90",
+                )}
+                onClick={() => {
+                  setMenuOpen(false);
+                  setOpenMobileDropdownSlug(null);
+                }}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <header className="py-2.5 md:px-4 sticky top-0 left-0 w-full bg-whiteColor shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)] z-99">
+    <header className=" md:px-4 sticky top-0 left-0 w-full bg-whiteColor shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)] z-99">
       <div className="container mx-auto flex items-center justify-between">
-        <Link href="/mu/home">
+        <Link href="/mu/home" onClick={scrollToTop}>
           <Image
             src={mainLogo}
             alt="Logo"
@@ -125,7 +136,7 @@ export default function  MainNavbar() {
         </Link>
 
         <nav className="hidden space-x-6 text-base min-[1132px]:flex">
-          {menuItems.map((item) => {
+          {mainMenuItems.map((item) => {
             if (item.isDropdown) {
               const isDropdownOpen = openDropdownSlug === item.slug;
 
@@ -192,6 +203,9 @@ export default function  MainNavbar() {
               <Link
                 key={item.slug}
                 href={item.slug}
+                onClick={
+                  item.slug === "/mu/home" ? scrollToTop : undefined
+                }
                 className={cn(
                   "flex w-fit flex-col items-center gap-1 text-sm transition hover:text-headerColor",
                   isActive(item.slug) ? "text-headerColor" : "text-grayColor1",
@@ -225,7 +239,7 @@ export default function  MainNavbar() {
           menuOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
-        <div className="absolute top-0 right-0 h-full max-w-[320px] w-[80%] bg-primaryColor p-4">
+        <div className="absolute top-0 right-0 h-dvh max-h-dvh max-w-[320px] w-[80%] overflow-y-auto overscroll-contain scrollbar-hide bg-primaryColor p-4 pb-8">
           <div className="mb-2 flex w-full items-center justify-between">
             <Image src={mainLogo} alt="Logo" width={150} height={150} />
             <button
@@ -237,7 +251,7 @@ export default function  MainNavbar() {
             </button>
           </div>
 
-          {menuItems.map((item) => {
+          {mobileMenuItems.map((item) => {
             const isMobileDropdownOpen = openMobileDropdownSlug === item.slug;
 
             if (item.isDropdown) {
@@ -312,6 +326,7 @@ export default function  MainNavbar() {
                 onClick={() => {
                   setMenuOpen(false);
                   setOpenMobileDropdownSlug(null);
+                  if (item.slug === "/mu/home") scrollToTop();
                 }}
               >
                 <item.icon className="h-4.5 w-4.5" />
@@ -319,6 +334,26 @@ export default function  MainNavbar() {
               </Link>
             );
           })}
+          {renderMobileSection(
+            "Network",
+            "mobile-network",
+            sectionMenuIcons.network,
+            networkMenuItems,
+          )}
+          {renderMobileSection("Jobs", "mobile-jobs", sectionMenuIcons.jobs, jobsMenuItems)}
+          {isIndustry &&
+            renderMobileSection(
+              "Pro Industry",
+              "mobile-pro-industry",
+              sectionMenuIcons.proIndustry,
+              proIndustryMenuItems,
+            )}
+          {renderMobileSection(
+            "Settings",
+            "mobile-settings",
+            sectionMenuIcons.settings,
+            settingsMenuItems,
+          )}
         </div>
       </div>
     </header>

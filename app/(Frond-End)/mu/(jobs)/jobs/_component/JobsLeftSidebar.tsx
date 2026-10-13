@@ -1,12 +1,7 @@
 "use client";
 
-import {
-  JobsIcon,
-  LineChartIcon,
-  RecommendedJobIcon,
-  SaveJobIcon,
-} from "@/public/svgIcons/Icons";
-import { PlusIcon } from "lucide-react";
+import { jobsMenuItems } from "@/components/reusable/Allmenus";
+import { LineChartIcon } from "@/public/svgIcons/Icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -15,29 +10,6 @@ import SubscriptionCard from "../../../(subscription)/_component/SubscriptionCar
 function JobsLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname();
   const [isMobile, setOpenMobile] = useState(false);
-
-  const menuItems = [
-    {
-      label: "All Jobs",
-      slug: "/mu/jobs",
-      icon: JobsIcon,
-    },
-    {
-      label: "Recommended Jobs",
-      slug: "/mu/jobs/recommended-jobs",
-      icon: RecommendedJobIcon,
-    },
-    {
-      label: "Recently added jobs.",
-      slug: "/mu/jobs/recent-jobs",
-      icon: PlusIcon,
-    },
-    {
-      label: "Saved job",
-      slug: "/mu/jobs/saved-jobs",
-      icon: SaveJobIcon,
-    },
-  ];
 
   const isActive = (href: string): boolean => {
     if (href === "/mu/jobs") {
@@ -55,7 +27,7 @@ function JobsLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
         </h3>
 
         <div className="mt-4 space-y-1">
-          {menuItems.map((item) => (
+          {jobsMenuItems.map((item) => (
             <Link
               key={item.slug}
               href={item.slug}
