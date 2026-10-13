@@ -389,7 +389,7 @@ export default function  MainNavbar() {
           menuOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
-        <div className="absolute top-0 right-0 h-dvh max-h-dvh max-w-[320px] w-[80%] overflow-y-auto overscroll-contain bg-primaryColor p-4 pb-8">
+        <div className="absolute top-0 right-0 h-dvh max-h-dvh max-w-[320px] w-[80%] overflow-y-auto overscroll-contain scrollbar-hide bg-primaryColor p-4 pb-8">
           <div className="mb-2 flex w-full items-center justify-between">
             <Image src={mainLogo} alt="Logo" width={150} height={150} />
             <button
