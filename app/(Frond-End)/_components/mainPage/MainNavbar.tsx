@@ -18,6 +18,18 @@ import {
   JobsIcon,
   MenueArrowDownIcon,
   MultiUserIcon,
+  PlusUserIcon,
+  SingleUserIcon,
+  GroupUserIcon,
+  RecommendedJobIcon,
+  SaveJobIcon,
+  DashboardIcon,
+  AdvertisementIcon,
+  BarChartIcon,
+  MessageIcon,
+  PencileIcon,
+  GeneralSettingIcon,
+  SecurityIcon,
   PsychologyMenuIcon,
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
@@ -25,6 +37,8 @@ import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { useState, type ComponentType } from "react";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
+import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
+import { Plus } from "lucide-react";
 import { useRealtimeNotifications } from "../../mu/(muGroup)/(home_network)/notification/_components/useRealtimeNotifications";
 import UserHeaderInfo from "./UserHeaderInfo";
 
@@ -47,6 +61,7 @@ export default function  MainNavbar() {
   >(null);
 
   const user = useGetUserProfileQuery("userProfile").data;
+  const isIndustry = user?.subscription?.plan_type === "industry";
 
   useRealtimeNotifications(user?.user.id);
 
@@ -110,8 +125,154 @@ export default function  MainNavbar() {
     return pathname.startsWith(href);
   };
 
+  const networkMenuItems = [
+    {
+      label: "My Connections",
+      slug: "/mu/my-network/my-connection",
+      icon: MultiUserIcon,
+    },
+    {
+      label: "Connection Requests",
+      slug: "/mu/my-network/connection-requests",
+      icon: PlusUserIcon,
+    },
+    {
+      label: "Following & Followers",
+      slug: "/mu/my-network/following",
+      icon: SingleUserIcon,
+    },
+    {
+      label: "Groups",
+      slug: "/mu/my-network/groups",
+      icon: GroupUserIcon,
+    },
+  ];
+
+  const jobsMenuItems = [
+    { label: "All Jobs", slug: "/mu/jobs", icon: JobsIcon },
+    {
+      label: "Recommended Jobs",
+      slug: "/mu/jobs/recommended-jobs",
+      icon: RecommendedJobIcon,
+    },
+    {
+      label: "Recently added jobs",
+      slug: "/mu/jobs/recent-jobs",
+      icon: Plus,
+    },
+    { label: "Saved job", slug: "/mu/jobs/saved-jobs", icon: SaveJobIcon },
+  ];
+
+  const proIndustryMenuItems = [
+    {
+      label: "Industry Profile",
+      slug: `/mu/industry-profile/${user?.industry?.company?.id}`,
+      icon: HiOutlineBuildingOffice2,
+    },
+    {
+      label: "Recruiter Dashboard",
+      slug: "/mu/recruiter-dashboard",
+      icon: DashboardIcon,
+    },
+    {
+      label: "Advertisement",
+      slug: "/mu/advertisement",
+      icon: AdvertisementIcon,
+    },
+    { label: "Job Listing", slug: "/mu/job-listing", icon: JobsIcon },
+    { label: "Analytics", slug: "/mu/analytics", icon: BarChartIcon },
+    { label: "Message", slug: "/mu/message", icon: MessageIcon },
+    {
+      label: "Post a job position",
+      slug: "/mu/post-job-position",
+      icon: PencileIcon,
+    },
+  ];
+
+  const settingsMenuItems = [
+    {
+      label: "General Settings",
+      slug: "/mu/settings/general",
+      icon: GeneralSettingIcon,
+    },
+    {
+      label: "Security Settings",
+      slug: "/mu/settings/security",
+      icon: SecurityIcon,
+    },
+  ];
+
+  const mobileMenuItems = menuItems.filter(
+    (item) =>
+      item.slug !== "/mu/my-network/my-connection" &&
+      item.slug !== "/mu/jobs",
+  );
+
+  const renderMobileSection = (
+    title: string,
+    sectionSlug: string,
+    items: Array<{
+      label: string;
+      slug: string;
+      icon: ComponentType<{ className?: string }>;
+    }>,
+  ) => {
+    const isOpen = openMobileDropdownSlug === sectionSlug;
+
+    return (
+      <div key={sectionSlug} className="py-1">
+        <button
+          type="button"
+          onClick={() =>
+            setOpenMobileDropdownSlug((previous) =>
+              previous === sectionSlug ? null : sectionSlug,
+            )
+          }
+          className={cn(
+            "flex w-full items-center justify-between gap-2 rounded-sm p-2 text-base",
+            isOpen || items.some((item) => isActive(item.slug))
+              ? "bg-whiteColor text-primaryColor"
+              : "text-white",
+          )}
+        >
+          <span>{title}</span>
+          <MenueArrowDownIcon
+            className={cn(
+              "h-3 w-3 transition-transform duration-200",
+              isOpen ? "rotate-180" : "",
+            )}
+          />
+        </button>
+
+        {isOpen && (
+          <div className="ml-3 mt-1 space-y-0.5 border-l border-white/20 pl-3">
+            {items.map((item) => (
+              <Link
+                key={item.slug}
+                href={item.slug}
+                className={cn(
+                  "flex items-center gap-2 rounded-sm p-1.5 text-sm transition hover:bg-white hover:text-primaryColor",
+                  isActive(item.slug)
+                    ? "bg-whiteColor text-primaryColor"
+                    : "text-white/90",
+                )}
+                onClick={() => {
+                  setMenuOpen(false);
+                  setOpenMobileDropdownSlug(null);
+                }}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <header className="py-2.5 md:px-4 sticky top-0 left-0 w-full bg-whiteColor shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)] z-99">
+    <header className=" md:px-4 sticky top-0 left-0 w-full bg-whiteColor shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)] z-99">
       <div className="container mx-auto flex items-center justify-between">
         <Link href="/mu/home" onClick={scrollToTop}>
           <Image
@@ -228,7 +389,7 @@ export default function  MainNavbar() {
           menuOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
-        <div className="absolute top-0 right-0 h-full max-w-[320px] w-[80%] bg-primaryColor p-4">
+        <div className="absolute top-0 right-0 h-dvh max-h-dvh max-w-[320px] w-[80%] overflow-y-auto overscroll-contain bg-primaryColor p-4 pb-8">
           <div className="mb-2 flex w-full items-center justify-between">
             <Image src={mainLogo} alt="Logo" width={150} height={150} />
             <button
@@ -240,7 +401,7 @@ export default function  MainNavbar() {
             </button>
           </div>
 
-          {menuItems.map((item) => {
+          {mobileMenuItems.map((item) => {
             const isMobileDropdownOpen = openMobileDropdownSlug === item.slug;
 
             if (item.isDropdown) {
@@ -323,6 +484,19 @@ export default function  MainNavbar() {
               </Link>
             );
           })}
+          {renderMobileSection(
+            "Network",
+            "mobile-network",
+            networkMenuItems,
+          )}
+          {renderMobileSection("Jobs", "mobile-jobs", jobsMenuItems)}
+          {isIndustry &&
+            renderMobileSection(
+              "Pro Industry",
+              "mobile-pro-industry",
+              proIndustryMenuItems,
+            )}
+          {renderMobileSection("Settings", "mobile-settings", settingsMenuItems)}
         </div>
       </div>
     </header>

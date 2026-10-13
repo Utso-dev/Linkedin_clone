@@ -14,17 +14,17 @@ async function layout({
   const menuData = [
     {
       id: 1,
-      title: "Company Posts",
+      title: "Posts",
       href: `/mu/industry/${id}`,
     },
     {
       id: 2,
-      title: "Job post",
+      title: "Jobs",
       href: `/mu/industry/${id}/job-post`,
     },
     {
       id: 3,
-      title: "Products advertisement",
+      title: "Products",
       href: `/mu/industry/${id}/products-advertisement`,
     },
   ];
