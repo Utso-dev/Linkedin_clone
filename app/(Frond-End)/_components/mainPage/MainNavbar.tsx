@@ -6,54 +6,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  getProIndustryMenuItems,
+  jobsMenuItems,
+  mainMenuItems,
+  networkMenuItems,
+  sectionMenuIcons,
+  settingsMenuItems,
+  type MenuItem,
+  MenueArrowDownIcon,
+} from "@/components/reusable/Allmenus";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { cn, scrollToTop } from "@/lib/utils";
 import mainLogo from "@/public/logo.png";
-import {
-  AboutIcon,
-  ClinicalIcon,
-  ContactUsIcon,
-  GlobalIcon,
-  HomeIcon,
-  JobsIcon,
-  MenueArrowDownIcon,
-  MultiUserIcon,
-  PlusUserIcon,
-  SingleUserIcon,
-  GroupUserIcon,
-  RecommendedJobIcon,
-  SaveJobIcon,
-  DashboardIcon,
-  AdvertisementIcon,
-  BarChartIcon,
-  MessageIcon,
-  PencileIcon,
-  GeneralSettingIcon,
-  SecurityIcon,
-  SettingIcon,
-  PsychologyMenuIcon,
-} from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState, type ComponentType } from "react";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
-import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
-import { Plus } from "lucide-react";
 import { useRealtimeNotifications } from "../../mu/(muGroup)/(home_network)/notification/_components/useRealtimeNotifications";
 import UserHeaderInfo from "./UserHeaderInfo";
 
-type MenuItem = {
-  label: string;
-  slug: string;
-  icon: ComponentType<{ className?: string }>;
-  isDropdown?: boolean;
-  dropdownItems?: Array<{ label: string; slug: string }>;
-};
-
-export default function  MainNavbar() {
+export default function MainNavbar() {
   const pathname = usePathname();
-  const params = useParams();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdownSlug, setOpenDropdownSlug] = useState<string | null>(null);
@@ -66,59 +41,6 @@ export default function  MainNavbar() {
 
   useRealtimeNotifications(user?.user.id);
 
-  const menuItems: MenuItem[] = [
-    { label: "Home", slug: "/mu/home", icon: HomeIcon },
-    { label: "About Us", slug: "/mu/about-us", icon: AboutIcon },
-
-    { label: "Academia", slug: "/mu/academia?redirect=home", icon: GlobalIcon },
-    {
-      label: "My Network",
-      slug: "/mu/my-network/my-connection",
-      icon: MultiUserIcon,
-    },
-    {
-      label: "Psychology Network",
-      slug: "/mu/psychology-network",
-      icon: PsychologyMenuIcon,
-      isDropdown: true,
-      dropdownItems: [
-        { label: "Psychology Fields", slug: "/mu/psychology-network/fields" },
-        {
-          label: "Psychology Careers",
-          slug: "/mu/psychology-network/careers",
-        },
-        {
-          label: "Industry",
-          slug: "/mu/psychology-network/industry/biotechnology",
-        },
-        { label: "Jobs", slug: "/mu/psychology-network/jobs" },
-      ],
-    },
-    {
-      label: "Neuroscience Network",
-      slug: "/mu/neuroscience-network",
-      icon: ClinicalIcon,
-      isDropdown: true,
-      dropdownItems: [
-        {
-          label: "Neuroscience Fields",
-          slug: "/mu/neuroscience-network/fields",
-        },
-        {
-          label: "Neuroscience Careers",
-          slug: "/mu/neuroscience-network/careers",
-        },
-        {
-          label: "Industry",
-          slug: "/mu/neuroscience-network/industry/biotechnology",
-        },
-        { label: "Jobs", slug: "/mu/neuroscience-network/jobs" },
-      ],
-    },
-    { label: "Jobs", slug: "/mu/jobs", icon: JobsIcon },
-    { label: "Contact Us", slug: "/mu/contact-us", icon: ContactUsIcon },
-  ];
-
   const isActive = (href: string): boolean => {
     if (href === "/mu/home") {
       return pathname === "/mu/home";
@@ -126,84 +48,10 @@ export default function  MainNavbar() {
     return pathname.startsWith(href);
   };
 
-  const networkMenuItems = [
-    {
-      label: "My Connections",
-      slug: "/mu/my-network/my-connection",
-      icon: MultiUserIcon,
-    },
-    {
-      label: "Connection Requests",
-      slug: "/mu/my-network/connection-requests",
-      icon: PlusUserIcon,
-    },
-    {
-      label: "Following & Followers",
-      slug: "/mu/my-network/following",
-      icon: SingleUserIcon,
-    },
-    {
-      label: "Groups",
-      slug: "/mu/my-network/groups",
-      icon: GroupUserIcon,
-    },
-  ];
-
-  const jobsMenuItems = [
-    { label: "All Jobs", slug: "/mu/jobs", icon: JobsIcon },
-    {
-      label: "Recommended Jobs",
-      slug: "/mu/jobs/recommended-jobs",
-      icon: RecommendedJobIcon,
-    },
-    {
-      label: "Recently added jobs",
-      slug: "/mu/jobs/recent-jobs",
-      icon: Plus,
-    },
-    { label: "Saved job", slug: "/mu/jobs/saved-jobs", icon: SaveJobIcon },
-  ];
-
-  const proIndustryMenuItems = [
-    {
-      label: "Industry Profile",
-      slug: `/mu/industry-profile/${user?.industry?.company?.id}`,
-      icon: HiOutlineBuildingOffice2,
-    },
-    {
-      label: "Recruiter Dashboard",
-      slug: "/mu/recruiter-dashboard",
-      icon: DashboardIcon,
-    },
-    {
-      label: "Advertisement",
-      slug: "/mu/advertisement",
-      icon: AdvertisementIcon,
-    },
-    { label: "Job Listing", slug: "/mu/job-listing", icon: JobsIcon },
-    { label: "Analytics", slug: "/mu/analytics", icon: BarChartIcon },
-    { label: "Message", slug: "/mu/message", icon: MessageIcon },
-    {
-      label: "Post a job position",
-      slug: "/mu/post-job-position",
-      icon: PencileIcon,
-    },
-  ];
-
-  const settingsMenuItems = [
-    {
-      label: "General Settings",
-      slug: "/mu/settings/general",
-      icon: GeneralSettingIcon,
-    },
-    {
-      label: "Security Settings",
-      slug: "/mu/settings/security",
-      icon: SecurityIcon,
-    },
-  ];
-
-  const mobileMenuItems = menuItems.filter(
+  const proIndustryMenuItems = getProIndustryMenuItems(
+    user?.industry?.company?.id,
+  );
+  const mobileMenuItems = mainMenuItems.filter(
     (item) =>
       item.slug !== "/mu/my-network/my-connection" &&
       item.slug !== "/mu/jobs",
@@ -213,11 +61,7 @@ export default function  MainNavbar() {
     title: string,
     sectionSlug: string,
     sectionIcon: ComponentType<{ className?: string }>,
-    items: Array<{
-      label: string;
-      slug: string;
-      icon: ComponentType<{ className?: string }>;
-    }>,
+    items: MenuItem[],
   ) => {
     const isOpen = openMobileDropdownSlug === sectionSlug;
     const SectionIcon = sectionIcon;
@@ -292,7 +136,7 @@ export default function  MainNavbar() {
         </Link>
 
         <nav className="hidden space-x-6 text-base min-[1132px]:flex">
-          {menuItems.map((item) => {
+          {mainMenuItems.map((item) => {
             if (item.isDropdown) {
               const isDropdownOpen = openDropdownSlug === item.slug;
 
@@ -493,21 +337,21 @@ export default function  MainNavbar() {
           {renderMobileSection(
             "Network",
             "mobile-network",
-            MultiUserIcon,
+            sectionMenuIcons.network,
             networkMenuItems,
           )}
-          {renderMobileSection("Jobs", "mobile-jobs", JobsIcon, jobsMenuItems)}
+          {renderMobileSection("Jobs", "mobile-jobs", sectionMenuIcons.jobs, jobsMenuItems)}
           {isIndustry &&
             renderMobileSection(
               "Pro Industry",
               "mobile-pro-industry",
-              DashboardIcon,
+              sectionMenuIcons.proIndustry,
               proIndustryMenuItems,
             )}
           {renderMobileSection(
             "Settings",
             "mobile-settings",
-            SettingIcon,
+            sectionMenuIcons.settings,
             settingsMenuItems,
           )}
         </div>

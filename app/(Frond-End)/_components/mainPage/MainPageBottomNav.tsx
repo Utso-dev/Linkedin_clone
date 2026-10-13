@@ -1,10 +1,9 @@
 "use client";
 
 import {
-  GeneralSettingIcon,
-  SecurityIcon,
   SettingIcon,
 } from "@/public/svgIcons/Icons";
+import { settingsMenuItems } from "@/components/reusable/Allmenus";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -18,26 +17,8 @@ export default function MainPageBottomNav({ onItemClick }: BottomNavProps) {
   const pathname = usePathname();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  const settingsItems = [
-    {
-      label: "General Settings",
-      slug: "/mu/settings/general",
-      icon: GeneralSettingIcon,
-    },
-    // {
-    //   label: "Notification Settings",
-    //   slug: "/mu/settings/notifications",
-    //   icon: NotificationIcon,
-    // },
-    {
-      label: "Security Settings",
-      slug: "/mu/settings/security",
-      icon: SecurityIcon,
-    },
-  ];
-
   useEffect(() => {
-    if (settingsItems.some((item) => pathname.startsWith(item.slug))) {
+    if (settingsMenuItems.some((item) => pathname.startsWith(item.slug))) {
       setIsSettingsOpen(true);
     }
   }, [pathname]);
@@ -66,7 +47,7 @@ export default function MainPageBottomNav({ onItemClick }: BottomNavProps) {
           type="button"
           onClick={() => setIsSettingsOpen((prev) => !prev)}
           className={`w-full flex items-center justify-between p-2 text-sm rounded-md transition cursor-pointer ${
-            settingsItems.some((item) => isActive(item.slug))
+            settingsMenuItems.some((item) => isActive(item.slug))
               ? "text-headerColor font-medium"
               : "text-grayColor1 hover:text-headerColor hover:bg-gray-50"
           }`}
@@ -85,7 +66,7 @@ export default function MainPageBottomNav({ onItemClick }: BottomNavProps) {
         {/* Settings Submenu Items */}
         {isSettingsOpen && (
           <div className="mt-1 space-y-1 pl-2">
-            {settingsItems.map((item) => {
+            {settingsMenuItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.slug);
 

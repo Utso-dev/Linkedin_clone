@@ -247,7 +247,7 @@ export default function AdvertisementsPage() {
           <GraphSkeleton />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {stateCards.map((card) => (
             <CommonStateCard key={card.title} {...card} />
           ))}

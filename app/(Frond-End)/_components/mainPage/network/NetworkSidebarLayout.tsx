@@ -18,9 +18,7 @@ function NetworkSidebarLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <div className="lg:hidden">
-        <div className="mb-4">
-          <CustomBackButton className="text-base" iconClassName="w-4 h-4" />
-        </div>
+        
         <button
           type="button"
           aria-expanded={menuOpen}

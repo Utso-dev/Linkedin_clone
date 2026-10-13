@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  GroupUserIcon,
-  MultiUserIcon,
-  PlusUserIcon,
-  SingleUserIcon,
-} from "@/public/svgIcons/Icons";
+import { networkMenuItems } from "@/components/reusable/Allmenus";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -15,29 +10,6 @@ import MainPageBottomNav from "./MainPageBottomNav";
 function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname();
   const [isMobile, setOpenMobile] = useState(false);
-
-  const menuItems = [
-    {
-      label: "My Connections",
-      slug: "/mu/my-network/my-connection",
-      icon: MultiUserIcon,
-    },
-    {
-      label: "Connection Requests",
-      slug: "/mu/my-network/connection-requests",
-      icon: PlusUserIcon,
-    },
-    {
-      label: "Following & Followers",
-      slug: "/mu/my-network/following",
-      icon: SingleUserIcon,
-    },
-    {
-      label: "Groups",
-      slug: "/mu/my-network/groups",
-      icon: GroupUserIcon,
-    },
-  ];
 
   const handleLinkClick = () => {
     onItemClick?.();
@@ -60,7 +32,7 @@ function MainPageLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
         </h3>
 
         <div className="mt-4 space-y-1">
-          {menuItems.map((item) => (
+          {networkMenuItems.map((item) => (
             <Link
               key={item.slug}
               href={item.slug}
