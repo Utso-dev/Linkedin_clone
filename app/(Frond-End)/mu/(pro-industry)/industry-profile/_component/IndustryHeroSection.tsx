@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { GrLocation } from "react-icons/gr";
 import { IoPricetagsOutline } from "react-icons/io5";
+import RelatedIndustryFollowButton from "../../_component/RelatedIndustryFollowButton";
 function IndustryHeroSection({ userId }: { userId?: string }) {
   const UId = userId;
   const { data, isLoading } = useGetCompanyQuery(UId, {
@@ -25,7 +26,7 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
     );
   }
   const industryData = data?.data;
-  console.log(industryData?.name);
+  console.log(industryData);
 
   return (
     <div>
@@ -50,7 +51,7 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
                 height={80}
               />
             </div>
-            {industryData?.is_owner && (
+            {industryData?.is_owner ? (
               <div className="flex gap-6 mt-4">
                 <Link
                   href={`/mu/create-company-page/${UId}`}
@@ -59,6 +60,13 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
                 >
                   <PencileIcon />
                 </Link>
+              </div>
+            ) : (
+              <div className="h-10">
+                <RelatedIndustryFollowButton
+                  industryId={UId}
+                  initialFollowing={Boolean(industryData?.is_following)}
+                />
               </div>
             )}
           </div>
