@@ -2,6 +2,9 @@
 
 import GraphSkeleton from "@/components/reusable/All Skleton/GraphSkeleton";
 import StateCardSkleton from "@/components/reusable/All Skleton/StateCardSkleton";
+import CommonAnalyticsGraph, {
+  GraphSeriesItem,
+} from "@/components/reusable/CommonAnalyticsGraph";
 import CommonStateCard from "@/components/reusable/CommonStateCard";
 import { useGetAdvertisementsQuery } from "@/feature/slice/jobs/analyticSlice";
 import {
@@ -10,22 +13,12 @@ import {
   LikeIcon,
   OpenEyeIcon,
 } from "@/public/svgIcons/Icons";
-import { useEffect, useMemo, useState } from "react";
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { useEffect, useState } from "react";
 
-interface AdGraphPoint {
-  label: string;
-  views: number;
-  likes: number;
-}
+const GRAPH_SERIES: GraphSeriesItem[] = [
+  { dataKey: "views", name: "Views", color: "#04A1B7" },
+  { dataKey: "likes", name: "Like", color: "#07C3BB" },
+];
 
 export default function AnalyticsAdvertisementPage() {
   const {
@@ -51,46 +44,7 @@ export default function AnalyticsAdvertisementPage() {
   }, [graph?.active]);
 
   // Direct array from graph response
-  const chartData: AdGraphPoint[] = (graph?.[activeRange] || []) as AdGraphPoint[];
-
-  // Dynamic Y-axis scale and ticks matching design
-  const { maxChartVal, yTicks } = useMemo(() => {
-    let max = 0;
-    chartData.forEach((row) => {
-      const v = Number(row.views) || 0;
-      const l = Number(row.likes) || 0;
-      if (v > max) max = v;
-      if (l > max) max = l;
-    });
-
-    if (max === 0) {
-      return {
-        maxChartVal: 1000,
-        yTicks: [0, 100, 300, 500, 800, 1000],
-      };
-    }
-
-    const roundedMax = Math.ceil(max * 1.25);
-    return {
-      maxChartVal: roundedMax,
-      yTicks: [
-        0,
-        Math.round(roundedMax * 0.1),
-        Math.round(roundedMax * 0.3),
-        Math.round(roundedMax * 0.5),
-        Math.round(roundedMax * 0.8),
-        roundedMax,
-      ],
-    };
-  }, [chartData]);
-
-  // Format Y-axis tick values (e.g., 1000 -> 1k)
-  const formatYAxis = (val: number) => {
-    if (val >= 1000) {
-      return `${(val / 1000).toFixed(0)}k`;
-    }
-    return val.toString();
-  };
+  const chartData = graph?.[activeRange] || [];
 
   const stateCards = [
     {
@@ -114,37 +68,6 @@ export default function AnalyticsAdvertisementPage() {
       icon: LikeIcon,
     },
   ];
-
-  // Custom Tooltip identical to the screenshot
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (!active || !payload || !payload.length) return null;
-    return (
-      <div className="bg-white rounded-xl shadow-xl border border-borderColor/80 p-3 min-w-40 text-xs">
-        <p className="font-bold text-headerColor text-xs pb-1.5 mb-2 border-b border-borderColor/60">
-          Product Insight
-        </p>
-        <div className="space-y-1.5">
-          {payload.map((entry: any, index: number) => {
-            const isViews =
-              entry.dataKey === "views" ||
-              entry.name?.toLowerCase().includes("view");
-            const title = isViews ? "Product Views" : "Product Like";
-            return (
-              <div
-                key={index}
-                className="flex items-center justify-between gap-4 text-grayColor1"
-              >
-                <span className="font-normal text-gray-500">{title}</span>
-                <span className="font-bold text-headerColor">
-                  {Number(entry.value ?? 0).toLocaleString()}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
 
   if (isLoading) {
     return (
@@ -280,85 +203,27 @@ export default function AnalyticsAdvertisementPage() {
                   })}
                 </div>
 
-                {/* Legend matching screenshot */}
+                {/* Legend matching design */}
                 <div className="flex items-center gap-4 text-xs font-medium text-grayColor1">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-primaryColor" />
-                    <span className="text-headerColor font-medium">Views</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-buttonColor" />
-                    <span className="text-headerColor font-medium">Like</span>
-                  </div>
+                  {GRAPH_SERIES.map((s) => (
+                    <div key={s.dataKey} className="flex items-center gap-1.5">
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: s.color }}
+                      />
+                      <span className="text-headerColor font-medium">{s.name}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            {/* Recharts Line Chart */}
-            <div className="h-72 sm:h-80 w-full mt-6">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={chartData}
-                  margin={{ top: 15, right: 15, left: -20, bottom: 0 }}
-                >
-                  <CartesianGrid
-                    vertical={false}
-                    stroke="#F3F4F6"
-                    strokeDasharray="3 3"
-                  />
-                  <XAxis
-                    dataKey="label"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: "#9CA3AF", fontSize: 12 }}
-                  />
-                  <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    domain={[0, maxChartVal]}
-                    ticks={yTicks}
-                    tickFormatter={formatYAxis}
-                    tick={{ fill: "#9CA3AF", fontSize: 12 }}
-                  />
-                  <Tooltip
-                    cursor={{
-                      stroke: "#F3F4F6",
-                      strokeWidth: 5,
-                      strokeLinecap: "round",
-                    }}
-                    content={<CustomTooltip />}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="views"
-                    name="Views"
-                    stroke="#04a1b7"
-                    strokeWidth={2.5}
-                    dot={false}
-                    activeDot={{
-                      r: 5,
-                      stroke: "#04a1b7",
-                      strokeWidth: 2,
-                      fill: "#1D1F2C",
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="likes"
-                    name="Like"
-                    stroke="#07c3bb"
-                    strokeWidth={2.5}
-                    dot={false}
-                    activeDot={{
-                      r: 5,
-                      stroke: "#07c3bb",
-                      strokeWidth: 2,
-                      fill: "#ffffff",
-                    }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+            {/* Reusable Common Analytics Graph */}
+            <CommonAnalyticsGraph
+              data={chartData}
+              series={GRAPH_SERIES}
+              subtitle={graph?.subtitle || "Product Insight"}
+            />
           </div>
         </div>
       </div>

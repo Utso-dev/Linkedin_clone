@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import ProfileInsightsPage from "../../_component/analytics/ProfileInsightsPage";
 
 function page() {
   return (
-    <div>page</div>
-  )
+    <div>
+      <ProfileInsightsPage />
+    </div>
+  );
 }
 
-export default page
+export default page;

@@ -10,6 +10,7 @@ import EmojiPicker, {
 } from "emoji-picker-react";
 import { Loader, X } from "lucide-react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -38,7 +39,7 @@ function CommentBoxArea({
   const emojiButtonRef = useRef<HTMLButtonElement | null>(null);
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-
+  const pathName = usePathname()
   useEffect(() => {
     if (replyingToUserName && textareaRef.current) {
       textareaRef.current.focus();
@@ -164,8 +165,12 @@ function CommentBoxArea({
     if (trimmedText) {
       formData.append("comment", trimmedText);
     }
+
     if (selectedImage) {
       formData.append("image", selectedImage);
+    }
+    if(pathName.includes("industry-profile")){
+      formData.append("as_company", "true");
     }
     if (parentId) {
       formData.append("parent_id", parentId.toString());

@@ -27,6 +27,14 @@ const analyticSlice = baseApiSlice.injectEndpoints({
             }),
             providesTags: ["Analytic"],
         }),
+        getPublicationsInsight: builder.query({
+            query: (params) => ({
+                url: "/industry/analytics/publications-insights",
+                method: "GET",
+                params,
+            }),
+            providesTags: ["Analytic"],
+        }),
     }),
 });
 
@@ -34,5 +42,6 @@ export const {
     useGetAdvertisementsQuery,
     useGetJobOverviewQuery,
     useGetProfileInsightQuery,
+    useGetPublicationsInsightQuery,
 } = analyticSlice;
 
