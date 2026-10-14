@@ -1,5 +1,6 @@
 import {
   AboutIcon,
+  AdvertisementIcon,
   BarChartIcon,
   ClinicalIcon,
   ContactUsIcon,
@@ -7,24 +8,23 @@ import {
   GeneralSettingIcon,
   GlobalIcon,
   GroupUserIcon,
+  HomeIcon,
   JobsIcon,
+  MenueArrowDownIcon,
   MessageIcon,
   MultiUserIcon,
   PencileIcon,
   PlusUserIcon,
+  PsychologyMenuIcon,
   RecommendedJobIcon,
   SaveJobIcon,
   SecurityIcon,
   SettingIcon,
   SingleUserIcon,
-  AdvertisementIcon,
-  MenueArrowDownIcon,
-  HomeIcon,
-  PsychologyMenuIcon,
 } from "@/public/svgIcons/Icons";
 import { Plus } from "lucide-react";
-import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 import type { ComponentType } from "react";
+import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 
 export type MenuItem = {
   label: string;
@@ -128,7 +128,7 @@ export function getProIndustryMenuItems(
       slug: "/mu/recruiter-dashboard",
       icon: DashboardIcon,
     },
-    { label: "Product", slug: "/mu/advertisement", icon: AdvertisementIcon },
+    { label: "Products", slug: "/mu/products", icon: AdvertisementIcon },
     { label: "Job Listing", slug: "/mu/job-listing", icon: JobsIcon },
     { label: "Analytics", slug: "/mu/analytics", icon: BarChartIcon },
     { label: "Message", slug: "/mu/message", icon: MessageIcon },

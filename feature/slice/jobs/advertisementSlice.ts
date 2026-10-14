@@ -5,7 +5,7 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
     getAdvertisementDashboard: builder.query({
       query: () => {
         return {
-          url: "/industry/advertisements/dashboard",
+          url: "/industry/products/dashboard",
           method: "GET",
         };
       },
@@ -14,7 +14,7 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
     getAdvertisementData: builder.query({
       query: (params) => {
         return {
-          url: "/industry/advertisements/my-listings",
+          url: "/industry/products/my-listings",
           method: "GET",
           params,
         };
@@ -24,7 +24,7 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
     getAdvertisemetSection: builder.query({
       query: (params) => {
         return {
-          url: "/industry/advertisements/sections",
+          url: "/industry/products/sections",
           method: "GET",
           params,
         };
@@ -33,7 +33,7 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
     getAdvertisemetCategories: builder.query({
       query: (id) => {
         return {
-          url: `/industry/advertisements/sections/${id}/categories`,
+          url: `/industry/products/sections/${id}/categories`,
           method: "GET",
         };
       },
@@ -41,7 +41,7 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
     getAdvertisemetEdite: builder.query({
       query: (id) => {
         return {
-          url: `/industry/advertisements/${id}`,
+          url: `/industry/products/${id}`,
           method: "GET",
         };
       },
@@ -49,38 +49,37 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
     createAdvertisement: builder.mutation({
       query: (data) => {
         return {
-          url: `/industry/advertisements/create`,
+          url: `/industry/products/create`,
           method: "POST",
           body: data,
         };
       },
-        invalidatesTags: ["Advertisement"],
+      invalidatesTags: ["Advertisement"],
     }),
     updateAdvertisementStatus: builder.mutation({
       query: ({ id, data }) => {
         return {
-          url: `industry/advertisements/${id}/status`,
+          url: `industry/products/${id}/status`,
           method: "PATCH",
           body: data,
         };
       },
-        invalidatesTags: ["Advertisement"],
+      invalidatesTags: ["Advertisement"],
     }),
     updateAdvertisement: builder.mutation({
       query: ({ id, data }) => {
         return {
-          url: `/industry/advertisements/${id}/update`,
+          url: `/industry/products/${id}/update`,
           method: "POST",
           body: data,
         };
       },
-        invalidatesTags: ["Advertisement"],
+      invalidatesTags: ["Advertisement"],
     }),
     deleteAdvertisement: builder.mutation({
-      query: ( id  ) => ({
-       
-          url: `/industry/advertisements/${id}/delete`,
-          method: "DELETE",
+      query: (id) => ({
+        url: `/industry/products/${id}/delete`,
+        method: "DELETE",
       }),
       invalidatesTags: ["Advertisement"],
     }),
@@ -96,5 +95,5 @@ export const {
   useCreateAdvertisementMutation,
   useUpdateAdvertisementMutation,
   useGetAdvertisemetEditeQuery,
-  useDeleteAdvertisementMutation
+  useDeleteAdvertisementMutation,
 } = advertisementSlice;
