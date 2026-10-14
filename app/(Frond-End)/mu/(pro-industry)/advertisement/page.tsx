@@ -9,7 +9,7 @@ function page() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 lg:mb-6">
         <div className="max-w-113">
           <h1 className="text-xl sm:text-2xl font-bold text-headerColor">
-            Advertisements Dashboard
+            Product Dashboard
           </h1>
           <p className="text-sm leading-[140%] sm:text-base text-descriptionColor mt-1">
             Submit, track and measure clinical outreach campaigns across the

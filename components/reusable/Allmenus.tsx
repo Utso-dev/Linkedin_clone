@@ -128,7 +128,7 @@ export function getProIndustryMenuItems(
       slug: "/mu/recruiter-dashboard",
       icon: DashboardIcon,
     },
-    { label: "Advertisement", slug: "/mu/advertisement", icon: AdvertisementIcon },
+    { label: "Product", slug: "/mu/advertisement", icon: AdvertisementIcon },
     { label: "Job Listing", slug: "/mu/job-listing", icon: JobsIcon },
     { label: "Analytics", slug: "/mu/analytics", icon: BarChartIcon },
     { label: "Message", slug: "/mu/message", icon: MessageIcon },
