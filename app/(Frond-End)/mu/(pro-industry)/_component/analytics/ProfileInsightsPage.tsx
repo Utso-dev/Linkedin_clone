@@ -9,13 +9,9 @@ import CommonStateCard from "@/components/reusable/CommonStateCard";
 import SelecteInputField, {
   Option,
 } from "@/components/reusable/InputFiled/SelecteInputField";
-import {
-  useGetProfileInsightQuery,
-  useGetPublicationsInsightQuery,
-} from "@/feature/slice/jobs/analyticSlice";
+import { useGetProfileInsightQuery } from "@/feature/slice/jobs/analyticSlice";
 import { ActiveIcon, OpenEyeIcon, PlusUserIcon } from "@/public/svgIcons/Icons";
-import React, { useEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
 
 const GRAPH_SERIES: GraphSeriesItem[] = [
   { dataKey: "new_followers", name: "Net Followers", color: "#10B981" },
@@ -28,20 +24,21 @@ const RANGE_OPTIONS: Option[] = [
   { value: "monthly", label: "Monthly" },
 ];
 
-interface ProfileInsightsPageProps {
-  useCustomQuery?: typeof useGetPublicationsInsightQuery | typeof useGetProfileInsightQuery;
-}
+export default function ProfileInsightsPage() {
+  const {
+    data: response,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetProfileInsightQuery({});
 
-export default function ProfileInsightsPage({ useCustomQuery }: ProfileInsightsPageProps) {
-  // Use requested custom query or default profile insight query without duplicate requests
-  const queryHook = useCustomQuery || useGetProfileInsightQuery;
-  const { data: response, isLoading, isError, refetch } = queryHook({});
-
-  const analyticsData = response?.data 
+  const analyticsData = response?.data;
   const cards = analyticsData?.cards;
   const graph = analyticsData?.graph;
 
-  const [activeRange, setActiveRange] = useState<"weekly" | "monthly">("weekly");
+  const [activeRange, setActiveRange] = useState<"weekly" | "monthly">(
+    "weekly",
+  );
 
   // Keep active range in sync with response
   useEffect(() => {
@@ -89,7 +86,7 @@ export default function ProfileInsightsPage({ useCustomQuery }: ProfileInsightsP
         : undefined,
       isPositive: cards?.profile_visits?.is_positive ?? true,
       growthText: "From last month",
-      icon: OpenEyeIcon
+      icon: OpenEyeIcon,
     },
   ];
 
