@@ -343,7 +343,7 @@ export default function CreateAdvertisementForm({
       if (onSuccess) {
         onSuccess();
       } else {
-        router.push("/mu/advertisement");
+        router.push("/mu/products");
       }
     } catch (error: any) {
       console.error("Error submitting Product:", error);
@@ -355,8 +355,7 @@ export default function CreateAdvertisementForm({
         toast.error(firstErrorMessage || "Validation error occurred.");
       } else {
         toast.error(
-          error?.data?.message ||
-            "Failed to submit Product. Please try again.",
+          error?.data?.message || "Failed to submit Product. Please try again.",
         );
       }
     }

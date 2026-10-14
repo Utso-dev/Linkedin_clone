@@ -15,13 +15,13 @@ import {
   LikeIcon,
   OpenEyeIcon,
 } from "@/public/svgIcons/Icons";
-import { Eye, FileText, Pencil, Plus, Trash2 } from "lucide-react";
+import { Eye, FileText, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import AdvertisementDeleteModal from "./AdvertisementDeleteModal";
-import AdvertismentViewModal from "./AdvertismentViewModal";
 import AdvertismentStatusUpdate from "./AdvertismentStatusUpdate";
+import AdvertismentViewModal from "./AdvertismentViewModal";
 
 export default function AdvertisementsPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -115,7 +115,7 @@ export default function AdvertisementsPage() {
           </div>
           <div className="min-w-0">
             <Link
-              href={`/mu/advertisement/${row.id}`}
+              href={`/mu/products/${row.id}`}
               className="text-sm font-semibold text-headerColor hover:text-primaryColor transition-colors block truncate max-w-xs"
             >
               {row.product_name}
@@ -225,7 +225,7 @@ export default function AdvertisementsPage() {
             <Trash2 className="w-4 h-4" />
           </button>
           <Link
-            href={`/mu/advertisement/${row.id}/edit`}
+            href={`/mu/products/${row.id}/edit`}
             className="p-1.5 rounded-lg border border-borderColor hover:bg-bgColor text-gray-500 hover:text-primaryColor transition-colors cursor-pointer"
             title="Edit Ad"
           >
@@ -238,8 +238,6 @@ export default function AdvertisementsPage() {
 
   return (
     <div className="w-full space-y-7 pb-10">
-   
-
       {/* Top 3 Cards using CommonStateCard */}
       {isDashboardLoading ? (
         <div className="space-y-4">
