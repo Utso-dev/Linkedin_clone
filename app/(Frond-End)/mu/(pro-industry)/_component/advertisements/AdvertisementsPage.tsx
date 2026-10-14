@@ -47,7 +47,7 @@ export default function AdvertisementsPage() {
   const stateCards: CommonStateCardProps[] = [
     {
       title: "All Product",
-      total: dashboardData?.total_advertisements ?? 0,
+      total: dashboardData?.total_products ?? 0,
       growthPercentage: 2.8,
       badgeText: "+2.8%",
       isPositive: true,
@@ -56,7 +56,7 @@ export default function AdvertisementsPage() {
     },
     {
       title: "Total Active",
-      total: dashboardData?.total_advertisements ?? 0,
+      total: dashboardData?.total_active_products ?? 0,
       badgeText: "Stable",
       isPositive: true,
       growthText: "",
