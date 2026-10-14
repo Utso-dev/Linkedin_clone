@@ -89,7 +89,11 @@ export default function CommentRow({
 
         <div className="min-w-0 flex-1">
           <Link
-            href={`/mu/profile/${item?.user?.id}`}
+            href={
+              item?.industry_id
+                ? `/mu/industry/${item?.industry_id}`
+                : `/mu/profile/${item?.user?.id}`
+            }
             className="text-sm lg:text-[15px] leading-[140%] font-semibold text-headerColor"
           >
             {item?.user?.name || "Profile Name"}

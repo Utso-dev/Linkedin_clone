@@ -26,7 +26,7 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
     );
   }
   const industryData = data?.data;
-  console.log(industryData);
+
 
   return (
     <div>

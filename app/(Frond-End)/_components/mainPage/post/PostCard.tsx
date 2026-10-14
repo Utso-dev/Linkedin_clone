@@ -64,7 +64,7 @@ function PostCard({ post, meta }: PostCardProps) {
                   className="h-full w-full object-cover rounded-md"
                 />
                 <HiOutlineBuildingOffice2
-                  className="absolute -bottom-1 bg-white  -right-1 h-7 w-7 rounded-sm border-2 border-whiteColor object-contain shadow-sm"
+                  className="absolute -bottom-1 bg-white rounded-xs -right-1 md:h-7 w-5 h-5 md:w-7 md:rounded-sm border-2 border-whiteColor object-contain shadow-sm"
                 />
               </div>
               <div>
