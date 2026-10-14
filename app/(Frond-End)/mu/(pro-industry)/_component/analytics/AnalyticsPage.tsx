@@ -16,9 +16,9 @@ import {
 import { useEffect, useState } from "react";
 
 const GRAPH_SERIES: GraphSeriesItem[] = [
-  { dataKey: "total_applicants", name: "Total Applicant", color: "#10B981" },
-  { dataKey: "job_views", name: "Job Views", color: "#F59E0B" },
-  { dataKey: "active_positions", name: "Active Positions", color: "#EF4444" },
+  { dataKey: "total_applicants", name: "Total Applicant", color: "#0CAF60" },
+  { dataKey: "job_views", name: "Job Views", color: "#FFC837" },
+  { dataKey: "active_positions", name: "Active Positions", color: "#EB3D4D" },
 ];
 
 const RANGE_OPTIONS = [

@@ -16,11 +16,11 @@ import {
   LikeIcon,
   OpenEyeIcon,
 } from "@/public/svgIcons/Icons";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const GRAPH_SERIES: GraphSeriesItem[] = [
-  { dataKey: "publications_views", name: "Views", color: "#04A1B7" },
-  { dataKey: "publications_likes", name: "Like", color: "#F59E0B" },
+  { dataKey: "publications_views", name: "Publication Views", color: "#0CAF60" },
+  { dataKey: "publications_likes", name: "Publication Like", color: "#FFC837" },
 ];
 
 const RANGE_OPTIONS: Option[] = [
