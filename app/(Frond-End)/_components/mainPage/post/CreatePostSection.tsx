@@ -16,7 +16,7 @@ function CreatePostSection() {
   const [isOpen, setIsOpen] = useState(false);
   const { data } = useGetUserProfileQuery("user");
   const pathName = usePathname();
-  console.log(data, "data");
+
   const imagesrc = pathName.includes("industry-profile")
     ? data?.industry?.company?.logo
     : data?.user?.profile_image_url;
@@ -41,7 +41,7 @@ function CreatePostSection() {
           placeholder="Type your post..."
           rows={2}
           onClick={() => setIsOpen(true)}
-          className="w-full resize-none bg-transparent text-sm text-headerColor placeholder:text-grayColor1 focus:outline-none"
+          className="w-full resize-none bg-transparent text-sm text-headerColor  focus:outline-none"
           value={postText}
           onChange={(e) => setPostText(e.target.value)}
         />

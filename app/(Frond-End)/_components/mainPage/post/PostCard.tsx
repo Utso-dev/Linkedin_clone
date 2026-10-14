@@ -1,12 +1,11 @@
 import { usePostToggleLikeMutation } from "@/feature/slice/post/likeSlice";
-import { useTruncatedText } from "@/hooks/useTruncatedText";
 import { PostFeedType } from "@/lib/type";
-import { formatPostDate } from "@/lib/utils";
+import { formatContentForDisplay, formatPostDate } from "@/lib/utils";
 import emptyImage from "@/public/empty_user.jpg";
 import { CommentIcon, IndustryIcon, LikeIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PostAction from "./PostAction";
 import PostComment from "./PostComment";
 import PostImageRender from "./PostImageRender";
@@ -25,8 +24,46 @@ function PostCard({ post, meta }: PostCardProps) {
   const [isLiked, setIsLiked] = useState(Boolean(post?.liked_by_me));
   const [isCommented, setIsCommented] = useState(false);
   const [likeList, setLikeList] = useState(false);
-  const { displayText, isExpanded, toggleExpanded, shouldShowButton } =
-    useTruncatedText(post?.description, { maxLength: 200 });
+
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [shouldShowButton, setShouldShowButton] = useState(false);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+
+  const rawDescription = post?.description || (post as any)?.content || "";
+  const formattedHtml = formatContentForDisplay(rawDescription);
+
+  useEffect(() => {
+    setIsExpanded(false);
+  }, [post?.id, rawDescription]);
+
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+
+    const checkOverflow = () => {
+      if (!isExpanded) {
+        if (el.scrollHeight > el.clientHeight + 2) {
+          setShouldShowButton(true);
+        } else {
+          setShouldShowButton(false);
+        }
+      }
+    };
+
+    checkOverflow();
+    const timer = setTimeout(checkOverflow, 60);
+    window.addEventListener("resize", checkOverflow);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", checkOverflow);
+    };
+  }, [rawDescription, isExpanded]);
+
+  const toggleExpanded = () => {
+    setIsExpanded((prev) => !prev);
+  };
+
 
   const [postToggleLike] = usePostToggleLikeMutation();
   const likedByMe = Boolean(post?.liked_by_me);
@@ -157,20 +194,28 @@ function PostCard({ post, meta }: PostCardProps) {
         <PostAction post={post} meta={meta} />
       </div>
 
-      <div className="mt-4 space-y-1">
-        <p className="wrap-break-word text-[16px] leading-7 text-headerColor/85">
-          {displayText}
-        </p>
-        {shouldShowButton && (
-          <button
-            type="button"
-            onClick={toggleExpanded}
-            className="text-sm font-semibold text-primaryColor hover:underline cursor-pointer"
-          >
-            {isExpanded ? "See less" : "See more"}
-          </button>
-        )}
-      </div>
+      {rawDescription && (
+        <div className="mt-4 space-y-1">
+          <div
+            ref={contentRef}
+            className={`wrap-break-word text-[16px] leading-7 text-headerColor/85 [&_p]:min-h-[1.5rem] break-words overflow-hidden ${
+              !isExpanded ? "line-clamp-3" : ""
+            }`}
+            dangerouslySetInnerHTML={{
+              __html: formattedHtml,
+            }}
+          />
+          {shouldShowButton && (
+            <button
+              type="button"
+              onClick={toggleExpanded}
+              className="text-sm font-semibold text-primaryColor hover:underline cursor-pointer"
+            >
+              {isExpanded ? "See less" : "See more"}
+            </button>
+          )}
+        </div>
+      )}
       <div>
         <PostImageRender mediaItems={mediaItems} />
       </div>

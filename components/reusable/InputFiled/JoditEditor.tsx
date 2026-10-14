@@ -10,6 +10,8 @@ interface JoditEditorProps {
   placeholder?: string;
   onChange?: (value: string) => void;
   onBlur?: () => void;
+  showToolbar?: boolean;
+  height?: number;
 }
 
 function JoditEditor({
@@ -17,12 +19,15 @@ function JoditEditor({
   placeholder,
   onChange,
   onBlur,
+  showToolbar = true,
+  height = 100,
 }: JoditEditorProps) {
   const config = useMemo(
     () => ({
       readonly: false,
-      height: 300,
+      height,
       placeholder,
+      toolbar: showToolbar,
       toolbarAdaptive: false,
       toolbarSticky: false,
       enableDragAndDropFileToEditor: true,
@@ -42,31 +47,33 @@ function JoditEditor({
         imagesExtensions: ["jpg", "png", "jpeg", "gif"],
         maximumImageFileSize: 1000000,
       },
-      buttons: [
-        "source",
-        "|",
-        "bold",
-        "italic",
-        "underline",
-        "strikethrough",
-        "|",
-        "ul",
-        "ol",
-        "|",
-        "paragraph",
-        "fontsize",
-        "brush",
-        "|",
-        "image",
-        "link",
-        "|",
-        "align",
-        "|",
-        "undo",
-        "redo",
-      ],
+      buttons: showToolbar
+        ? [
+            "source",
+            "|",
+            "bold",
+            "italic",
+            "underline",
+            "strikethrough",
+            "|",
+            "ul",
+            "ol",
+            "|",
+            "paragraph",
+            "fontsize",
+            "brush",
+            "|",
+            "image",
+            "link",
+            "|",
+            "align",
+            "|",
+            "undo",
+            "redo",
+          ]
+        : [],
     }),
-    [placeholder],
+    [height, placeholder, showToolbar],
   );
 
   return (

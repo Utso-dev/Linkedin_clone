@@ -164,3 +164,67 @@ export const formatNumberIntoK = ({
       className: "bg-[#FEF6D8] text-[#B45309]",
     };
   };
+
+/**
+ * Escapes unsafe HTML characters while preserving UTF-8 emojis and symbols
+ */
+export function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
+ * Converts user-typed multi-line plain text into HTML paragraphs
+ * Preserves empty lines using <p><br></p>
+ */
+export function textToHtml(text: string): string {
+  if (!text || !text.trim()) return "";
+  const lines = text.split("\n");
+  return lines
+    .map((line) => {
+      if (!line.trim()) {
+        return "<p><br></p>";
+      }
+      return `<p>${escapeHtml(line)}</p>`;
+    })
+    .join("");
+}
+
+/**
+ * Converts HTML post description back to plain text with newlines for editing
+ */
+export function htmlToPlainText(html: string): string {
+  if (!html) return "";
+  if (!/<[a-z][\s\S]*>/i.test(html)) {
+    return html;
+  }
+  return html
+    .replace(/<p>\s*<br\s*\/?>\s*<\/p>/gi, "\n")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>\s*<p>/gi, "\n")
+    .replace(/<\/?p>/gi, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#039;/gi, "'")
+    .replace(/&#39;/gi, "'")
+    .trim();
+}
+
+/**
+ * Formats post content for display in dangerouslySetInnerHTML.
+ * If content is plain text, converts newlines to HTML paragraphs.
+ */
+export function formatContentForDisplay(content?: string): string {
+  if (!content) return "";
+  if (/<[a-z][\s\S]*>/i.test(content)) {
+    return content;
+  }
+  return textToHtml(content);
+}
