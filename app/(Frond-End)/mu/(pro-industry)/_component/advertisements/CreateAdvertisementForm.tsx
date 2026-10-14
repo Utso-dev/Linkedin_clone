@@ -334,10 +334,10 @@ export default function CreateAdvertisementForm({
       if (id) {
         formData.append("_method", "PUT");
         await updateAdvertisement({ id, data: formData }).unwrap();
-        toast.success("Advertisement updated successfully!");
+        toast.success("Product updated successfully!");
       } else {
         await createAdvertisement(formData).unwrap();
-        toast.success("Advertisement created successfully!");
+        toast.success("Product created successfully!");
       }
 
       if (onSuccess) {
@@ -346,7 +346,7 @@ export default function CreateAdvertisementForm({
         router.push("/mu/advertisement");
       }
     } catch (error: any) {
-      console.error("Error submitting advertisement:", error);
+      console.error("Error submitting Product:", error);
       const serverErrors = error?.data?.errors;
       if (serverErrors && typeof serverErrors === "object") {
         const firstErrorMessage = Object.values(
@@ -356,7 +356,7 @@ export default function CreateAdvertisementForm({
       } else {
         toast.error(
           error?.data?.message ||
-            "Failed to submit advertisement. Please try again.",
+            "Failed to submit Product. Please try again.",
         );
       }
     }
@@ -367,7 +367,7 @@ export default function CreateAdvertisementForm({
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl md:text-2xl font-bold text-headerColor">
-          {id ? "Edit Product Advertisement" : "Add Product Advertisement"}
+          {id ? "Edit Product " : "Add Product "}
         </h1>
         <p className="text-sm text-descriptionColor mt-1">
           Add information about your product to help our team review and publish

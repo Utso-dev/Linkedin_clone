@@ -46,7 +46,7 @@ export default function AdvertisementsPage() {
   const advertisements = listingResponse?.data || [];
   const stateCards: CommonStateCardProps[] = [
     {
-      title: "All Advertisements",
+      title: "All Product",
       total: dashboardData?.total_advertisements ?? 0,
       growthPercentage: 2.8,
       badgeText: "+2.8%",
@@ -94,7 +94,7 @@ export default function AdvertisementsPage() {
       ),
     },
     {
-      label: "Ad Details",
+      label: "Products",
       accessor: "product_name",
       formatter: (_: any, row: any) => (
         <div className="flex items-center gap-3 py-2 px-3 min-w-55">
@@ -257,7 +257,7 @@ export default function AdvertisementsPage() {
       {/* Product Advertisements Listings Section */}
       <div className="space-y-4">
         <h2 className="text-lg sm:text-xl font-bold text-headerColor">
-          Your Product Advertisements Listings
+          Your Product Listings
         </h2>
 
         <div className="overflow-hidden">
