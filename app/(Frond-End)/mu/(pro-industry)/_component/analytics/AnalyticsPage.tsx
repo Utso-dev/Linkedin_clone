@@ -2,6 +2,9 @@
 
 import GraphSkeleton from "@/components/reusable/All Skleton/GraphSkeleton";
 import StateCardSkleton from "@/components/reusable/All Skleton/StateCardSkleton";
+import CommonAnalyticsGraph, {
+  GraphSeriesItem,
+} from "@/components/reusable/CommonAnalyticsGraph";
 import CommonStateCard from "@/components/reusable/CommonStateCard";
 import SelecteInputField from "@/components/reusable/InputFiled/SelecteInputField";
 import { useGetJobOverviewQuery } from "@/feature/slice/jobs/analyticSlice";
@@ -10,29 +13,13 @@ import {
   ApplicantIcon,
   OpenEyeIcon,
 } from "@/public/svgIcons/Icons";
-import { useEffect, useMemo, useState } from "react";
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { useEffect, useState } from "react";
 
-interface GraphPoint {
-  label: string;
-  total_applicants: number;
-  job_views: number;
-  active_positions: number;
-}
-
-const SERIES_META: Record<string, { color: string; label: string }> = {
-  total_applicants: { color: "#10B981", label: "Total Applicant" },
-  job_views: { color: "#F59E0B", label: "Job Views" },
-  active_positions: { color: "#EF4444", label: "Active Positions" },
-};
+const GRAPH_SERIES: GraphSeriesItem[] = [
+  { dataKey: "total_applicants", name: "Total Applicant", color: "#10B981" },
+  { dataKey: "job_views", name: "Job Views", color: "#F59E0B" },
+  { dataKey: "active_positions", name: "Active Positions", color: "#EF4444" },
+];
 
 const RANGE_OPTIONS = [
   { value: "weekly", label: "Weekly" },
@@ -60,32 +47,8 @@ export default function AnalyticsPage() {
     }
   }, [graph?.active]);
 
-  // Direct array from graph response (no complex matrix transformations needed)
-  const chartData: GraphPoint[] = (graph?.[activeRange] || []) as GraphPoint[];
-
-  // Max value calculation for Y-axis
-  const maxChartVal = useMemo(() => {
-    let max = 0;
-    chartData.forEach((row) => {
-      max = Math.max(
-        max,
-        Number(row.total_applicants) || 0,
-        Number(row.job_views) || 0,
-        Number(row.active_positions) || 0,
-      );
-    });
-    if (max === 0) return 40;
-    if (max <= 10) return 12;
-    return Math.ceil(max * 1.25);
-  }, [chartData]);
-
-  // Y-axis tick formatter (e.g., 30k, 40k or raw numbers)
-  const formatYAxis = (val: number) => {
-    if (val >= 1000) {
-      return `${(val / 1000).toFixed(0)}k`;
-    }
-    return val.toString();
-  };
+  // Direct array from graph response
+  const chartData = graph?.[activeRange] || [];
 
   // Card metric items configuration
   const cardItems = [
@@ -126,45 +89,6 @@ export default function AnalyticsPage() {
       icon: ActiveIcon,
     },
   ];
-
-  // Custom Tooltip matching design
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (!active || !payload || !payload.length) return null;
-    return (
-      <div className="bg-white rounded-xl shadow-xl border border-borderColor/80 p-3.5 min-w-42.5 text-xs">
-        <p className="font-bold text-headerColor text-xs pb-1.5 mb-2 border-b border-borderColor/60">
-          {graph?.subtitle || "Applications Over Time"}
-        </p>
-        <div className="space-y-1.5">
-          {payload.map((entry: any, index: number) => {
-            const meta = SERIES_META[entry.dataKey] || {
-              color: entry.color,
-              label: entry.name,
-            };
-            return (
-              <div
-                key={index}
-                className="flex items-center justify-between gap-4 text-descriptionColor"
-              >
-                <span className="flex items-center gap-1.5">
-                  <span
-                    className="w-2 h-2 rounded-full shrink-0"
-                    style={{ backgroundColor: entry.color || meta.color }}
-                  />
-                  <span className="text-gray-600 font-medium">
-                    {meta.label}
-                  </span>
-                </span>
-                <span className="font-bold text-headerColor">
-                  {Number(entry.value).toLocaleString()}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
 
   if (isLoading) {
     return (
@@ -211,25 +135,22 @@ export default function AnalyticsPage() {
 
       {/* Jobs Overview Graph Card */}
       <div className="bg-white rounded-2xl border border-borderColor/80 p-5 sm:p-6 shadow-xs">
-        {/* Graph Header */}
+        {/* Graph Header handled directly at root */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 className="text-lg font-bold text-headerColor">
               {graph?.title || "Jobs Overview Graph"}
             </h2>
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-2 text-xs font-medium text-grayColor1">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#10B981]" />
-                <span>Total Applicant</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]" />
-                <span>Job Views</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#EF4444]" />
-                <span>Active Positions</span>
-              </div>
+              {GRAPH_SERIES.map((s) => (
+                <div key={s.dataKey} className="flex items-center gap-2">
+                  <span
+                    className="w-2.5 h-2.5 rounded-full shrink-0"
+                    style={{ backgroundColor: s.color }}
+                  />
+                  <span className="text-gray-600 font-medium">{s.name}</span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -244,84 +165,12 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        {/* Recharts Line Chart */}
-        <div className="h-72 sm:h-80 w-full mt-6">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={chartData}
-              margin={{ top: 15, right: 15, left: -20, bottom: 0 }}
-            >
-              <CartesianGrid
-                vertical={false}
-                stroke="#F3F4F6"
-                strokeDasharray="3 3"
-              />
-              <XAxis
-                dataKey="label"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#9CA3AF", fontSize: 12 }}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                domain={[0, maxChartVal]}
-                tickFormatter={formatYAxis}
-                tick={{ fill: "#9CA3AF", fontSize: 12 }}
-              />
-              <Tooltip
-                cursor={{
-                  stroke: "#F3F4F6",
-                  strokeWidth: 5,
-                  strokeLinecap: "round",
-                }}
-                content={<CustomTooltip />}
-              />
-              <Line
-                type="monotone"
-                dataKey="total_applicants"
-                name="Total Applicant"
-                stroke="#10B981"
-                strokeWidth={2.5}
-                dot={false}
-                activeDot={{
-                  r: 5,
-                  stroke: "#10B981",
-                  strokeWidth: 2,
-                  fill: "#ffffff",
-                }}
-              />
-              <Line
-                type="monotone"
-                dataKey="job_views"
-                name="Job Views"
-                stroke="#F59E0B"
-                strokeWidth={2.5}
-                dot={false}
-                activeDot={{
-                  r: 5,
-                  stroke: "#F59E0B",
-                  strokeWidth: 2,
-                  fill: "#ffffff",
-                }}
-              />
-              <Line
-                type="monotone"
-                dataKey="active_positions"
-                name="Active Positions"
-                stroke="#EF4444"
-                strokeWidth={2.5}
-                dot={false}
-                activeDot={{
-                  r: 5,
-                  stroke: "#EF4444",
-                  strokeWidth: 2,
-                  fill: "#ffffff",
-                }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        {/* Reusable Common Analytics Graph Component */}
+        <CommonAnalyticsGraph
+          data={chartData}
+          series={GRAPH_SERIES}
+          subtitle={graph?.subtitle || "Applications Over Time"}
+        />
       </div>
     </div>
   );
