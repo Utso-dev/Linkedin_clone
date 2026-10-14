@@ -15,6 +15,11 @@ import CreatePostDialog from "../profile/CreatePostDialog";
 function CreatePostSection() {
   const [isOpen, setIsOpen] = useState(false);
   const { data } = useGetUserProfileQuery("user");
+  const pathName = usePathname();
+  console.log(data, "data");
+  const imagesrc = pathName.includes("industry-profile")
+    ? data?.industry?.company?.logo
+    : data?.user?.profile_image_url;
   const [postText, setPostText] = useState("");
 
   return (
@@ -22,7 +27,7 @@ function CreatePostSection() {
       <div className="flex items-start gap-3">
         <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full">
           <Image
-            src={data?.user?.profile_image_url || emptyImage}
+            src={imagesrc || emptyImage}
             alt="User avatar"
             width={62}
             height={62}
@@ -80,7 +85,7 @@ function CreatePostSection() {
           </button>
         </div>
       </div>
-      {isOpen && <CreatePostDialog  isOpen={isOpen} setIsOpen={setIsOpen} />}
+      {isOpen && <CreatePostDialog isOpen={isOpen} setIsOpen={setIsOpen} />}
     </div>
   );
 }
