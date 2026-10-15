@@ -8,9 +8,10 @@ import PublicationViewModal from "./PublicationViewModal";
 
 interface PublicationActionProps {
   row: { id: string | number; [key: string]: any };
+  ispremium: boolean;
 }
 
-export default function PublicationAction({ row }: PublicationActionProps) {
+export default function PublicationAction({ row, ispremium }: PublicationActionProps) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
 
@@ -19,7 +20,7 @@ export default function PublicationAction({ row }: PublicationActionProps) {
       <div className="flex items-center justify-end gap-1.5 pr-3">
         {/* Edit Button */}
         <Link
-          href={`/mu/publications/${row.id}/edit`}
+          href={ispremium ? `/mu/premium/publications/${row.id}/edit` : `/mu/publications/${row.id}/edit`}
           className="w-8 h-8 rounded-md border border-borderColor hover:bg-bgColor flex items-center justify-center text-gray-500 hover:text-primaryColor hover:border-primaryColor transition-colors cursor-pointer"
           title="Edit Publication"
         >

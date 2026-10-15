@@ -6,11 +6,7 @@ import CommonStateCard, {
 } from "@/components/reusable/CommonStateCard";
 import DynamicTable from "@/components/reusable/DynamicTable";
 import Pagination from "@/components/reusable/Pagination";
-import { useGetPublicationsInsightQuery } from "@/feature/slice/jobs/analyticSlice";
-import {
-  useGetAllPublicationsQuery,
-  useGetMyPublicationsQuery,
-} from "@/feature/slice/jobs/publicationSlice";
+import { useGetMyPublicationsQuery } from "@/feature/slice/jobs/publicationSlice";
 import {
   ApplicantIcon,
   OpenEyeIcon,
@@ -22,11 +18,13 @@ import Link from "next/link";
 import { useState } from "react";
 import PublicationAction from "./PublicationAction";
 import PublicationStatusUpdate from "./PublicationStatusUpdate";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 
 export default function PublicationPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-
+   const { data: userProfileData } = useGetUserProfileQuery("user");
+   const isPremium = userProfileData?.subscription?.plan_type === "premium";
   // API Queries
   const {
     data: myPublicationsResponse,
@@ -37,10 +35,6 @@ export default function PublicationPage() {
     per_page: perPage,
   });
 
-
-
-
-
   const publicationsList: any[] = myPublicationsResponse?.data || [];
   const pagination = myPublicationsResponse?.pagination;
   const insightCards = myPublicationsResponse?.cards;
@@ -49,8 +43,7 @@ export default function PublicationPage() {
   const stateCards: CommonStateCardProps[] = [
     {
       title: "All Publications",
-      total:
-        insightCards?.total_publications?.total ??0,
+      total: insightCards?.total_publications?.total ?? 0,
       badgeText: insightCards?.total_publications?.growth ?? "+2.8%",
       isPositive: insightCards?.total_publications?.is_positive,
 
@@ -99,7 +92,10 @@ export default function PublicationPage() {
 
       formatter: (_: any, row: any) => (
         <div className="py-2.5 px-3 w-50">
-          <h4 title={row.title} className="text-left text-wrap font-semibold text-sm text-headerColor hover:text-primaryColor transition-colors line-clamp-1  cursor-pointer">
+          <h4
+            title={row.title}
+            className="text-left text-wrap font-semibold text-sm text-headerColor hover:text-primaryColor transition-colors line-clamp-1  cursor-pointer"
+          >
             {row.title || "Untitled Publication"}
           </h4>
           <p className="text-xs text-descriptionColor line-clamp-1 mt-1 leading-relaxed">
@@ -188,9 +184,10 @@ export default function PublicationPage() {
       label: "Action",
       accessor: "actions",
       position: "justify-end",
-      formatter: (_: any, row: any) => <PublicationAction row={row} />,
+      formatter: (_: any, row: any) => <PublicationAction ispremium={isPremium} row={row} />,
     },
   ];
+console.log(isPremium,"isPremium");
 
   return (
     <div className="w-full space-y-7 pb-10">
@@ -206,7 +203,7 @@ export default function PublicationPage() {
 
         <div className="shrink-0 self-start sm:self-auto">
           <Link
-            href="/mu/publications/create"
+            href={isPremium ? `/mu/premium/publications/create` : `/mu/publications/create`}
             className="inline-flex items-center gap-1.5 bg-primaryColor hover:bg-primaryColor/90 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer shadow-xs"
           >
             <Plus className="w-4 h-4" />
@@ -248,7 +245,8 @@ export default function PublicationPage() {
             rowStyle={{
               hover: true,
               hoverbg: "hover:bg-gray-50/70",
-              border: "border-b last:border-b-0 border-x-0 border-borderColor/60",
+              border:
+                "border-b last:border-b-0 border-x-0 border-borderColor/60",
             }}
             noDataMessage={
               isMyPublicationsLoading || isMyPublicationsFetching

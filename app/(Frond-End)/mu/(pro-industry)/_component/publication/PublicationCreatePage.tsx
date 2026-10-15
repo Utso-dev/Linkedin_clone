@@ -11,6 +11,7 @@ import {
   usePublicationCreateMutation,
   usePublicationUpdateMutation,
 } from "@/feature/slice/jobs/publicationSlice";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { CloudUpload, FileText, Loader, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
@@ -37,13 +38,6 @@ const networkOptions = [
   { value: "neuroscience", label: "Neuroscience" },
 ];
 
-const publicationOptions = [
-  { value: "professional", label: "Professional Publications" },
-  { value: "university", label: "University Publications" },
-  { value: "freelance", label: "Freelance Publications" },
-  { value: "other", label: "Other Publications" },
-];
-
 const statusOptions = [
   { value: "active", label: "Active" },
   { value: "draft", label: "Draft" },
@@ -51,7 +45,7 @@ const statusOptions = [
 ];
 
 const defaultValues: PublicationFormData = {
-  publication_type: "professional",
+  publication_type: "",
   network_type: "psychology",
   title: "",
   abstract: "",
@@ -93,6 +87,15 @@ export default function PublicationCreatePage({
   const [existingAttachmentUrl, setExistingAttachmentUrl] = useState("");
   const [fileError, setFileError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const { data: userProfileData } = useGetUserProfileQuery("user");
+  const isPremium = userProfileData?.subscription?.plan_type === "premium";
+  const publicationOptions = isPremium
+    ? [
+        { value: "university", label: "University Publications" },
+        { value: "freelance", label: "Freelance Publications" },
+        { value: "other", label: "Other Publications" },
+      ]
+    : [{ value: "professional", label: "Professional Publications" }];
 
   const {
     register,
@@ -111,7 +114,10 @@ export default function PublicationCreatePage({
     if (!publication || !id) return;
 
     reset({
-      publication_type: publication.publication_type || "professional",
+      publication_type:
+        isPremium && publication.publication_type
+          ? publication.publication_type
+          : "professional",
       network_type: publication.network_type || "psychology",
       title: publication.title || "",
       abstract: publication.abstract || publication.short_abstract || "",
@@ -127,7 +133,7 @@ export default function PublicationCreatePage({
       );
       setExistingAttachmentUrl(publication.attachment_url || "");
     }
-  }, [singleResponse, id, reset]);
+  }, [singleResponse, id, isPremium, reset]);
 
   const validateAndSetFile = (file?: File) => {
     if (!file) return;
@@ -229,7 +235,11 @@ export default function PublicationCreatePage({
         await createPublication(formData).unwrap();
         toast.success("Publication created successfully.");
       }
+      if (isPremium) {
+      router.push("/mu/premium/publications");
+      } else {
       router.push("/mu/publications");
+      }
     } catch (error: any) {
       const serverErrors = error?.data?.errors;
       const firstError =
@@ -494,7 +504,9 @@ export default function PublicationCreatePage({
                   {attachment?.name || existingAttachmentName}
                 </p>
                 <p className="text-xs text-descriptionColor/80">
-                  {attachment ? formatFileSize(attachment.size) : "Attached document"}
+                  {attachment
+                    ? formatFileSize(attachment.size)
+                    : "Attached document"}
                 </p>
               </div>
             ) : (
