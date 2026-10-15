@@ -1,21 +1,21 @@
 "use client";
 
 import {
+  getProIndustryMenuItems,
+  jobsMenuItems,
+  mainMenuItems,
+  MenueArrowDownIcon,
+  networkMenuItems,
+  sectionMenuIcons,
+  settingsMenuItems,
+  type MenuItem,
+} from "@/components/reusable/Allmenus";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  getProIndustryMenuItems,
-  jobsMenuItems,
-  mainMenuItems,
-  networkMenuItems,
-  sectionMenuIcons,
-  settingsMenuItems,
-  type MenuItem,
-  MenueArrowDownIcon,
-} from "@/components/reusable/Allmenus";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { cn, scrollToTop } from "@/lib/utils";
 import mainLogo from "@/public/logo.png";
@@ -53,8 +53,7 @@ export default function MainNavbar() {
   );
   const mobileMenuItems = mainMenuItems.filter(
     (item) =>
-      item.slug !== "/mu/my-network/my-connection" &&
-      item.slug !== "/mu/jobs",
+      item.slug !== "/mu/my-network/my-connection" && item.slug !== "/mu/jobs",
   );
 
   const renderMobileSection = (
@@ -124,7 +123,7 @@ export default function MainNavbar() {
   return (
     <header className=" md:px-4 sticky top-0 left-0 w-full bg-whiteColor shadow-[0_2px_4px_0_rgba(0,0,0,0.03),0_16px_24px_0_rgba(0,0,0,0.01)] z-99">
       <div className="container mx-auto flex items-center justify-between">
-        <Link href="/mu/home" onClick={scrollToTop}>
+        <Link href="/mu/home" prefetch={false} onClick={scrollToTop}>
           <Image
             src={mainLogo}
             alt="Logo"
@@ -203,9 +202,8 @@ export default function MainNavbar() {
               <Link
                 key={item.slug}
                 href={item.slug}
-                onClick={
-                  item.slug === "/mu/home" ? scrollToTop : undefined
-                }
+                prefetch={false}
+                onClick={item.slug === "/mu/home" ? scrollToTop : undefined}
                 className={cn(
                   "flex w-fit flex-col items-center gap-1 text-sm transition hover:text-headerColor",
                   isActive(item.slug) ? "text-headerColor" : "text-grayColor1",
@@ -317,6 +315,7 @@ export default function MainNavbar() {
               <Link
                 key={item.slug}
                 href={item.slug}
+                prefetch={false}
                 className={cn(
                   "flex items-center gap-2 p-2 rounded-sm text-base",
                   pathname === item.slug
@@ -340,7 +339,12 @@ export default function MainNavbar() {
             sectionMenuIcons.network,
             networkMenuItems,
           )}
-          {renderMobileSection("Jobs", "mobile-jobs", sectionMenuIcons.jobs, jobsMenuItems)}
+          {renderMobileSection(
+            "Jobs",
+            "mobile-jobs",
+            sectionMenuIcons.jobs,
+            jobsMenuItems,
+          )}
           {isIndustry &&
             renderMobileSection(
               "Pro Industry",

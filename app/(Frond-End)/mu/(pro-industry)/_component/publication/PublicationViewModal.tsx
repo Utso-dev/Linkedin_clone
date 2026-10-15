@@ -4,6 +4,7 @@ import RootDialog from "@/components/reusable/RootDialog";
 import { useGetSinglePublicationQuery } from "@/feature/slice/jobs/publicationSlice";
 import dayjs from "dayjs";
 import { Download, Eye, ThumbsUp, X } from "lucide-react";
+import Link from "next/link";
 import { useMemo } from "react";
 
 interface PublicationViewModalProps {
@@ -153,16 +154,12 @@ export default function PublicationViewModal({
           </div>
         ) : (
           <>
-            {/* SCROLLABLE CONTENT */}
             <div className="flex-1 min-h-0 overflow-y-auto p-5 sm:p-7 space-y-4">
-              {/* Title + Status */}
               <div className="flex items-center gap-2.5 flex-wrap">
                 <h3 className="text-lg sm:text-xl font-bold text-headerColor leading-snug">
                   {publication.title}
                 </h3>
               </div>
-
-              {/* Authors */}
               {authorsList.length > 0 && (
                 <p className="text-xs sm:text-sm text-descriptionColor leading-relaxed">
                   <span className="font-semibold text-headerColor">
@@ -171,8 +168,6 @@ export default function PublicationViewModal({
                   {authorsList.join(", ")}
                 </p>
               )}
-
-              {/* Network, Date, Reference */}
               <div className="flex flex-wrap items-center gap-x-6 gap-y-1.5 text-xs sm:text-sm text-descriptionColor">
                 {publication.network_type && (
                   <div>
@@ -201,7 +196,7 @@ export default function PublicationViewModal({
                     <span className="font-semibold text-headerColor">
                       Reference:
                     </span>{" "}
-                    <a
+                    <Link
                       href={
                         publication.website_url.startsWith("http")
                           ? publication.website_url
@@ -212,12 +207,10 @@ export default function PublicationViewModal({
                       className="text-[#00A0B0] hover:underline font-normal cursor-pointer"
                     >
                       View Reference
-                    </a>
+                    </Link>
                   </div>
                 )}
               </div>
-
-              {/* Stats: Views & Likes */}
               <div className="flex items-center gap-5 text-xs sm:text-sm text-headerColor font-medium pt-0.5">
                 <div className="flex items-center gap-1.5 text-[#00A0B0]">
                   <Eye className="w-4 h-4" />
@@ -232,11 +225,7 @@ export default function PublicationViewModal({
                   </span>
                 </div>
               </div>
-
-              {/* Divider */}
               <hr className="border-borderColor/60" />
-
-              {/* Abstract */}
               <div>
                 <h4 className="text-base sm:text-lg font-bold text-headerColor mb-2.5">
                   Abstract
@@ -254,7 +243,6 @@ export default function PublicationViewModal({
               </div>
             </div>
 
-            {/* 3. BOTTOM STICKY FOOTER (Attachment Download Card) */}
             {(publication.attachment_url || publication.attachment) && (
               <div className="sticky bottom-0 z-10 shrink-0 border-t border-borderColor/60 bg-white p-4 sm:px-7">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl bg-[#F8FAFC] border border-gray-100 p-3 sm:p-3.5 transition-colors">
@@ -270,16 +258,14 @@ export default function PublicationViewModal({
                     </div>
                   </div>
 
-                  <a
+                  <Link
                     href={publication.attachment_url || "#"}
                     target="_blank"
-                    rel="noopener noreferrer"
-                    download
                     className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#00A0B0] px-5 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-[#008d9b] transition-colors shadow-2xs shrink-0 cursor-pointer self-start sm:self-auto"
                   >
                     <Download className="w-4 h-4" />
                     <span>Download Now</span>
-                  </a>
+                  </Link>
                 </div>
               </div>
             )}
