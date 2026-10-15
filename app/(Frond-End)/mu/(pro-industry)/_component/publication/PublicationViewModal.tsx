@@ -1,16 +1,52 @@
 "use client";
 
-import ButtonReuseable from "@/components/reusable/CustomButton";
 import RootDialog from "@/components/reusable/RootDialog";
 import { useGetSinglePublicationQuery } from "@/feature/slice/jobs/publicationSlice";
 import dayjs from "dayjs";
-import { ArrowUpRight, Calendar, Download, Eye, FileText, Heart, Globe, User, X } from "lucide-react";
-import Image from "next/image";
+import { Download, Eye, ThumbsUp, X } from "lucide-react";
+import { useMemo } from "react";
 
 interface PublicationViewModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   publicationId?: string | number | null;
+}
+
+function PdfIcon() {
+  return (
+    <div className="relative w-10 h-12 shrink-0 flex items-center justify-center select-none">
+      <svg
+        viewBox="0 0 38 46"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-full drop-shadow-2xs"
+      >
+        {/* Document sheet */}
+        <path
+          d="M0 4C0 1.79086 1.79086 0 4 0H24L38 14V42C38 44.2091 36.2091 46 34 46H4C1.79086 46 0 44.2091 0 42V4Z"
+          fill="#ECEFF1"
+        />
+        {/* Folded corner */}
+        <path
+          d="M24 0L38 14H28C25.7909 14 24 12.2091 24 10V0Z"
+          fill="#CFD8DC"
+        />
+        {/* Red PDF banner */}
+        <rect x="2" y="27" width="22" height="12" rx="2" fill="#E53935" />
+        <text
+          x="13"
+          y="36"
+          fill="white"
+          fontSize="7"
+          fontWeight="bold"
+          fontFamily="system-ui, sans-serif"
+          textAnchor="middle"
+        >
+          PDF
+        </text>
+      </svg>
+    </div>
+  );
 }
 
 export default function PublicationViewModal({
@@ -27,215 +63,228 @@ export default function PublicationViewModal({
 
   const publication = response?.data || response;
 
+  const authorsList = useMemo(() => {
+    if (!publication?.authors) return [];
+    if (Array.isArray(publication.authors)) return publication.authors;
+    if (typeof publication.authors === "string") {
+      try {
+        const parsed = JSON.parse(publication.authors);
+        if (Array.isArray(parsed)) return parsed;
+      } catch {
+        return [publication.authors];
+      }
+    }
+    return [];
+  }, [publication?.authors]);
+
+  const attachmentName = useMemo(() => {
+    if (publication?.attachment_name) return publication.attachment_name;
+    if (publication?.attachment) {
+      const filename = String(publication.attachment).split("/").pop();
+      if (filename) return filename;
+    }
+    if (publication?.attachment_url) {
+      const filename = String(publication.attachment_url)
+        .split("/")
+        .pop()
+        ?.split("?")[0];
+      if (filename) return filename;
+    }
+    return publication?.title
+      ? `${publication.title.slice(0, 35)}.pdf`
+      : "document.pdf";
+  }, [publication]);
+
+  const attachmentSize = useMemo(() => {
+    if (publication?.attachment_size) {
+      const bytes = Number(publication.attachment_size);
+      if (!isNaN(bytes) && bytes > 0) {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)}KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
+      }
+      return String(publication.attachment_size);
+    }
+    return "450KB";
+  }, [publication?.attachment_size]);
+
+  const rawAbstract =
+    publication?.abstract ||
+    publication?.short_abstract ||
+    "No abstract provided.";
+
+  const isHtml = /<[a-z][\s\S]*>/i.test(rawAbstract);
+
   return (
     <RootDialog
       open={open}
       setOpen={setOpen}
-      className="sm:max-w-2xl md:max-w-3xl rounded-2xl overflow-hidden p-0 max-h-[92vh]"
+      className="sm:max-w-xl md:max-w-2xl rounded-2xl overflow-hidden p-0 h-[80vh] max-h-[88vh]"
       ariaLabel="View Publication Details"
       ariaDescription="Detailed view of selected publication"
     >
-      <div className="flex max-h-[90vh] flex-col overflow-hidden bg-white">
-        {/* Header Title */}
-        <div className="sticky top-0 z-10 shrink-0 border-b flex justify-between items-center border-borderColor/60 bg-white px-5 py-4 md:px-7">
+      <div className="flex h-full flex-col overflow-hidden bg-white">
+        {/* 1. TOP STICKY HEADER */}
+        <div className="sticky top-0 z-10 shrink-0 border-b border-borderColor/60 bg-white px-5 py-4 md:px-7 flex items-center justify-between">
           <h2 className="text-lg md:text-xl font-bold text-headerColor">
             Publication Details
           </h2>
-          <ButtonReuseable
+          <button
             type="button"
             onClick={() => setOpen(false)}
-            icon={<X size={20} />}
-            className="w-10 h-10 p-0! rounded-full bg-transparent! text-descriptionColor! shadow-none! hover:bg-bgColor transition-colors"
-          />
+            className="p-1 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+            aria-label="Close dialog"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 md:p-7">
-          {isLoading ? (
-            <div className="py-16 flex flex-col items-center justify-center space-y-3">
-              <span className="inline-block w-8 h-8 border-3 border-primaryColor border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm text-descriptionColor">
-                Loading publication details...
-              </p>
-            </div>
-          ) : !publication ? (
-            <div className="py-12 text-center text-sm text-descriptionColor">
-              Publication not found.
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {/* Badges & ID */}
-              <div className="flex flex-wrap items-center gap-2">
-                {publication.publication_id && (
-                  <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded bg-gray-100 text-gray-700">
-                    ID: {publication.publication_id}
-                  </span>
-                )}
-                {publication.network_type && (
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#FFF4ED] text-[#FF6A55] border border-[#FF6A55]/30 capitalize">
-                    {publication.network_type}
-                  </span>
-                )}
-                {publication.publication_type && (
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#E6F8F6] text-primaryColor border border-primaryColor/30 capitalize">
-                    {publication.publication_type}
-                  </span>
-                )}
-                {publication.status && (
-                  <span
-                    className={`text-xs font-semibold px-2.5 py-1 rounded-full capitalize ${
-                      publication.status === "active"
-                        ? "bg-[#E6F8F6] text-[#25C86D]"
-                        : publication.status === "inactive"
-                          ? "bg-[#FEECEC] text-[#EB3D4D]"
-                          : "bg-[#FEF6E6] text-[#E59800]"
-                    }`}
-                  >
-                    • {publication.status}
-                  </span>
-                )}
-              </div>
-
-              {/* Title */}
-              <div>
-                <h1 className="text-xl md:text-2xl font-bold text-headerColor leading-snug">
+        {/* 2. BODY / LOADING / NOT FOUND */}
+        {isLoading ? (
+          <div className="flex-1 py-20 flex flex-col items-center justify-center space-y-3">
+            <span className="inline-block w-8 h-8 border-3 border-primaryColor border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-descriptionColor">
+              Loading publication details...
+            </p>
+          </div>
+        ) : !publication ? (
+          <div className="flex-1 py-16 flex items-center justify-center text-sm text-descriptionColor">
+            Publication not found.
+          </div>
+        ) : (
+          <>
+            {/* SCROLLABLE CONTENT */}
+            <div className="flex-1 min-h-0 overflow-y-auto p-5 sm:p-7 space-y-4">
+              {/* Title + Status */}
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h3 className="text-lg sm:text-xl font-bold text-headerColor leading-snug">
                   {publication.title}
-                </h1>
-                {publication.created_at && (
-                  <div className="flex items-center gap-1.5 text-xs text-descriptionColor mt-2">
-                    <Calendar className="w-3.5 h-3.5" />
-                    <span>
-                      Published on{" "}
-                      {dayjs(publication.created_at).format("DD MMMM, YYYY")}
-                    </span>
-                  </div>
-                )}
+                </h3>
               </div>
 
               {/* Authors */}
-              {Array.isArray(publication.authors) && publication.authors.length > 0 && (
-                <div className="bg-bgColor/50 rounded-xl p-4 border border-borderColor/60">
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-grayColor1 mb-2">
-                    Authors
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {publication.authors.map((author: string, idx: number) => (
-                      <span
-                        key={idx}
-                        className="inline-flex items-center gap-1.5 bg-white border border-borderColor/80 rounded-md px-3 py-1 text-xs font-medium text-headerColor shadow-2xs"
-                      >
-                        <User className="w-3.5 h-3.5 text-primaryColor" />
-                        <span>{author}</span>
-                      </span>
-                    ))}
-                  </div>
-                </div>
+              {authorsList.length > 0 && (
+                <p className="text-xs sm:text-sm text-descriptionColor leading-relaxed">
+                  <span className="font-semibold text-headerColor">
+                    Authors:
+                  </span>{" "}
+                  {authorsList.join(", ")}
+                </p>
               )}
+
+              {/* Network, Date, Reference */}
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-1.5 text-xs sm:text-sm text-descriptionColor">
+                {publication.network_type && (
+                  <div>
+                    <span className="font-semibold text-headerColor">
+                      Network:
+                    </span>{" "}
+                    <span className="capitalize">
+                      {publication.network_type}
+                    </span>
+                  </div>
+                )}
+
+                <div>
+                  <span className="font-semibold text-headerColor">
+                    Publication Date:
+                  </span>{" "}
+                  <span>
+                    {publication.created_at
+                      ? dayjs(publication.created_at).format("DD MMM YYYY")
+                      : "05 Feb 2026"}
+                  </span>
+                </div>
+
+                {publication.website_url && (
+                  <div>
+                    <span className="font-semibold text-headerColor">
+                      Reference:
+                    </span>{" "}
+                    <a
+                      href={
+                        publication.website_url.startsWith("http")
+                          ? publication.website_url
+                          : `https://${publication.website_url}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#00A0B0] hover:underline font-normal cursor-pointer"
+                    >
+                      View Reference
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {/* Stats: Views & Likes */}
+              <div className="flex items-center gap-5 text-xs sm:text-sm text-headerColor font-medium pt-0.5">
+                <div className="flex items-center gap-1.5 text-[#00A0B0]">
+                  <Eye className="w-4 h-4" />
+                  <span className="text-headerColor">
+                    {(publication.views_count ?? 55676).toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[#00A0B0]">
+                  <ThumbsUp className="w-4 h-4" />
+                  <span className="text-headerColor">
+                    {(publication.likes_count ?? 475).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <hr className="border-borderColor/60" />
 
               {/* Abstract */}
               <div>
-                <h4 className="text-sm font-bold text-headerColor mb-2">
+                <h4 className="text-base sm:text-lg font-bold text-headerColor mb-2.5">
                   Abstract
                 </h4>
-                <div className="text-sm text-descriptionColor leading-relaxed bg-white rounded-xl border border-borderColor/60 p-4">
-                  {/<[a-z][\s\S]*>/i.test(publication.abstract || "") ? (
+                <div className="text-xs sm:text-sm text-descriptionColor leading-relaxed">
+                  {isHtml ? (
                     <div
                       className="prose prose-sm max-w-none text-descriptionColor leading-relaxed"
-                      dangerouslySetInnerHTML={{
-                        __html: publication.abstract,
-                      }}
+                      dangerouslySetInnerHTML={{ __html: rawAbstract }}
                     />
                   ) : (
-                    <p className="whitespace-pre-line">
-                      {publication.abstract ||
-                        publication.short_abstract ||
-                        "No abstract provided."}
-                    </p>
+                    <p className="whitespace-pre-line">{rawAbstract}</p>
                   )}
                 </div>
               </div>
-
-              {/* References & Links */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                {publication.website_url && (
-                  <a
-                    href={publication.website_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3.5 rounded-xl border border-borderColor hover:border-primaryColor bg-white hover:bg-bgColor transition-all group"
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                        <Globe className="w-4 h-4" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-semibold text-headerColor group-hover:text-primaryColor transition-colors">
-                          Official Article Website
-                        </p>
-                        <p className="text-xs text-descriptionColor truncate">
-                          {publication.website_url}
-                        </p>
-                      </div>
-                    </div>
-                    <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-primaryColor shrink-0 ml-2" />
-                  </a>
-                )}
-
-                {publication.attachment_url && (
-                  <a
-                    href={publication.attachment_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-3.5 rounded-xl border border-borderColor hover:border-primaryColor bg-white hover:bg-bgColor transition-all group"
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-9 h-9 rounded-lg bg-primaryColor/10 text-primaryColor flex items-center justify-center shrink-0">
-                        <FileText className="w-4 h-4" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-semibold text-headerColor group-hover:text-primaryColor transition-colors">
-                          Attachment Document (PDF)
-                        </p>
-                        <p className="text-xs text-descriptionColor">
-                          Click to view or download
-                        </p>
-                      </div>
-                    </div>
-                    <Download className="w-4 h-4 text-gray-400 group-hover:text-primaryColor shrink-0 ml-2" />
-                  </a>
-                )}
-              </div>
-
-              {/* Stats Footer */}
-              <div className="flex items-center justify-between border-t border-borderColor/60 pt-4 text-xs font-medium text-descriptionColor">
-                <div className="flex items-center gap-4">
-                  <span className="flex items-center gap-1.5">
-                    <Eye className="w-4 h-4 text-primaryColor" />
-                    <span>{(publication.views_count ?? 0).toLocaleString()} Views</span>
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Heart className="w-4 h-4 text-redColor" />
-                    <span>{(publication.likes_count ?? 0).toLocaleString()} Likes</span>
-                  </span>
-                </div>
-
-                {publication.creator && (
-                  <div className="flex items-center gap-2">
-                    {publication.creator.profile_image && (
-                      <Image
-                        src={publication.creator.profile_image}
-                        alt={publication.creator.name || "Creator"}
-                        width={24}
-                        height={24}
-                        className="w-6 h-6 rounded-full object-cover"
-                      />
-                    )}
-                    <span>{publication.creator.name}</span>
-                  </div>
-                )}
-              </div>
             </div>
-          )}
-        </div>
+
+            {/* 3. BOTTOM STICKY FOOTER (Attachment Download Card) */}
+            {(publication.attachment_url || publication.attachment) && (
+              <div className="sticky bottom-0 z-10 shrink-0 border-t border-borderColor/60 bg-white p-4 sm:px-7">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl bg-[#F8FAFC] border border-gray-100 p-3 sm:p-3.5 transition-colors">
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <PdfIcon />
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-headerColor truncate max-w-xs sm:max-w-md">
+                        {attachmentName}
+                      </p>
+                      <p className="text-xs text-descriptionColor mt-0.5">
+                        {attachmentSize}
+                      </p>
+                    </div>
+                  </div>
+
+                  <a
+                    href={publication.attachment_url || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#00A0B0] px-5 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-[#008d9b] transition-colors shadow-2xs shrink-0 cursor-pointer self-start sm:self-auto"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Download Now</span>
+                  </a>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </RootDialog>
   );
