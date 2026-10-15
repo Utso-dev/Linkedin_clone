@@ -2,7 +2,10 @@ import baseApiSlice from "../baseApi";
 
 const publicationSlice = baseApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getMyPublications: builder.query<any, { page?: number; per_page?: number; [key: string]: any } | void>({
+    getMyPublications: builder.query<
+      any,
+      { page?: number; per_page?: number; [key: string]: any } | void
+    >({
       query: (params) => ({
         url: "/publications/my-listings",
         method: "GET",
@@ -10,7 +13,10 @@ const publicationSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["publications"],
     }),
-    getAllPublications: builder.query<any, { page?: number; per_page?: number; [key: string]: any } | void>({
+    getAllPublications: builder.query<
+      any,
+      { page?: number; per_page?: number; [key: string]: any } | void
+    >({
       query: (params) => ({
         url: "/publications/feed",
         method: "GET",
@@ -32,7 +38,18 @@ const publicationSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["publications"],
     }),
-    publicationUpdate: builder.mutation<any, { id: string | number; body: any }>({
+    publicationCreate: builder.mutation<any, FormData>({
+      query: (body) => ({
+        url: `/publications/create`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["publications"],
+    }),
+    publicationUpdate: builder.mutation<
+      any,
+      { id: string | number; body: any }
+    >({
       query: ({ id, body }) => ({
         url: `/publications/${id}/update`,
         method: "POST",
@@ -40,7 +57,10 @@ const publicationSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["publications"],
     }),
-    publicationStatusUpdate: builder.mutation<any, { id: string | number; status: string }>({
+    publicationStatusUpdate: builder.mutation<
+      any,
+      { id: string | number; status: string }
+    >({
       query: ({ id, status }) => ({
         url: `/publications/${id}/status`,
         method: "POST",
@@ -51,7 +71,7 @@ const publicationSlice = baseApiSlice.injectEndpoints({
     publicationDelete: builder.mutation<any, string | number>({
       query: (id) => ({
         url: `/publications/${id}/delete`,
-        method: "POST",
+        method: "DELETE",
       }),
       invalidatesTags: ["publications"],
     }),
@@ -65,6 +85,7 @@ export const {
   useLikeSinglePublicationMutation,
   usePublicationUpdateMutation,
   usePublicationStatusUpdateMutation,
+  usePublicationCreateMutation,
   usePublicationDeleteMutation,
   // Backward compatible query aliases
   useLikeSinglePublicationMutation: useLikeSinglePublicationQuery,
@@ -72,4 +93,3 @@ export const {
   usePublicationStatusUpdateMutation: usePublicationStatusUpdateQuery,
   usePublicationDeleteMutation: usePublicationDeleteQuery,
 } = publicationSlice;
-

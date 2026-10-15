@@ -136,8 +136,21 @@ export default function PublicationViewModal({
                 <h4 className="text-sm font-bold text-headerColor mb-2">
                   Abstract
                 </h4>
-                <div className="text-sm text-descriptionColor leading-relaxed bg-white rounded-xl border border-borderColor/60 p-4 whitespace-pre-line">
-                  {publication.abstract || publication.short_abstract || "No abstract provided."}
+                <div className="text-sm text-descriptionColor leading-relaxed bg-white rounded-xl border border-borderColor/60 p-4">
+                  {/<[a-z][\s\S]*>/i.test(publication.abstract || "") ? (
+                    <div
+                      className="prose prose-sm max-w-none text-descriptionColor leading-relaxed"
+                      dangerouslySetInnerHTML={{
+                        __html: publication.abstract,
+                      }}
+                    />
+                  ) : (
+                    <p className="whitespace-pre-line">
+                      {publication.abstract ||
+                        publication.short_abstract ||
+                        "No abstract provided."}
+                    </p>
+                  )}
                 </div>
               </div>
 

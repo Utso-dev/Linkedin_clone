@@ -37,26 +37,22 @@ export default function PublicationPage() {
     per_page: perPage,
   });
 
-  const { data: allPublicationsResponse } = useGetAllPublicationsQuery();
 
-  const { data: insightsResponse, isLoading: isInsightsLoading } =
-    useGetPublicationsInsightQuery({});
+
+
 
   const publicationsList: any[] = myPublicationsResponse?.data || [];
   const pagination = myPublicationsResponse?.pagination;
-  const insightCards = insightsResponse?.data?.cards;
+  const insightCards = myPublicationsResponse?.cards;
 
   // Top 3 Stat Cards configuration matching screenshot
   const stateCards: CommonStateCardProps[] = [
     {
       title: "All Publications",
       total:
-        insightCards?.total_publications?.total ??
-        pagination?.total ??
-        publicationsList.length ??
-        56,
+        insightCards?.total_publications?.total ??0,
       badgeText: insightCards?.total_publications?.growth ?? "+2.8%",
-      isPositive: true,
+      isPositive: insightCards?.total_publications?.is_positive,
 
       icon: PublicationsMenueIcon,
       iconBg: "bg-[#E6F8F6]",
@@ -65,8 +61,8 @@ export default function PublicationPage() {
     {
       title: "Active Publication",
       total: insightCards?.active_publications?.total ?? 0,
-      badgeText: "Stable",
-      isPositive: true,
+      badgeText: insightCards?.active_publications?.growth ?? "Stable",
+      isPositive: insightCards?.active_publications?.is_positive,
 
       icon: ApplicantIcon,
       iconBg: "bg-[#E6F8F6]",
@@ -76,7 +72,7 @@ export default function PublicationPage() {
       title: "Publication Views",
       total: insightCards?.publications_views?.total ?? 0,
       badgeText: insightCards?.publications_views?.growth ?? "+54%",
-      isPositive: true,
+      isPositive: insightCards?.publications_views?.is_positive,
 
       icon: OpenEyeIcon,
       iconBg: "bg-[#E6F8F6]",
@@ -220,7 +216,7 @@ export default function PublicationPage() {
       </div>
 
       {/* Top 3 Stat Cards using CommonStateCard (layout="split") */}
-      {isInsightsLoading && !publicationsList.length ? (
+      {isMyPublicationsLoading && !publicationsList.length ? (
         <StateCardSkleton />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">

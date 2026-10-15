@@ -1,11 +1,10 @@
-import React from 'react'
+import PublicationCreatePage from "../../../_component/publication/PublicationCreatePage";
 
-function page() {
-  return (
-    <div>
-        <h1>Pro Industry Publication</h1>
-    </div>
-  )
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return <PublicationCreatePage id={id} />;
 }
-
-export default page
