@@ -21,6 +21,7 @@ import {
   LogoutIcon,
   MessageIcon,
   NotificationIcon,
+  PublicationsMenueIcon,
   SettingIcon,
   SingleUserIcon,
   UserCircleIcon,
@@ -121,7 +122,6 @@ function UserHeaderInfo() {
   const isPremium = userProfileData?.subscription?.plan_type === "premium";
   const isIndustry = userProfileData?.subscription?.plan_type === "industry";
   const planName = userProfileData?.subscription?.plan_name || "basic_user";
-
 
   return (
     <div>
@@ -241,7 +241,7 @@ function UserHeaderInfo() {
                           <SingleUserIcon className="w-4 h-4 text-[#3EA1D6]" />
                         )}
                         <span className=" text-sm capitalize tracking-wide">
-                          {planName.split("_").join(" ")  }
+                          {planName.split("_").join(" ")}
                         </span>
                       </div>
                     </div>
@@ -267,6 +267,18 @@ function UserHeaderInfo() {
                       Account Setting
                     </Link>
                   </DropdownMenuItem>
+                  {isPremium && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/mu/premium/publications`}
+                        className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                      >
+                        <PublicationsMenueIcon className="w-5 h-5 text-grayColor1  " />
+                        publications
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+
                   {userProfileData?.industry?.has_company &&
                     userProfileData?.subscription?.plan_type !== "premium" && (
                       <DropdownMenuItem asChild>
@@ -283,7 +295,11 @@ function UserHeaderInfo() {
                     userProfileData?.subscription?.plan_type !== "premium" && (
                       <DropdownMenuItem asChild>
                         <Link
-                          href={ planName == "basic_user" ?  `/mu/subscription?billing=monthly` : `/mu/create-company-page/`}
+                          href={
+                            planName == "basic_user"
+                              ? `/mu/subscription?billing=monthly`
+                              : `/mu/create-company-page/`
+                          }
                           className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
                         >
                           <CompanyIcon className="w-5 h-5 text-grayColor1  " />
