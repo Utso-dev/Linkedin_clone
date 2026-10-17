@@ -131,6 +131,7 @@ export function getProIndustryMenuItems(
       slug: "/mu/recruiter-dashboard",
       icon: DashboardIcon,
     },
+    { label: "Job Listing", slug: "/mu/job-listing", icon: JobsIcon },
     { label: "Products", slug: "/mu/products", icon: LuShoppingBag },
     {
       label: "Advertisement",
@@ -142,7 +143,7 @@ export function getProIndustryMenuItems(
       slug: "/mu/publications",
       icon: PublicationsMenueIcon,
     },
-    { label: "Job Listing", slug: "/mu/job-listing", icon: JobsIcon },
+
     { label: "Analytics", slug: "/mu/analytics", icon: BarChartIcon },
     { label: "Message", slug: "/mu/message", icon: MessageIcon },
     {
