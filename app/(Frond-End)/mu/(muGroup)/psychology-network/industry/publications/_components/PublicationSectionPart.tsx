@@ -3,34 +3,43 @@
 import IndustrySkleton from "@/components/reusable/All Skleton/IndustrySkleton";
 import { useGetPublicationsOneQuery } from "@/feature/slice/biotechnologySlice";
 import { useGetNeurosciencePublicationsOneQuery } from "@/feature/slice/neuroscienceSlice";
-import { IndustryDataType } from "@/lib/type";
+import { PublicationDataType } from "@/lib/type";
+import { useCursorQuery } from "@/hooks/useCursorPagination";
 import { usePathname } from "next/navigation";
 import { PublicationsList } from "./PublicationsList";
 
 export default function PublicationSectionPart() {
   const pathName = usePathname();
-  const { data, isLoading } =
+  const queryHook =
     pathName === "/mu/neuroscience-network/industry/publications"
-      ? useGetNeurosciencePublicationsOneQuery("publications")
-      : useGetPublicationsOneQuery("publications");
+      ? useGetNeurosciencePublicationsOneQuery
+      : useGetPublicationsOneQuery;
+  const {
+    items: publications,
+    isInitialLoading,
+    isFetchingMore,
+    observerRef,
+  } = useCursorQuery<PublicationDataType>(
+    queryHook,
+    { query: "publications", per_page: 20 },
+    { getItemId: (publication) => publication.id },
+  );
 
   return (
     <div className="flex w-full flex-col min-w-0">
       <div className="flex w-full flex-col items-stretch gap-10 pt-2 min-w-0">
-        {isLoading ? (
+        {isInitialLoading ? (
           <IndustrySkleton />
         ) : (
-          data?.data?.sections?.map((section: IndustryDataType) => (
-            <div
-              className="flex w-full flex-col items-stretch gap-6 min-w-0"
-              key={section?.id}
-            >
-              {/* <h3 className="self-stretch font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">
-              {section?.name || "Section Title"}
-            </h3> */}
-              <PublicationsList industryData={section.industry_category} />
-            </div>
-          ))
+          <>
+            <PublicationsList publications={publications} />
+            {isFetchingMore && (
+              <div className="py-4 text-center text-sm text-descriptionColor">
+                Loading more publications...
+              </div>
+            )}
+            <div ref={observerRef} className="h-1" />
+          </>
         )}
       </div>
     </div>

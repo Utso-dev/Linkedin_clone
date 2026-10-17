@@ -2,52 +2,15 @@
 
 import RootDialog from "@/components/reusable/RootDialog";
 import { useGetSinglePublicationQuery } from "@/feature/slice/jobs/publicationSlice";
+import { PdfIcon } from "@/public/svgIcons/Icons";
 import dayjs from "dayjs";
 import { Download, Eye, ThumbsUp, X } from "lucide-react";
 import Link from "next/link";
-import { useMemo } from "react";
 
 interface PublicationViewModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   publicationId?: string | number | null;
-}
-
-function PdfIcon() {
-  return (
-    <div className="relative w-10 h-12 shrink-0 flex items-center justify-center select-none">
-      <svg
-        viewBox="0 0 38 46"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full drop-shadow-2xs"
-      >
-        {/* Document sheet */}
-        <path
-          d="M0 4C0 1.79086 1.79086 0 4 0H24L38 14V42C38 44.2091 36.2091 46 34 46H4C1.79086 46 0 44.2091 0 42V4Z"
-          fill="#ECEFF1"
-        />
-        {/* Folded corner */}
-        <path
-          d="M24 0L38 14H28C25.7909 14 24 12.2091 24 10V0Z"
-          fill="#CFD8DC"
-        />
-        {/* Red PDF banner */}
-        <rect x="2" y="27" width="22" height="12" rx="2" fill="#E53935" />
-        <text
-          x="13"
-          y="36"
-          fill="white"
-          fontSize="7"
-          fontWeight="bold"
-          fontFamily="system-ui, sans-serif"
-          textAnchor="middle"
-        >
-          PDF
-        </text>
-      </svg>
-    </div>
-  );
 }
 
 export default function PublicationViewModal({
@@ -64,21 +27,7 @@ export default function PublicationViewModal({
 
   const publication = response?.data || response;
 
-  const authorsList = useMemo(() => {
-    if (!publication?.authors) return [];
-    if (Array.isArray(publication.authors)) return publication.authors;
-    if (typeof publication.authors === "string") {
-      try {
-        const parsed = JSON.parse(publication.authors);
-        if (Array.isArray(parsed)) return parsed;
-      } catch {
-        return [publication.authors];
-      }
-    }
-    return [];
-  }, [publication?.authors]);
-
-  const attachmentName = useMemo(() => {
+  const attachmentName = () => {
     if (publication?.attachment_name) return publication.attachment_name;
     if (publication?.attachment) {
       const filename = String(publication.attachment).split("/").pop();
@@ -94,20 +43,7 @@ export default function PublicationViewModal({
     return publication?.title
       ? `${publication.title.slice(0, 35)}.pdf`
       : "document.pdf";
-  }, [publication]);
-
-  const attachmentSize = useMemo(() => {
-    if (publication?.attachment_size) {
-      const bytes = Number(publication.attachment_size);
-      if (!isNaN(bytes) && bytes > 0) {
-        if (bytes < 1024) return `${bytes} B`;
-        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)}KB`;
-        return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
-      }
-      return String(publication.attachment_size);
-    }
-    return "450KB";
-  }, [publication?.attachment_size]);
+  };
 
   const rawAbstract =
     publication?.abstract ||
@@ -160,12 +96,12 @@ export default function PublicationViewModal({
                   {publication.title}
                 </h3>
               </div>
-              {authorsList.length > 0 && (
+              {publication.authors.length > 0 && (
                 <p className="text-xs sm:text-sm text-descriptionColor leading-relaxed">
                   <span className="font-semibold text-headerColor">
                     Authors:
                   </span>{" "}
-                  {authorsList.join(", ")}
+                  {publication.authors.join(", ")}
                 </p>
               )}
               <div className="flex flex-wrap items-center gap-x-6 gap-y-1.5 text-xs sm:text-sm text-descriptionColor">
@@ -250,10 +186,10 @@ export default function PublicationViewModal({
                     <PdfIcon />
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-headerColor truncate max-w-xs sm:max-w-md">
-                        {attachmentName}
+                        {attachmentName()}
                       </p>
                       <p className="text-xs text-descriptionColor mt-0.5">
-                        {attachmentSize}
+                        {publication?.attachment_size}
                       </p>
                     </div>
                   </div>

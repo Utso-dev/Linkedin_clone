@@ -225,6 +225,37 @@ export interface IndustryItemType {
   link: string;
 }
 
+export interface PublicationDataType {
+  id: number;
+  publication_id: string;
+  network_type: "psychology" | "neuroscience" | string;
+  publication_type: "professional" | "university" | "freelance" | "other" | string;
+  title: string;
+  slug: string;
+  authors: string[];
+  abstract: string;
+  short_abstract: string;
+  website_url: string | null;
+  attachment_url: string | null;
+  creator?: {
+    id: number;
+    name: string;
+    username: string;
+    profile_image: string | null;
+  };
+  industry?: {
+    id: number;
+    name: string;
+    logo: string | null;
+  };
+  views_count: number;
+  likes_count: number;
+  is_liked: boolean;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface IndustryCategoryType {
   id: number;
   section_id: number;

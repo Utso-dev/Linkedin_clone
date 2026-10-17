@@ -15,22 +15,22 @@ export const IndustrySidebar = () => {
   const params = useParams();
   const pathname = usePathname();
   const muId = params.id as string;
-  const baseUrl = muId ? `/mu/${muId}` : "/mu";
+
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
     {
-      href: `${baseUrl}/neuroscience-network/industry/biotechnology`,
+      href: `/mu/neuroscience-network/industry/biotechnology`,
       icon: <BiotechnologyIcon />,
       label: "Biotechnology",
     },
     {
-      href: `${baseUrl}/neuroscience-network/industry/psychopharmacology`,
+      href: `/mu/neuroscience-network/industry/psychopharmacology`,
       icon: <PsychopharmacologyIcon />,
       label: "Psychotropics",
     },
     {
-      href: `${baseUrl}/neuroscience-network/industry/publications`,
+      href: `/mu/neuroscience-network/industry/publications`,
       icon: <PublicationsIcon />,
       label: "Publications",
     },
@@ -52,8 +52,8 @@ export const IndustrySidebar = () => {
   return (
       <>
          {/* Desktop View - Shows from lg (1024px) and above */}
-         <div className="hidden h-full min-h-screen w-full  flex-col items-center gap-5 border-r border-[#DFE1E7] bg-white lg:flex ">
-           <div className="flex w-full items-center gap-2.5 border-b border-[#DFE1E7] px-5 py-5">
+         <div className="hidden h-full min-h-screen w-full  flex-col items-center gap-5 border-r border-borderColor bg-white lg:flex ">
+           <div className="flex w-full items-center gap-2.5 border-b border-borderColor px-5 py-5">
              <h2 className="font-['Segoe_UI'] text-xl font-semibold text-[#1D1F2C]">
                Industries
              </h2>
@@ -82,7 +82,7 @@ export const IndustrySidebar = () => {
    
            <button
              onClick={() => setIsOpen(!isOpen)}
-             className="mt-4 flex w-full items-center justify-between rounded-lg border border-[#DFE1E7] bg-white px-4 py-3"
+             className="mt-4 flex w-full items-center justify-between rounded-lg border border-borderColor bg-white px-4 py-3"
            >
              <span className="font-['Segoe_UI'] text-base font-semibold text-[#1D1F2C]">
                <div className="flex items-center gap-2">
@@ -96,7 +96,7 @@ export const IndustrySidebar = () => {
            </button>
    
            {isOpen && (
-             <div className="mt-2 flex w-full flex-col rounded-lg border border-[#DFE1E7] bg-white p-2">
+             <div className="mt-2 flex w-full flex-col rounded-lg border border-borderColor bg-white p-2">
                {navItems.map((item) => (
                  <IndustryNavItem
                    key={item.href}

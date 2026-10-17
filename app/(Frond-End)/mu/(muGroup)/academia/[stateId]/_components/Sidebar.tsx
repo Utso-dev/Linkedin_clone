@@ -1,21 +1,21 @@
 "use client";
 
-import { buildSourceBreadcrumbs } from "../../../../../../../lib/source-breadcrumb";
-import { redirect, useSearchParams } from "next/navigation";
+import { usaMapData } from "@/public/staticData";
+import Link from "next/link";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { IoClose } from "react-icons/io5";
+import {
+  TbLayoutSidebarRight,
+  TbLayoutSidebarRightFilled,
+} from "react-icons/tb";
+import { buildSourceBreadcrumbs } from "../../../../../../../lib/source-breadcrumb";
 import {
   BrainIcon,
-  UndergradCapIcon,
   HospitalIcon,
   JobSearchIcon,
+  UndergradCapIcon,
 } from "../../../../../../../public/svgIcons/Icons";
-import Link from "next/link";
-import { IoMenu } from "react-icons/io5";
-import { IoClose } from "react-icons/io5";
-import { useParams } from "next/navigation";
-import { TbLayoutSidebarRight } from "react-icons/tb";
-import { TbLayoutSidebarRightFilled } from "react-icons/tb";
-import { usaMapData } from "@/public/staticData";
 
 type SidebarProps = {
   isOpen: boolean;
@@ -84,11 +84,24 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       onClick={() => setIsOpen(false)}
     >
       <div
-        className={`bg-[#F8FAFB] h-full grid grid-rows-[auto_1fr] border-r border-[#D2D2D5] xl:rounded-l-2xl min-h-0 ${toggleSidebar ? "w-fit" : "w-70 sm:w-77.5"}`}
+        className={`bg-bgLightColor h-full grid grid-rows-[auto_1fr] border-r border-[#D2D2D5] xl:rounded-l-2xl min-h-0 ${toggleSidebar ? "w-fit" : "w-70 sm:w-77.5"}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex flex-col gap-2 relative border-b border-[#D2D2D5]">
-          <div className={`px-2 pt-2 flex ${toggleSidebar ? "justify-center" : "justify-end"} items-center`}>
+        <div className="flex  py-4 justify-between gap-2 relative border-b border-[#D2D2D5]">
+          <Link
+            href={`/mu/academia/${stateId}?redirect=${redirectUrl?.split("stateacademia")?.[0]}_stateacademia:${stateId}:${currentState}`}
+            onClick={() => setIsOpen(false)}
+            className={`block pl-2 text-headerColor 
+                 text-xl sm:text-2xl md:text-3xl lg:text-[32px] 
+                 font-semibold leading-snug sm:leading-[130%] ${toggleSidebar ? "uppercase" : "text-left pl-6"}`}
+          >
+            {toggleSidebar
+              ? usaMapData?.find((s) => s.name === currentState)?.id || "US"
+              : currentState || "Unknown State"}
+          </Link>
+          <div
+            className={`pr-2 flex ${toggleSidebar ? "justify-center" : "justify-end"} items-center`}
+          >
             <button
               onClick={() => setToggleSidebar((prev) => !prev)}
               className="hidden xl:flex items-center justify-center p-1.5 cursor-pointer hover:bg-gray-200 rounded-full transition-colors duration-300"
@@ -100,17 +113,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               )}
             </button>
           </div>
-          <Link
-            href={`/mu/academia/${stateId}?redirect=${redirectUrl?.split("stateacademia")?.[0]}_stateacademia:${stateId}:${currentState}`}
-            onClick={() => setIsOpen(false)}
-            className={`block px-4 pb-4 sm:px-6 sm:pb-6 text-headerColor 
-                 text-xl sm:text-2xl md:text-3xl lg:text-[32px] 
-                 font-semibold leading-snug sm:leading-[130%] ${toggleSidebar ? "uppercase" : "text-left"}`}
-          >
-            {toggleSidebar
-              ? usaMapData?.find((s) => s.name === currentState)?.id || "US"
-              : currentState || "Unknown State"}
-          </Link>
           <button
             type="button"
             className="xl:hidden absolute top-0 right-0 p-1.5 cursor-pointer hover:bg-gray-200 rounded-full transition-colors duration-300"

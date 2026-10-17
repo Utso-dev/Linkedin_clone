@@ -33,9 +33,20 @@ const neuroscienceSlice = baseApiSlice.injectEndpoints({
       providesTags: ["neuroscience"],
     }),
     getNeurosciencePublicationsOne: builder.query({
-      query: ({ query }) => ({
-        url: `/neuroscience-network/industry/publications`,
+      query: (
+        params: {
+          query?: string;
+          cursor?: string | null;
+          per_page?: number;
+        } = {},
+      ) => ({
+        url: "/publications/feed",
         method: "GET",
+        params: {
+          network_type: "neuroscience",
+          ...(params.cursor ? { cursor: params.cursor } : {}),
+          ...(params.per_page ? { per_page: params.per_page } : {}),
+        },
       }),
 
       providesTags: ["neuroscience"],

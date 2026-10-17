@@ -1,9 +1,10 @@
 "use client";
 
-import { DoubleArrowIcon, LeftArrowIcon } from "@/public/svgIcons/Icons";
 import { scrollToTop } from "@/lib/utils";
+import { DoubleArrowIcon } from "@/public/svgIcons/Icons";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { IoIosArrowBack } from "react-icons/io";
 
 const LABEL_MAP: Record<string, string> = {
   home: "Home",
@@ -35,7 +36,7 @@ function toLabel(slug: string): string {
 export default function Breadcrumb({ className = "" }: { className?: string }) {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
-  const router = useRouter()
+  const router = useRouter();
   // Filter out dynamic numeric IDs (e.g., /mu/message/28 -> hide "28")
   const filteredSegments = segments.filter((seg, i) => {
     if (/^\d+$/.test(seg) && segments[i - 1] === "message") return false;
@@ -57,17 +58,19 @@ export default function Breadcrumb({ className = "" }: { className?: string }) {
   const backHref = items.length > 2 ? items[items.length - 2].href : "/mu/home";
 
   return (
-    <div className={`flex gap-6 truncate items-center my-4 md:my-6 ${className}`}>
+    <div
+      className={`flex gap-6 truncate items-center my-4 md:my-6 ${className}`}
+    >
       <button
-        onClick={()=>router.back()}
-        className="flex cursor-pointer gap-1.5 font-semibold text-headerColor items-center"
+        onClick={() => router.back()}
+        className="flex text-sm cursor-pointer gap-1 font-semibold text-headerColor items-center"
       >
-        <LeftArrowIcon />
+        <IoIosArrowBack />
         Back
       </button>
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-1 text-sm items-center">
         {items.map((item, i) => (
-          <span key={item.href} className="flex text-nowrap items-center gap-2">
+          <span key={item.href} className="flex text-nowrap items-center gap-1">
             {i > 0 && <DoubleArrowIcon />}
             {i === items.length - 1 ? (
               <span className="text-headerColor font-medium">{item.label}</span>
