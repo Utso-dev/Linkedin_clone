@@ -3,7 +3,7 @@
 import DynamicTable from "@/components/reusable/DynamicTable";
 import { useGetAllBilingHistoryQuery } from "@/feature/slice/settingSlice";
 import dayjs from "dayjs";
-import { CreditCard, Download, Loader2 } from "lucide-react";
+import { CreditCard, Loader2 } from "lucide-react";
 import { useMemo } from "react";
 import toast from "react-hot-toast";
 
@@ -103,7 +103,6 @@ function BillingHistoryPage() {
       );
     }
   };
-
 
   // Helper for masking card number to match "************5675"
   const getMaskedCardNumber = (row: BillingHistoryItem) => {
@@ -276,37 +275,6 @@ function BillingHistoryPage() {
           </div>
         );
       },
-    },
-    {
-      label: "Recipt",
-      accessor: "receipt_url",
-      position: "justify-center",
-      width: "90px",
-      formatter: (_: any, row: BillingHistoryItem) => (
-        <div className="flex items-center justify-center py-4 px-3">
-          {row.receipt_url ? (
-            <a
-              href={row.receipt_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              download
-              className="p-1.5 text-grayColor1 hover:text-headerColor hover:bg-gray-100 rounded-md transition-colors inline-flex items-center justify-center"
-              title="Download Receipt"
-            >
-              <Download className="w-4 h-4" />
-            </a>
-          ) : (
-            <button
-              type="button"
-              onClick={() => handleDownloadReceipt(row)}
-              className="p-1.5 text-grayColor1 hover:text-headerColor hover:bg-gray-100 rounded-md transition-colors inline-flex items-center justify-center cursor-pointer"
-              title="Download Receipt"
-            >
-              <Download className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      ),
     },
   ];
 
