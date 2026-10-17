@@ -27,6 +27,7 @@ import {
 import { Plus } from "lucide-react";
 import type { ComponentType } from "react";
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
+import { LuShoppingBag } from "react-icons/lu";
 
 export type MenuItem = {
   label: string;
@@ -130,7 +131,12 @@ export function getProIndustryMenuItems(
       slug: "/mu/recruiter-dashboard",
       icon: DashboardIcon,
     },
-    { label: "Products", slug: "/mu/products", icon: AdvertisementIcon },
+    { label: "Products", slug: "/mu/products", icon: LuShoppingBag },
+    {
+      label: "Advertisement",
+      slug: "/mu/advertisment",
+      icon: AdvertisementIcon,
+    },
     {
       label: "Publications",
       slug: "/mu/publications",
