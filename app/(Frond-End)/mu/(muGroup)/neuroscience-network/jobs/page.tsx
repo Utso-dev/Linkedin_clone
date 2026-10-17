@@ -37,7 +37,7 @@ export default function Page() {
             countLabel="Active Jobs"
             onStateClick={(state, stateData) => {
               const targetId = stateData?.state_id || state.id;
-              router.push(`/mu/neuroscience-network/jobs/${targetId}`);
+              router.push(`/mu/jobs?network_type=neuroscience&state_id=${targetId}`);
             }}
           />
         )}

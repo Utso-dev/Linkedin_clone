@@ -37,7 +37,9 @@ export default function Page() {
             countLabel="Active Jobs"
             onStateClick={(state, stateData) => {
               const targetId = stateData?.state_id || state.id;
-              router.push(`/mu/psychology-network/jobs/${targetId}`);
+              router.push(
+                `/mu/jobs?network_type=psychology&state_id=${targetId}`,
+              );
             }}
           />
         )}
