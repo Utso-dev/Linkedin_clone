@@ -17,7 +17,7 @@ import emptyUser from "@/public/empty_user.jpg";
 import { CloudUpload, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -74,7 +74,7 @@ export default function CreateCompanyPage({ UId }: { UId?: string }) {
   const [isCoverDragging, setIsCoverDragging] = useState(false);
   const logoInputRef = useRef<HTMLInputElement | null>(null);
   const coverInputRef = useRef<HTMLInputElement | null>(null);
-
+  const pathName = usePathname();
   const {
     register,
     handleSubmit,
@@ -233,21 +233,22 @@ export default function CreateCompanyPage({ UId }: { UId?: string }) {
       );
     }
   };
+  const isFormDisabled = pathName?.includes("edite-industry");
 
   return (
     <div className="min-h-screen pb-8 pt-4 lg:by-12">
-      <div className="container">
-        <div className="">
-          <Breadcrumb />
-        </div>
+      <div className={` ${isFormDisabled ? "" : "container"}`}>
+        <div className="">{!isFormDisabled && <Breadcrumb />}</div>
 
         <div>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          <div
+            className={` grid grid-cols-1 lg:grid-cols-12 gap-8 ${!isFormDisabled && "lg:gap-12"} items-start`}
+          >
             {/* Left Column: Form */}
             <div className="lg:col-span-7 border p-4 rounded-2xl s">
-          <h1 className="text-xl md:text-2xl text-center font-bold mb-4 text-headerColor">
-            Create a Company Page
-          </h1>
+              <h1 className="text-xl md:text-2xl text-center font-bold mb-4 text-headerColor">
+                Create a Company Page
+              </h1>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {/* Company Name */}
                 <ReusableInput
