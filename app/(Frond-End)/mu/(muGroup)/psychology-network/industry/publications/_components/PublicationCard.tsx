@@ -21,7 +21,7 @@ export const PublicationCard = ({ publication }: PublicationCardProps) => {
           {publication.title}
         </h4>
         {publication.publication_type && (
-          <span className="flex items-center gap-4 rounded-full bg-bgLightColor px-2.5 py-1 font-['Segoe_UI'] text-xs font-normal text-descriptionColor">
+          <span className="flex items-center gap-4 capitalize rounded-full bg-bgLightColor px-2.5 py-1 font-['Segoe_UI'] text-xs font-normal text-descriptionColor">
             {publication.publication_type}
           </span>
         )}
