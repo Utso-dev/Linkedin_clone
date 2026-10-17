@@ -11,15 +11,24 @@ import { TbLinkFilled } from "react-icons/tb";
 import ApplicantDetailsSkeleton from "./ApplicantDetailsSkeleton";
 import ApplicantError from "./ApplicantError";
 import ApplicantsUserHeader from "./ApplicantsUserHeader";
-function ApplicantUserDetails({ applicantId, status }: { applicantId: string; status?: string }) {
+function ApplicantUserDetails({
+  applicantId,
+  status,
+}: {
+  applicantId: string;
+  status?: string;
+}) {
   const {
     data: responseData,
     isLoading,
     isError,
     refetch,
-  } = useGetJobApplicantsQuery({applicantId, status}, {
-    skip: !applicantId,
-  });
+  } = useGetJobApplicantsQuery(
+    { applicantId, status },
+    {
+      skip: !applicantId,
+    },
+  );
 
   const applicant = (responseData?.data ?? responseData) as
     | JobApplicationDetailsType
@@ -38,9 +47,7 @@ function ApplicantUserDetails({ applicantId, status }: { applicantId: string; st
   return (
     <div>
       <div className="flex gap-2 justify-end items-center md:-mt-12 mb-6">
-        <div>
-           {applicant?.navigation?.position_label}
-        </div>
+        <div>{applicant?.navigation?.position_label}</div>
         <Link
           href={
             applicant?.navigation?.has_previous
@@ -77,21 +84,28 @@ function ApplicantUserDetails({ applicantId, status }: { applicantId: string; st
                 <h2 className="text-base md:text-lg font-semibold text-headerColor mb-3">
                   About Candidate
                 </h2>
-                <p className="text-xs md:text-sm text-descriptionColor leading-relaxed whitespace-pre-line">
-                  {applicant?.about_yourself ||
-                    applicant?.cover_letter ||
-                    "No candidate description provided."}
-                </p>
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      applicant?.about_yourself ||
+                      "No candidate description provided.",
+                  }}
+                  className="text-xs md:text-sm text-descriptionColor leading-relaxed whitespace-pre-line"
+                ></p>
               </section>
               <section className="rounded-xl border border-grayColor2 bg-white p-5 md:p-6">
                 <h2 className="text-base md:text-lg font-semibold text-headerColor mb-3">
                   Cover Letter
                 </h2>
                 <div className="text-xs md:text-sm text-descriptionColor leading-relaxed space-y-3">
-                  <p className="whitespace-pre-line leading-relaxed">
-                    {applicant?.cover_letter ||
-                      "I am excited to apply for this position and contribute my skills and experience to your organization."}
-                  </p>
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        applicant?.cover_letter ||
+                        "No candidate description provided.",
+                    }}
+                    className="whitespace-pre-line leading-relaxed"
+                  ></p>
                 </div>
               </section>
             </div>
@@ -121,21 +135,14 @@ function ApplicantUserDetails({ applicantId, status }: { applicantId: string; st
                         : "Negotiable"}
                     </span>
                   </div>
+                
                   <div className="flex justify-between items-center">
                     <span className="text-descriptionColor">
-                      Experience Required
+                     Work Mode
                     </span>
                     <span className="font-semibold text-headerColor">
-                      {applicant?.job?.experience || "1 Year"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-descriptionColor">
-                      Employment Offering
-                    </span>
-                    <span className="font-semibold text-headerColor">
-                      {applicant?.job?.employment_offering ||
-                        applicant?.job?.work_mode ||
+                      { 
+                        applicant?.job?.work_mode.split("_").join(" ") ||
                         "State and Institution"}
                     </span>
                   </div>

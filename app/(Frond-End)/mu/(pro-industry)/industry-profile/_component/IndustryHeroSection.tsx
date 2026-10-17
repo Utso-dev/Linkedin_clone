@@ -4,14 +4,15 @@ import { useGetCompanyQuery } from "@/feature/slice/companySlice";
 import logoPreview from "@/public/empty_user.jpg";
 import coverPreview from "@/public/images/cover imager.png";
 import {
-    CompanyIcon,
-    GroupUserIcon,
-    PencileIcon,
+  CompanyIcon,
+  GroupUserIcon,
+  PencileIcon,
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import { GrLocation } from "react-icons/gr";
 import { IoPricetagsOutline } from "react-icons/io5";
+import RelatedIndustryFollowButton from "../../_component/RelatedIndustryFollowButton";
 function IndustryHeroSection({ userId }: { userId?: string }) {
   const UId = userId;
   const { data, isLoading } = useGetCompanyQuery(UId, {
@@ -25,7 +26,7 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
     );
   }
   const industryData = data?.data;
-  console.log(industryData?.name);
+
 
   return (
     <div>
@@ -50,7 +51,7 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
                 height={80}
               />
             </div>
-            {industryData?.is_owner && (
+            {industryData?.is_owner ? (
               <div className="flex gap-6 mt-4">
                 <Link
                   href={`/mu/create-company-page/${UId}`}
@@ -60,10 +61,17 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
                   <PencileIcon />
                 </Link>
               </div>
+            ) : (
+              <div className="h-10">
+                <RelatedIndustryFollowButton
+                  industryId={UId}
+                  initialFollowing={Boolean(industryData?.is_following)}
+                />
+              </div>
             )}
           </div>
         </div>
-        <div className="mt-12 border-b border-borderColor pb-3">
+        <div className="mt-12 ">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
             <div className="col-span-2">
               <h4 className="text-lg font-semibold text-headerColor leading-[150%]">
@@ -71,8 +79,14 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
               </h4>
 
               <div className="flex items-center gap-2.5 my-2 text-grayColor1">
-                <CompanyIcon className="w-4 h-4" />
+                <IoPricetagsOutline className="w-4 h-4" />
                 <p className="text-sm   line-clamp-3">
+                  {industryData?.tagline || ""}
+                </p>
+              </div>
+              <div className="flex items-center gap-2.5 my-2 text-grayColor1">
+                <CompanyIcon className="w-4 h-4" />
+                <p className="text-sm  uppercase line-clamp-3">
                   {industryData?.industry || ""}
                 </p>
               </div>
@@ -80,12 +94,6 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
                 <GrLocation className="w-4 h-4" />
                 <p className="text-sm   line-clamp-3">
                   {industryData?.address || ""}
-                </p>
-              </div>
-              <div className="flex items-center gap-2.5 my-2 text-grayColor1">
-                <IoPricetagsOutline className="w-4 h-4" />
-                <p className="text-sm   line-clamp-3">
-                  {industryData?.tagline || ""}
                 </p>
               </div>
               <div className="flex items-center gap-2.5 my-2 text-grayColor1">

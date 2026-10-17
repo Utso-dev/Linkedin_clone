@@ -1,4 +1,4 @@
-import JobsPage from "./_component/JobsPage";
+import JobsPage from "../_component/JobsPage";
 
 export default function Page() {
   return (

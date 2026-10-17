@@ -237,17 +237,17 @@ export default function CreateCompanyPage({ UId }: { UId?: string }) {
   return (
     <div className="min-h-screen pb-8 pt-4 lg:by-12">
       <div className="container">
-        <div className="mb-6 md:mb-8">
+        <div className="">
           <Breadcrumb />
-          <h1 className="text-xl md:text-2xl text-center font-bold text-headerColor">
-            Create a Company Page For Mind Unite
-          </h1>
         </div>
 
         <div>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             {/* Left Column: Form */}
-            <div className="lg:col-span-7">
+            <div className="lg:col-span-7 border p-4 rounded-2xl s">
+          <h1 className="text-xl md:text-2xl text-center font-bold mb-4 text-headerColor">
+            Create a Company Page
+          </h1>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {/* Company Name */}
                 <ReusableInput
@@ -267,7 +267,7 @@ export default function CreateCompanyPage({ UId }: { UId?: string }) {
                   id="address"
                   label="Add your company address"
                   required
-                  placeholder="www.mindunite/company/your-company-name"
+                  placeholder="Enter your company address"
                   className="rounded-lg border-borderColor text-sm text-headerColor"
                   error={errors.address?.message}
                   {...register("address", {

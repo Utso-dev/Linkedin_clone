@@ -1,113 +1,100 @@
 "use client";
 
-import React, { useMemo, useCallback } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { INITIAL_JOB_DATA } from "./jobdata";
-import { JobSearchBar } from "./JobSearchBar";
+import { useGetUserAllJobsQuery } from "@/feature/slice/jobs/userJobSlice";
+import { useCursorQuery } from "@/hooks/useCursorPagination";
+import { useUrlQueryParams } from "@/hooks/useUrlQueryParams";
+import { JobCard } from "./JobCard";
 import { JobCardSection } from "./JobCardSection";
+import { JobCardSkeleton } from "./JobCardSkeleton";
+import { JobSearchBar } from "./JobSearchBar";
 
 export default function JobsPage() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const limit = 10;
+  const { params, updateParam } = useUrlQueryParams();
+  const activeFilter = params?.employment_type || "all";
+  const searchParam = params?.search || "";
 
-  const activeFilter = searchParams.get("filter") || "all";
-  const searchParam = searchParams.get("search") || "";
+  const queryLimit = params?.limit ? Number(params.limit) : limit;
 
-  // Update query params in the URL
-  const updateUrlParam = useCallback(
-    (key: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (value && value !== "all") {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
-      router.push(`${pathname}?${params.toString()}`);
-    },
-    [router, pathname, searchParams]
-  );
+  const {
+    combinedData: jobs,
+    isInitialLoading,
+    isFetchingMore,
+    hasMore,
+    lastElementRef,
+    observerRef,
+  } = useCursorQuery(useGetUserAllJobsQuery, params, {
+    limit: queryLimit,
+  });
 
-  // Memoized Filtered List
-  const filteredJobs = useMemo(() => {
-    return INITIAL_JOB_DATA.filter((job) => {
-      const matchesFilter =
-        activeFilter === "all" || job.jobType === activeFilter;
-      const matchesSearch =
-        !searchParam ||
-        job.title.toLowerCase().includes(searchParam.toLowerCase()) ||
-        job.company.toLowerCase().includes(searchParam.toLowerCase()) ||
-        job.location.toLowerCase().includes(searchParam.toLowerCase());
-
-      return matchesFilter && matchesSearch;
-    });
-  }, [activeFilter, searchParam]);
-
-  const fullTimeJobs = useMemo(
-    () => filteredJobs.filter((job) => job.jobType === "full-time"),
-    [filteredJobs]
-  );
-
-  const remoteJobs = useMemo(
-    () => filteredJobs.filter((job) => job.jobType === "remote"),
-    [filteredJobs]
-  );
-
-  const otherJobs = useMemo(
-    () =>
-      filteredJobs.filter(
-        (job) => job.jobType !== "full-time" && job.jobType !== "remote"
-      ),
-    [filteredJobs]
-  );
+  const jobsType =
+    activeFilter === "all"
+      ? "All"
+      : activeFilter === "full_time"
+        ? "Full Time"
+        : activeFilter === "part_time"
+          ? "Part Time"
+          : activeFilter === "short_term"
+            ? "Short Term"
+            : activeFilter === "internship"
+              ? "Internship"
+              : "Contract";
 
   return (
-    <main className="w-full  space-y-6">
-      <header>
+    <main className="w-full">
+      <header className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold text-[#1D1F2C]">
-          All Jobs
+          {jobsType} Jobs
         </h1>
         <p className="text-sm text-[#4A4C56] mt-1">
-          All jobs that will perfectly match your profile.
+          {jobsType} jobs that will perfectly match your profile.
         </p>
       </header>
 
       <JobSearchBar
         activeFilter={activeFilter}
         searchParam={searchParam}
-        onFilterChange={(val) => updateUrlParam("filter", val)}
-        onSearchChange={(val) => updateUrlParam("search", val)}
+        onFilterChange={(val) => updateParam("employment_type", val, "all")}
+        onSearchChange={(val) => updateParam("search", val)}
       />
 
-      {filteredJobs.length === 0 ? (
+      {isInitialLoading ? (
+        <div className="divide-y space-y-4 divide-gray-100">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <JobCardSkeleton key={index} />
+          ))}
+        </div>
+      ) : jobs?.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center text-gray-500">
           No jobs found matching your criteria.
         </div>
       ) : (
-        <div className="space-y-6">
-          {(activeFilter === "all" || activeFilter === "full-time") && (
-            <JobCardSection
-              title="Full Time Jobs"
-              subtitle="Because you expressed interest in remote work"
-              jobs={fullTimeJobs}
-            />
+        <div className="rounded-2xl border border-gray-100 p-3 sm:p-4 space-y-6">
+          <JobCardSection
+            title={`${jobsType} Time Jobs`}
+            subtitle="Because you expressed interest in remote work"
+          />
+
+          <div className="divide-y space-y-4 divide-gray-100">
+            {jobs?.map((job, index) => (
+              <div
+                key={job.id}
+                ref={index === jobs.length - 1 ? lastElementRef : null}
+              >
+                <JobCard job={job} />
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom loader while fetching more pages */}
+          {isFetchingMore && (
+            <div className="divide-y space-y-4 divide-gray-100 pt-2">
+              <JobCardSkeleton />
+            </div>
           )}
 
-          {(activeFilter === "all" || activeFilter === "remote") && (
-            <JobCardSection
-              title="Remote opportunities"
-              subtitle="Because you expressed interest in remote work"
-              jobs={remoteJobs}
-            />
-          )}
-
-          {otherJobs.length > 0 && (
-            <JobCardSection
-              title="Available Jobs"
-              subtitle="Opportunities tailored for you"
-              jobs={otherJobs}
-            />
-          )}
+          {/* Sentinel observer element */}
+          <div ref={observerRef} className="h-2 w-full pointer-events-none" />
         </div>
       )}
     </main>

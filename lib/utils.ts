@@ -5,6 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function scrollToTop() {
+  if (typeof window === "undefined") return;
+
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+
 export function normalizeSkillsList(skills?: unknown): string[] {
   if (!Array.isArray(skills)) return [];
 
@@ -100,3 +106,125 @@ export const formatNumberIntoK = ({
       ? text.slice(0, maxLength).trim() + "..."
       : text;
   }
+
+  
+  export const getApplicationStatusConfig = (statusRaw?: string) => {
+    const s = String(statusRaw || "")
+      .toLowerCase()
+      .trim();
+  
+    if (s === "pending" || s.includes("review")) {
+      return {
+        label: "Appliaction is being reviewed",
+        className: "bg-[#FEF6D8] text-[#B45309]",
+      };
+    }
+    if (s.includes("interview")) {
+      return {
+        label: "Interview HR",
+        className: "bg-[#E6F8F6] text-[#0D9488]",
+      };
+    }
+    if (s.includes("assessment")) {
+      return {
+        label: "Assessment",
+        className: "bg-[#E8F0FE] text-[#2563EB]",
+      };
+    }
+    if (s.includes("offer")) {
+      return {
+        label: "Offering",
+        className: "bg-[#F3E8FF] text-[#7E22CE]",
+      };
+    }
+    if (s === "hired" || s.includes("accept")) {
+      return {
+        label: "Hired",
+        className: "bg-[#E6F8F6] text-[#059669]",
+      };
+    }
+    if (s.includes("reject")) {
+      return {
+        label: "Rejected",
+        className: "bg-[#FEE2E2] text-[#DC2626]",
+      };
+    }
+    if (s.includes("close")) {
+      return {
+        label: "Hiring Closed",
+        className: "bg-[#F3F4F6] text-[#6B7280]",
+      };
+    }
+  
+    const formatted = s
+      ? s.charAt(0).toUpperCase() + s.slice(1)
+      : "Appliaction is being reviewed";
+    return {
+      label: formatted,
+      className: "bg-[#FEF6D8] text-[#B45309]",
+    };
+  };
+
+/**
+ * Escapes unsafe HTML characters while preserving UTF-8 emojis and symbols
+ */
+export function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
+ * Converts user-typed multi-line plain text into HTML paragraphs
+ * Preserves empty lines using <p><br></p>
+ */
+export function textToHtml(text: string): string {
+  if (!text || !text.trim()) return "";
+  const lines = text.split("\n");
+  return lines
+    .map((line) => {
+      if (!line.trim()) {
+        return "<p><br></p>";
+      }
+      return `<p>${escapeHtml(line)}</p>`;
+    })
+    .join("");
+}
+
+/**
+ * Converts HTML post description back to plain text with newlines for editing
+ */
+export function htmlToPlainText(html: string): string {
+  if (!html) return "";
+  if (!/<[a-z][\s\S]*>/i.test(html)) {
+    return html;
+  }
+  return html
+    .replace(/<p>\s*<br\s*\/?>\s*<\/p>/gi, "\n")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>\s*<p>/gi, "\n")
+    .replace(/<\/?p>/gi, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#039;/gi, "'")
+    .replace(/&#39;/gi, "'")
+    .trim();
+}
+
+/**
+ * Formats post content for display in dangerouslySetInnerHTML.
+ * If content is plain text, converts newlines to HTML paragraphs.
+ */
+export function formatContentForDisplay(content?: string): string {
+  if (!content) return "";
+  if (/<[a-z][\s\S]*>/i.test(content)) {
+    return content;
+  }
+  return textToHtml(content);
+}

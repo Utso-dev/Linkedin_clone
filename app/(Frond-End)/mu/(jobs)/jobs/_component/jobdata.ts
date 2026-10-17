@@ -18,12 +18,31 @@ export interface JobItem {
   appliedCount: number;
 }
 
-export const FILTER_TYPES: FilterOption[] = [
+export const JOB_TYPE_OPTIONS = [
   { label: "All", value: "all" },
-  { label: "Full Time", value: "full-time" },
-  { label: "Part Time", value: "part-time" },
+  { label: "Full-Time", value: "full_time" },
+  { label: "Part-Time", value: "part_time" },
+  { label: "Internship", value: "internship" },
+  { label: "Short-Term", value: "short_term" },
+  { label: "Contract", value: "contract" },
+];
+export const WORKPLACE_TYPE_OPTIONS = [
+  { label: "On-site", value: "on_site" },
   { label: "Remote", value: "remote" },
-  { label: "Short-term", value: "short-term" },
+  { label: "Hybrid", value: "hybrid" },
+];
+
+
+export const INDUSTRY_OPTIONS = [
+  { label: "Psychology", value: "psychology" },
+  { label: "Neuroscience", value: "neuroscience" },
+];
+
+export const EXPERIENCE_LEVEL_OPTIONS = [
+  { label: "Entry-level", value: "entry_level" },
+  { label: "Senior-level", value: "senior_level" },
+  { label: "Mid-level", value: "mid_level" },
+  { label: "Executive-level", value: "executive_level" },
 ];
 
 export const INITIAL_JOB_DATA: JobItem[] = [

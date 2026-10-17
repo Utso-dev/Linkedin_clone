@@ -7,6 +7,8 @@ import {
 } from "@/feature/slice/post/postSlice";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import {
+  GlobalIcon,
+  ImageUploadIcon,
   MenueArrowDownIcon,
   PlayIcon,
   SendIcon,
@@ -14,13 +16,17 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import {
+  useCreateIndustryPostMutation,
+  useUpdateIndustryPostMutation,
+} from "@/feature/slice/jobs/industrySlice";
+import {
   resetPostComposeState,
   setPostText,
 } from "@/feature/slice/postCompose/postComposeSlice";
-import { ImageUploadIcon } from "@/public/svgIcons/Icons";
-import { Loader, X } from "lucide-react";
+import { htmlToPlainText, textToHtml } from "@/lib/utils";
+import { Loader, MessageSquare, X } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -41,21 +47,41 @@ function PostModal({
   setPostType?: (type: string) => void;
   postData?: any;
 }) {
-  const { postText = "", postVisibility, commentControl, selectedGroupIds } =
-    useSelector((state: any) => state.postCompose);
+  const {
+    postText = "",
+    postVisibility = "public",
+    commentControl = "anyone",
+    selectedGroupIds = [],
+  } = useSelector((state: any) => state.postCompose);
+
   const [previewMedia, setPreviewMedia] = useState<PreviewMedia[]>([]);
   const [removedMediaIds, setRemovedMediaIds] = useState<number[]>([]);
   const { data } = useGetUserProfileQuery("user");
   const mediaInputRef = useRef<HTMLInputElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const selectionRangeRef = useRef<{ start: number; end: number }>({
+    start: 0,
+    end: 0,
+  });
+
   const dispatch = useDispatch();
   const router = useRouter();
-  const [createPost, { isLoading, isError }] = useCreatePostMutation();
+  const pathName = usePathname();
+  const idustry = pathName.includes("industry");
+
+  const [createPost, { isLoading, isError }] = idustry
+    ? useCreateIndustryPostMutation()
+    : useCreatePostMutation();
   const [updatePost, { isLoading: isUpdating, isError: isUpdateError }] =
-    useUpdatePostMutation();
+    idustry ? useUpdateIndustryPostMutation() : useUpdatePostMutation();
+
+  // Populate initial text & media when editing
   useEffect(() => {
-    if (postData?.description) {
-      dispatch(setPostText(postData.description));
+    if (postData) {
+      const rawText = postData?.description || postData?.content || "";
+      if (rawText) {
+        dispatch(setPostText(htmlToPlainText(rawText)));
+      }
     }
 
     if (postData?.media) {
@@ -69,17 +95,72 @@ function PostModal({
         ),
       );
     }
-  }, [postData]);
+  }, [postData, dispatch]);
 
+  const previewMediaRef = useRef<PreviewMedia[]>([]);
+  useEffect(() => {
+    previewMediaRef.current = previewMedia;
+  }, [previewMedia]);
+
+  // Clean up object URLs ONLY when component unmounts
   useEffect(() => {
     return () => {
-      previewMedia.forEach((item) => {
+      previewMediaRef.current.forEach((item) => {
         if (item.isObjectUrl) {
           URL.revokeObjectURL(item.source);
         }
       });
     };
-  }, [previewMedia]);
+  }, []);
+
+
+  // Track cursor position and selection range in the textarea
+  const updateSelection = () => {
+    if (textareaRef.current) {
+      selectionRangeRef.current = {
+        start: textareaRef.current.selectionStart ?? 0,
+        end: textareaRef.current.selectionEnd ?? 0,
+      };
+    }
+  };
+
+  // Auto-resize textarea height smoothly
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    const nextH = Math.max(120, Math.min(el.scrollHeight, 280));
+    el.style.height = `${nextH}px`;
+  }, [postText]);
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    dispatch(setPostText(e.target.value));
+    updateSelection();
+  };
+
+  // Insert emoji at the exact cursor position
+  const handleEmojiSelect = (emoji: string) => {
+    const currentText = postText || "";
+    const start = selectionRangeRef.current.start ?? currentText.length;
+    const end = selectionRangeRef.current.end ?? currentText.length;
+
+    const safeStart = Math.max(0, Math.min(start, currentText.length));
+    const safeEnd = Math.max(safeStart, Math.min(end, currentText.length));
+
+    const newText =
+      currentText.slice(0, safeStart) + emoji + currentText.slice(safeEnd);
+    dispatch(setPostText(newText));
+
+    const nextPos = safeStart + emoji.length;
+    selectionRangeRef.current = { start: nextPos, end: nextPos };
+
+    requestAnimationFrame(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        textareaRef.current.setSelectionRange(nextPos, nextPos);
+      }
+    });
+  };
 
   const handleMediaButtonClick = () => {
     mediaInputRef.current?.click();
@@ -91,9 +172,7 @@ function PostModal({
         file.type.startsWith("image/") || file.type.startsWith("video/"),
     );
 
-    if (files.length === 0) {
-      return;
-    }
+    if (files.length === 0) return;
 
     const nextMedia = files.map((file) => ({
       source: URL.createObjectURL(file),
@@ -105,7 +184,6 @@ function PostModal({
     }));
 
     setPreviewMedia((previous) => [...previous, ...nextMedia]);
-
     event.target.value = "";
   };
 
@@ -113,10 +191,9 @@ function PostModal({
     setPreviewMedia((previous) => {
       const next = previous.filter((_, index) => index !== indexToRemove);
       const removed = previous[indexToRemove];
-      // If this media item is from server (has id) and we're editing, store its id
+
       if (removed?.id) {
         setRemovedMediaIds((prev) => {
-          // avoid duplicates
           if (prev.includes(removed.id!)) return prev;
           return [...prev, removed.id!];
         });
@@ -129,24 +206,9 @@ function PostModal({
     });
   };
 
-  const handleEmojiSelect = (emoji: string) => {
-    const textarea = textareaRef.current;
-    if (!textarea) {
-      dispatch(setPostText(postText + emoji));
-      return;
-    }
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const newText =
-      postText.substring(0, start) + emoji + postText.substring(end);
-    dispatch(setPostText(newText));
-
-    // Focus textarea and set cursor after emoji
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + emoji.length, start + emoji.length);
-    }, 0);
+  const handleCloseModal = () => {
+    dispatch(resetPostComposeState());
+    setOpen(false);
   };
 
   const handleSubmit = async () => {
@@ -155,8 +217,15 @@ function PostModal({
       return;
     }
 
+    const formattedHtml = textToHtml(postText);
     const formData = new FormData();
-    formData.append("description", trimmedText);
+
+    if (idustry) {
+      formData.append("content", formattedHtml);
+    } else {
+      formData.append("description", formattedHtml);
+    }
+
     formData.append(
       "visibility",
       postVisibility === "group" ? "groups" : postVisibility,
@@ -164,7 +233,7 @@ function PostModal({
     formData.append("who_can_comment", commentControl);
 
     if (selectedGroupIds.length > 0) {
-      selectedGroupIds.forEach((groupId) => {
+      selectedGroupIds.forEach((groupId: number) => {
         formData.append("group_ids[]", String(groupId));
       });
     }
@@ -175,7 +244,6 @@ function PostModal({
       }
     });
 
-    // If editing an existing post, include any removed media ids
     if (postData?.id && removedMediaIds.length > 0) {
       removedMediaIds.forEach((id) => {
         formData.append("remove_media_ids[]", String(id));
@@ -204,7 +272,7 @@ function PostModal({
       dispatch(setPostText(""));
       setPreviewMedia([]);
       setOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       toast.error(
         error?.data?.message ||
           (postData?.id ? "Failed to update post" : "Failed to create post"),
@@ -212,8 +280,27 @@ function PostModal({
     }
   };
 
+  const userDisplayName =
+    data?.user?.first_name || data?.user?.last_name
+      ? `${data?.user?.first_name || ""} ${data?.user?.last_name || ""}`.trim()
+      : "Vin Intini";
+
+  const visibilityLabel =
+    postVisibility === "connections"
+      ? "Connections only"
+      : postVisibility === "group"
+        ? "Group"
+        : "Post to Anyone";
+
+  const commentLabel =
+    commentControl === "connections"
+      ? "Comments: Connections"
+      : commentControl === "no_one"
+        ? "Comments: No one"
+        : "Comments: Anyone";
+
   return (
-    <section className="relative  px-4 pb-4 pt-4 md:px-5 md:pb-5 md:pt-4">
+    <section className="relative flex max-h-[85vh] flex-col overflow-hidden px-4 pb-4 pt-4 md:px-6 md:pb-5 md:pt-5 bg-white rounded-xl">
       <input
         ref={mediaInputRef}
         type="file"
@@ -223,101 +310,133 @@ function PostModal({
         onChange={handleMediaChange}
       />
 
-      <div className="mb-4 flex items-start justify-between gap-4">
+      {/* LinkedIn Style Header */}
+      <header className="mb-4 flex shrink-0 items-start justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="h-13 w-13 border border-borderColor shrink-0 overflow-hidden rounded-full">
+          <div className="h-12 w-12 border border-borderColor shrink-0 overflow-hidden rounded-full">
             <Image
               src={data?.user?.profile_image_url || "/empty_user.jpg"}
-              alt="Vin Intiny"
-              width={150}
-              height={140}
+              alt={userDisplayName}
+              width={64}
+              height={64}
               className="h-full w-full object-cover"
               priority
             />
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold leading-6 text-descriptionColor">
-              {data?.user?.first_name + " " + data?.user?.last_name ||
-                "Vin Intiny"}
+            <h3 className="text-base font-semibold leading-6 text-headerColor">
+              {userDisplayName}
             </h3>
 
-            <button
-              type="button"
-              onClick={() => setPostType("post_access")}
-              className="mt-0.5 inline-flex items-center cursor-pointer leading-[160%] gap-1 text-[14px] text-descriptionColor hover:opacity-80"
-            >
-              <span>Post for everyone</span>
-              <MenueArrowDownIcon className="h-3 w-3" />
-            </button>
+            {/* LinkedIn-style Access & Setting Badges */}
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setPostType?.("post_access")}
+                className="inline-flex items-center gap-1.5 rounded-full border border-borderColor bg-gray-50/70 px-2.5 py-0.5 text-xs font-medium text-descriptionColor hover:bg-gray-100 transition-colors cursor-pointer"
+              >
+                <GlobalIcon className="h-3 w-3 text-gray-500" />
+                <span>{visibilityLabel}</span>
+                <MenueArrowDownIcon className="h-2.5 w-2.5 text-gray-500" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setPostType?.("post_access")}
+                className="inline-flex items-center gap-1.5 rounded-full border border-borderColor bg-gray-50/70 px-2.5 py-0.5 text-xs font-medium text-descriptionColor hover:bg-gray-100 transition-colors cursor-pointer"
+              >
+                <MessageSquare className="h-3 w-3 text-gray-500" />
+                <span>{commentLabel}</span>
+                <MenueArrowDownIcon className="h-2.5 w-2.5 text-gray-500" />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      <textarea
-        ref={textareaRef}
-        value={postText}
-        onChange={(event) => dispatch(setPostText(event.target.value))}
-        placeholder="What’s on your mind today?"
-        rows={3}
-        className="min-h-25 w-full resize-none bg-transparent text-[17px] leading-7 text-headerColor placeholder:text-grayColor1 focus:outline-none"
-      />
-      <div className="h-37.5  ">
+      {/* Editor Body: Native Multi-Line Textarea */}
+      <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+        <textarea
+          ref={textareaRef}
+          value={postText}
+          onChange={handleTextChange}
+          onSelect={updateSelection}
+          onClick={updateSelection}
+          onKeyUp={updateSelection}
+          onBlur={updateSelection}
+          placeholder="What do you want to talk about?"
+          className="w-full resize-none border-none bg-transparent p-0 text-[16px] leading-7 text-headerColor  focus:outline-none focus:ring-0"
+          style={{ minHeight: "120px", maxHeight: "280px" }}
+        />
+
+        {/* Media Preview Section */}
         {previewMedia.length > 0 && (
           <div
-            className={`mb-3 grid ${previewMedia.length == 1 ? "grid-cols-1" : previewMedia.length == 2 ? "grid-cols-2" : "grid-cols-3"} gap-1 mt-2 space-y-2`}
+            className={`mb-3 mt-3 grid ${
+              previewMedia.length === 1
+                ? "grid-cols-1"
+                : previewMedia.length === 2
+                  ? "grid-cols-2"
+                  : "grid-cols-3"
+            } gap-2`}
           >
             {previewMedia.slice(0, 3).map((media, index) => {
               const hiddenCount = previewMedia.length - 3;
               const showOverlay = index === 2 && hiddenCount > 0;
               return media.type === "video" ? (
                 <div
-                  key={`media-${index}`}
-                  className={`relative overflow-hidden rounded-md border border-borderColor ${isError || isUpdateError ? "border-redColor" : ""}`}
+                  key={media.source || `media-${index}`}
+                  className={`relative overflow-hidden rounded-xl border border-borderColor bg-black ${
+                    isError || isUpdateError ? "border-redColor" : ""
+                  }`}
                 >
                   <video
                     src={media.source}
                     controls
-                    className="h-37.5 w-full bg-black object-cover"
+                    className="h-auto w-full object-cover"
                   />
                   {showOverlay && (
-                    <div className="absolute inset-0 w-full text-center leading-[100%] flex items-center justify-center bg-black/50 text-sm font-semibold text-whiteColor">
+                    <div className="absolute inset-0 flex w-full items-center justify-center bg-black/60 text-center text-sm font-semibold text-white">
                       +{hiddenCount} more
                     </div>
                   )}
                   <button
                     type="button"
                     onClick={() => handleRemoveMedia(index)}
-                    className="absolute right-2 top-2 rounded-full cursor-pointer bg-black/60 px-2 py-1 text-xs font-medium text-white"
+                    className="absolute right-2 top-2 cursor-pointer rounded-full bg-black/70 hover:bg-black/90 p-1.5 text-xs text-white transition-colors"
                     aria-label={`Remove media ${index + 1}`}
                   >
-                    <X size={14} />
+                    <X size={15} />
                   </button>
                 </div>
               ) : (
                 <div
-                  key={`media-${index}`}
-                  className={`relative overflow-hidden h-37.5 rounded-md border border-borderColor ${isError || isUpdateError ? "border-redColor" : ""}`}
+                  key={media.source || `media-${index}`}
+                  className={`relative h-auto overflow-hidden rounded-xl border border-borderColor bg-gray-50 ${
+                    isError || isUpdateError ? "border-redColor" : ""
+                  }`}
                 >
                   <Image
                     src={media.source}
                     alt={`Selected media ${index + 1}`}
                     width={1200}
-                    height={150}
+                    height={400}
+                    unoptimized
                     className="h-full w-full object-cover"
                   />
                   {showOverlay && (
-                    <div className="absolute inset-0 w-full text-center leading-[100%] flex items-center justify-center bg-black/50 text-sm font-semibold text-whiteColor">
+                    <div className="absolute inset-0 flex w-full items-center justify-center bg-black/60 text-center text-sm font-semibold text-white">
                       +{hiddenCount} more
                     </div>
                   )}
                   <button
                     type="button"
                     onClick={() => handleRemoveMedia(index)}
-                    className="absolute  right-1 top-1 rounded-full bg-redColor/60 cursor-pointer p-1 text-xs font-medium text-white"
+                    className="absolute right-2 top-2 cursor-pointer rounded-full bg-black/70 hover:bg-black/90 p-1.5 text-xs text-white transition-colors"
                     aria-label={`Remove media ${index + 1}`}
                   >
-                    <X size={14} />
+                    <X size={15} />
                   </button>
                 </div>
               );
@@ -326,28 +445,28 @@ function PostModal({
         )}
       </div>
 
-      <div className="mt-2 flex items-center gap-2">
-        <SmartEmojiPicker
-          onEmojiSelect={handleEmojiSelect}
-          iconClassName="w-5 h-5 text-descriptionColor cursor-pointer hover:opacity-80"
-          height={250}
-        />
-      </div>
-      <div className=" flex items-center justify-between border-t border-borderColor pt-3">
-        <div className="flex justify-between items-center w-full gap-5">
-          <div className="flex items-center w-full gap-2">
+      {/* Footer / Toolbar */}
+      <footer className="shrink-0 border-t border-borderColor pt-3 mt-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1 sm:gap-2">
+            <SmartEmojiPicker
+              onEmojiSelect={handleEmojiSelect}
+              iconClassName="w-5 h-5 text-descriptionColor cursor-pointer hover:opacity-80"
+              height={260}
+            />
+
             <button
               type="button"
-              className="cursor-pointer hover:opacity-80"
+              className="p-1.5 rounded-full hover:bg-gray-100 cursor-pointer text-descriptionColor hover:opacity-80 transition"
               aria-label="Add image"
               onClick={handleMediaButtonClick}
             >
-              <ImageUploadIcon className="w-4 h-4 text-descriptionColor" />
+              <ImageUploadIcon className="w-5 h-5 text-descriptionColor" />
             </button>
 
             <button
               type="button"
-              className="flex h-8 w-8 cursor-pointer items-center justify-center text-descriptionColor transition hover:opacity-80"
+              className="p-1.5 rounded-full hover:bg-gray-100 cursor-pointer text-descriptionColor hover:opacity-80 transition"
               aria-label="Add video"
               onClick={handleMediaButtonClick}
             >
@@ -355,27 +474,30 @@ function PostModal({
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={
-              (!postText.trim() && previewMedia.length === 0) ||
-              isLoading ||
-              isUpdating
-            }
-            className=" h-8 disabled:cursor-not-allowed gap-2 rounded-full disabled:bg-grayColor1 cursor-pointer leading-[140%] bg-buttonColor px-4 text-[14px] font-semibold text-whiteColor flex items-center hover:bg-buttonColor/90 hover:shadow-xl"
-          >
-            {isLoading || isUpdating ? (
-              <Loader className=" animate-spin h-4 w-4" />
-            ) : (
-              <SendIcon className=" h-4 w-4" />
-            )}
-            Post
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={
+                (!postText.trim() && previewMedia.length === 0) ||
+                isLoading ||
+                isUpdating
+              }
+              className="flex h-9 cursor-pointer items-center gap-2 rounded-full bg-buttonColor px-5 text-[14px] font-semibold text-white hover:bg-buttonColor/90 hover:shadow-md disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 transition"
+            >
+              {isLoading || isUpdating ? (
+                <Loader className="h-4 w-4 animate-spin" />
+              ) : (
+                <SendIcon className="h-4 w-4" />
+              )}
+              {postData?.id ? "Update" : "Post"}
+            </button>
+          </div>
         </div>
-      </div>
+      </footer>
     </section>
   );
 }
 
 export default PostModal;
+

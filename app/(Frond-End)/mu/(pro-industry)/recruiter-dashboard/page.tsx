@@ -1,9 +1,10 @@
-import React from 'react'
+import React from "react";
+import RecruiterPage from "../_component/recruiter/RecruiterPage";
 
-function page() {
+export default function Page() {
   return (
-    <div>page</div>
-  )
+    <main className="w-full">
+      <RecruiterPage />
+    </main>
+  );
 }
-
-export default page

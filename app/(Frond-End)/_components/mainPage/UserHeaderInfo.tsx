@@ -21,6 +21,7 @@ import {
   LogoutIcon,
   MessageIcon,
   NotificationIcon,
+  PublicationsMenueIcon,
   SettingIcon,
   SingleUserIcon,
   UserCircleIcon,
@@ -120,7 +121,8 @@ function UserHeaderInfo() {
 
   const isPremium = userProfileData?.subscription?.plan_type === "premium";
   const isIndustry = userProfileData?.subscription?.plan_type === "industry";
-  const planName = userProfileData?.subscription?.plan_name || "Basic User";
+  const planName = userProfileData?.subscription?.plan_name || "basic_user";
+
   return (
     <div>
       <div className="flex items-center gap-2 lg:gap-6 justify-end w-full">
@@ -184,7 +186,7 @@ function UserHeaderInfo() {
                 <div className="flex gap-2 h-full items-end">
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
                     <div
-                      className={`w-7 h-7 lg:w-12 border-2  ${isIndustry ? "border-secondaryColor" : isPremium ? "border-primaryColor" : "border-bgColor"} lg:h-12 rounded-full overflow-hidden`}
+                      className={`w-7 h-7 lg:w-12 border-2  ${isIndustry ? "border-secondaryColor" : isPremium ? "border-primaryColor" : "border-[#3EA1D6]"} lg:h-12 rounded-full overflow-hidden`}
                     >
                       <Image
                         src={
@@ -209,7 +211,7 @@ function UserHeaderInfo() {
                 <div className="">
                   <div className="flex items-center gap-2 pb-2 border-b border-borderColor">
                     <div
-                      className={` w-12 h-12 rounded-full border-2 ${isIndustry ? "border-secondaryColor" : isPremium ? "border-primaryColor" : "border-bgColor"} overflow-hidden `}
+                      className={` w-12 h-12 rounded-full border-2 ${isIndustry ? "border-secondaryColor" : isPremium ? "border-primaryColor" : "border-[#3EA1D6]"} overflow-hidden `}
                     >
                       <Image
                         src={
@@ -238,8 +240,8 @@ function UserHeaderInfo() {
                         ) : (
                           <SingleUserIcon className="w-4 h-4 text-[#3EA1D6]" />
                         )}
-                        <span className=" text-sm tracking-wide">
-                          {planName}
+                        <span className=" text-sm capitalize tracking-wide">
+                          {planName.split("_").join(" ")}
                         </span>
                       </div>
                     </div>
@@ -265,27 +267,46 @@ function UserHeaderInfo() {
                       Account Setting
                     </Link>
                   </DropdownMenuItem>
-                  {userProfileData?.user?.company_id && (
+                  {isPremium && (
                     <DropdownMenuItem asChild>
                       <Link
-                        href={`/mu/industry-profile/${userProfileData?.user?.company_id}`}
+                        href={`/mu/premium/publications`}
                         className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
                       >
-                        <DashboardIcon className="w-5 h-5 text-grayColor1  " />
-                        Dashboard
+                        <PublicationsMenueIcon className="w-5 h-5 text-grayColor1  " />
+                        publications
                       </Link>
                     </DropdownMenuItem>
                   )}
 
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/mu/create-company-page/`}
-                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
-                    >
-                      <CompanyIcon className="w-5 h-5 text-grayColor1  " />
-                      Create a Company Page
-                    </Link>
-                  </DropdownMenuItem>
+                  {userProfileData?.industry?.has_company &&
+                    userProfileData?.subscription?.plan_type !== "premium" && (
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={`/mu/industry-profile/${userProfileData?.industry?.company?.id}`}
+                          className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                        >
+                          <DashboardIcon className="w-5 h-5 text-grayColor1  " />
+                          Industry Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                  {!userProfileData?.industry?.has_company &&
+                    userProfileData?.subscription?.plan_type !== "premium" && (
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={
+                            planName == "basic_user"
+                              ? `/mu/subscription?billing=monthly`
+                              : `/mu/create-company-page/`
+                          }
+                          className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                        >
+                          <CompanyIcon className="w-5 h-5 text-grayColor1  " />
+                          Create a Company Page
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                 </div>
                 <div className="pt-2  border-t border-borderColor">
                   <button

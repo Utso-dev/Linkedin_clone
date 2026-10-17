@@ -8,14 +8,18 @@ import {
   SendIcon,
 } from "@/public/svgIcons/Icons";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import CreatePostDialog from "../profile/CreatePostDialog";
 
 function CreatePostSection() {
   const [isOpen, setIsOpen] = useState(false);
-
   const { data } = useGetUserProfileQuery("user");
+  const pathName = usePathname();
 
+  const imagesrc = pathName.includes("industry-profile")
+    ? data?.industry?.company?.logo
+    : data?.user?.profile_image_url;
   const [postText, setPostText] = useState("");
 
   return (
@@ -23,7 +27,7 @@ function CreatePostSection() {
       <div className="flex items-start gap-3">
         <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full">
           <Image
-            src={data?.user?.profile_image_url || emptyImage}
+            src={imagesrc || emptyImage}
             alt="User avatar"
             width={62}
             height={62}
@@ -37,7 +41,7 @@ function CreatePostSection() {
           placeholder="Type your post..."
           rows={2}
           onClick={() => setIsOpen(true)}
-          className="w-full resize-none bg-transparent text-sm text-headerColor placeholder:text-grayColor1 focus:outline-none"
+          className="w-full resize-none bg-transparent text-sm text-headerColor  focus:outline-none"
           value={postText}
           onChange={(e) => setPostText(e.target.value)}
         />

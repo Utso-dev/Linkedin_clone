@@ -1,76 +1,76 @@
-"use client";
 
-import { IndustryItemType } from "@/lib/type";
+
+import { PublicationDataType } from "@/lib/type";
+import dayjs from "dayjs";
 import { ChevronRight, Dot } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface PublicationCardProps {
-  publication: IndustryItemType;
+  publication: PublicationDataType;
 }
 
 export const PublicationCard = ({ publication }: PublicationCardProps) => {
+  const pathName = usePathname();
+  console.log(pathName);
   return (
-    <div className="group flex w-full flex-col items-start gap-3.25 self-stretch border-b border-[#DFE1E7] p-3 hover:bg-[#F6F8FA]">
+    <div className="group flex w-full flex-col items-start gap-3.25 self-stretch border-b border-borderColor md:p-3 py-3 hover:bg-sectionColor">
       {/* Journal and Tag Row */}
       <div className="flex w-full items-center justify-between">
-        <h4 className="font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C] group-hover:text-[#04A1B7]">
+        <h4 className="font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-headerColor group-hover:text-primaryColor">
           {publication.title}
         </h4>
-        {publication.tag && (
-          <span className="flex items-center gap-4 rounded-full bg-[#E9E9EA] px-2.5 py-1 font-['Segoe_UI'] text-xs font-normal text-[#4A4C56]">
-            {publication.tag}
+        {publication.publication_type && (
+          <span className="flex items-center gap-4 rounded-full bg-bgLightColor px-2.5 py-1 font-['Segoe_UI'] text-xs font-normal text-descriptionColor">
+            {publication.publication_type}
           </span>
         )}
       </div>
 
       {/* Title / Description */}
-      <p className="self-stretch font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">
-        {publication.description}
+      <p className="self-stretch font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-grayColor1">
+        {publication.short_abstract || publication.abstract}
       </p>
-
+      <div className="">
+        {publication.authors.length > 0 && (
+          <div className="font-['Segoe_UI'] flex flex-wrap items-center gap-1.5 text-sm text-grayColor1">
+            {publication.authors.map((author, index) => (
+              <p
+                key={index}
+                className="px-3 py-1 text-primaryColor leading-[120%] rounded-full bg-lightGreenColor/50 "
+              >
+                {author}
+              </p>
+            ))}
+          </div>
+        )}
+      </div>
       {/* Date, Meta, and Button Row */}
       <div className="flex w-full items-center justify-between">
-        <div className="flex items-center gap-5">
-          {publication.sub_title && (
-            <span className="font-['Segoe_UI'] text-sm text-[#777980]">
-              {publication.sub_title}
-            </span>
-          )}
-        </div>
         <div className="flex items-center justify-between w-full gap-1">
           <div className="flex items-center ">
-            {publication.pub_date && (
-              <p className=" font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">
-                {publication.pub_date}
+            {publication.created_at && (
+              <p className=" font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-grayColor1">
+                {dayjs(publication.created_at).format("DD MMM YYYY")}
               </p>
             )}
-            <Dot className="text-[#777980]" />
-            {publication.extra_tag && (
-              <span className="font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-[#777980]">
-                {publication.extra_tag}
+            <Dot className="text-grayColor1" />
+            {publication.network_type && (
+              <span className="font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-grayColor1">
+                {publication.network_type}
               </span>
             )}
           </div>
-          {publication.link ? (
-            <Link
-              href={publication.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-[#04A1B7] hover:underline"
-            >
-              <span className="text-center font-['Arial'] text-sm font-normal leading-5">
-                Learn more
-              </span>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          ) : (
-            <button className="flex items-center gap-1 text-[#04A1B7] hover:underline">
-              <span className="text-center font-['Arial'] text-sm font-normal leading-5">
-                Learn more
-              </span>
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          )}
+
+          <Link
+            href={`${pathName}/${publication.id}`}
+            className="flex items-center gap-1 text-primaryColor hover:underline"
+          >
+            <span className="text-center font-['Arial'] text-sm font-normal leading-5">
+              Learn more
+            </span>
+            <ChevronRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </div>

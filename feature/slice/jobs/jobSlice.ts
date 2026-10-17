@@ -18,9 +18,24 @@ const jobSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["Job"],
     }),
+    getJobCountByCity: builder.query({
+      query: (params) => ({
+        url: `/industry/jobs-count-by-state`,
+        method: "GET",
+        params,
+      }),
+     
+    }),
     getStateByCity: builder.query({
       query: (code) => ({
         url: `/states/${code}/cities`,
+        method: "GET",
+      }),
+      providesTags: ["Job"],
+    }),
+    getRecruiterDashboardData: builder.query({
+      query: () => ({
+        url: `/industry/recruiter-dashboard`,
         method: "GET",
       }),
       providesTags: ["Job"],
@@ -97,6 +112,8 @@ const jobSlice = baseApiSlice.injectEndpoints({
 export const {
   useGetJobsQuery,
   useGetJobsArchiveQuery,
+  useGetJobCountByCityQuery,
+  useGetRecruiterDashboardDataQuery,
   useGetJobDetailsQuery,
   useCreateJobsMutation,
   useGetAllJobApplicantsQuery,

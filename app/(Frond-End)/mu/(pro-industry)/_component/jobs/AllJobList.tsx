@@ -13,13 +13,14 @@ import JoblistSkleton from "./JoblistSkleton";
 import JobStatusChange from "./JobStatusChange";
 
 export default function AllJobList() {
+  const limit = 50; // Default limit for pagination
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
   const clearAllFilters = () => {
     router.replace(pathname, { scroll: false });
   };
+  
 
   // Construct query parameters for the API from URL searchParams
   const queryParams = useMemo(() => {
@@ -53,8 +54,12 @@ export default function AllJobList() {
       }
     });
 
+    if (!params.limit) {
+      params.limit = limit;
+    }
+
     return params;
-  }, [searchParams]);
+  }, [searchParams, limit]);
 
   const {
     data: responseData,

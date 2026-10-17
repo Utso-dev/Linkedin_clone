@@ -1,15 +1,7 @@
 "use client";
 
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
-import {
-  AdvertisementIcon,
-  BarChartIcon,
-  DashboardIcon,
-  JobsIcon,
-  MessageIcon,
-  PencileIcon,
-  SaveJobIcon,
-} from "@/public/svgIcons/Icons";
+import { getProIndustryMenuItems } from "@/components/reusable/Allmenus";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -21,48 +13,7 @@ function ProIndustrySidebar({ onItemClick }: { onItemClick?: () => void }) {
   const [isMobile, setOpenMobile] = useState(false);
   const { data, isLoading, isError } = useGetUserProfileQuery("Profile");
 
-  const menuItems = [
-    {
-      label: "Industry Profile",
-      slug: `/mu/industry-profile/${data?.user?.company_id}`,
-      icon: DashboardIcon,
-    },
-    {
-      label: "Recruiter Dashboard",
-      slug: "/mu/recruiter-dashboard",
-      icon: DashboardIcon,
-    },
-    {
-      label: "Advertisement",
-      slug: "/mu/advertisement",
-      icon: AdvertisementIcon,
-    },
-    {
-      label: "Job Listing",
-      slug: "/mu/job-listing",
-      icon: JobsIcon,
-    },
-    {
-      label: "Analytics",
-      slug: "/mu/analytics",
-      icon: BarChartIcon,
-    },
-    {
-      label: "Message",
-      slug: "/mu/message",
-      icon: MessageIcon,
-    },
-    {
-      label: "Saved job",
-      slug: "/mu/saved-jobs",
-      icon: SaveJobIcon,
-    },
-    {
-      label: "Post a job position",
-      slug: "/mu/post-job-position",
-      icon: PencileIcon,
-    },
-  ];
+  const menuItems = getProIndustryMenuItems(data?.industry?.company?.id);
 
   const handleLinkClick = () => {
     onItemClick?.();

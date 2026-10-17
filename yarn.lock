@@ -3210,6 +3210,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jodit-react@npm:^5.7.1":
+  version: 5.7.1
+  resolution: "jodit-react@npm:5.7.1"
+  dependencies:
+    jodit: "npm:^4.17.1"
+  peerDependencies:
+    react: ~0.14 || ^15 || ^16 || ^17 || ^18 || ^19
+    react-dom: ~0.14 || ^15 || ^16 || ^17 || ^18 || ^19
+  checksum: 10c0/d2dd99d6b5f8d740543bbaa49dcd3db86a425b64143dfe05163bbc11cdb87b19555b03c756d608b2a866caded97907ce7db2b051bf5a1896653bd792c428695e
+  languageName: node
+  linkType: hard
+
+"jodit@npm:^4.17.1":
+  version: 4.17.1
+  resolution: "jodit@npm:4.17.1"
+  checksum: 10c0/8558fb43bffa3e01a7da29f917b6a6e1d140ed6a90dd7f2da2562c5d7cbe99e2cec4d57225cffebe2dcedce7d05fa534ca561b7270b91017359ab47b866cf1a7
+  languageName: node
+  linkType: hard
+
 "js-cookie@npm:^3.0.5":
   version: 3.0.8
   resolution: "js-cookie@npm:3.0.8"
@@ -3675,6 +3694,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nextjs-toploader@npm:^3.9.17":
+  version: 3.9.17
+  resolution: "nextjs-toploader@npm:3.9.17"
+  dependencies:
+    nprogress: "npm:^0.2.0"
+    prop-types: "npm:^15.8.1"
+  peerDependencies:
+    next: ">= 6.0.0"
+    react: ">= 16.0.0"
+    react-dom: ">= 16.0.0"
+  checksum: 10c0/5899c0ad26fcd5241de075c773c320c98b3c59b1132164e5b9350262018225fc1d34af51cb2859ccd3c16f9f2434f46fb25dc6b54a1bd173350f0e56bac2b41d
+  languageName: node
+  linkType: hard
+
 "nookies@npm:^2.5.2":
   version: 2.5.2
   resolution: "nookies@npm:2.5.2"
@@ -3682,6 +3715,13 @@ __metadata:
     cookie: "npm:^0.4.1"
     set-cookie-parser: "npm:^2.4.6"
   checksum: 10c0/e44d65022f4bc8e7135db8c19373d278ae4bbaf093e6a537e109a050c603d13d6538431e674e33a43715dd502220c45dee0cb86253695c7040352298feccb3e2
+  languageName: node
+  linkType: hard
+
+"nprogress@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "nprogress@npm:0.2.0"
+  checksum: 10c0/eab9a923a1ad1eed71a455ecfbc358442dd9bcd71b9fa3fa1c67eddf5159360b182c218f76fca320c97541a1b45e19ced04e6dcb044a662244c5419f8ae9e821
   languageName: node
   linkType: hard
 
@@ -3756,7 +3796,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -4681,6 +4721,7 @@ __metadata:
     date-fns: "npm:^4.4.0"
     dayjs: "npm:^1.11.20"
     emoji-picker-react: "npm:^4.18.0"
+    jodit-react: "npm:^5.7.1"
     js-cookie: "npm:^3.0.5"
     laravel-echo: "npm:^2.3.4"
     leaflet: "npm:^1.9.4"
@@ -4690,6 +4731,7 @@ __metadata:
     lodash.debounce: "npm:^4.0.8"
     lucide-react: "npm:^0.503.0"
     next: "npm:^16.1.1"
+    nextjs-toploader: "npm:^3.9.17"
     nookies: "npm:^2.5.2"
     postcss: "npm:^8.5.3"
     pusher-js: "npm:^8.5.0"

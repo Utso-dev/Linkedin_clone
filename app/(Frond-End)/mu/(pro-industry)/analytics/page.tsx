@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import AnalyticsPage from "../_component/analytics/AnalyticsPage";
 
 function page() {
   return (
-    <div>page</div>
-  )
+    <div>
+      <AnalyticsPage />
+    </div>
+  );
 }
 
-export default page
+export default page;

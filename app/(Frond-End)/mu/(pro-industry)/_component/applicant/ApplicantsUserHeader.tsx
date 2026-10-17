@@ -21,15 +21,7 @@ function ApplicantsUserHeader({
       .slice(0, 2)
       .join("")
       .toUpperCase() || "AP";
-  const subtitle =
-    [
-      applicant.job?.job_title,
-      applicant.job?.position,
-      applicant.job?.experience,
-      applicant.job?.employment_offering || applicant.job?.work_mode,
-    ]
-      .filter(Boolean)
-      .join(" • ") || "No job details available";
+
   return (
     <section className="rounded-xl border border-grayColor2 bg-white p-4 md:p-6 mb-4">
       <div>
@@ -56,7 +48,7 @@ function ApplicantsUserHeader({
                 {candidateName}
               </h1>
               <p className="text-xs md:text-sm text-descriptionColor mt-0.5">
-                {subtitle}
+                {applicant?.current_position || "No position available"}
               </p>
             </div>
           </div>
