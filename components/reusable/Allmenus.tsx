@@ -2,6 +2,7 @@ import {
   AboutIcon,
   AdvertisementIcon,
   BarChartIcon,
+  BillingIcon,
   ClinicalIcon,
   ContactUsIcon,
   DashboardIcon,
@@ -26,6 +27,7 @@ import {
 import { Plus } from "lucide-react";
 import type { ComponentType } from "react";
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
+import { LuShoppingBag } from "react-icons/lu";
 
 export type MenuItem = {
   label: string;
@@ -129,8 +131,17 @@ export function getProIndustryMenuItems(
       slug: "/mu/recruiter-dashboard",
       icon: DashboardIcon,
     },
-    { label: "Products", slug: "/mu/products", icon: AdvertisementIcon },
-    { label: "Publications", slug: "/mu/publications", icon: PublicationsMenueIcon },
+    { label: "Products", slug: "/mu/products", icon: LuShoppingBag },
+    {
+      label: "Advertisement",
+      slug: "/mu/advertisment",
+      icon: AdvertisementIcon,
+    },
+    {
+      label: "Publications",
+      slug: "/mu/publications",
+      icon: PublicationsMenueIcon,
+    },
     { label: "Job Listing", slug: "/mu/job-listing", icon: JobsIcon },
     { label: "Analytics", slug: "/mu/analytics", icon: BarChartIcon },
     { label: "Message", slug: "/mu/message", icon: MessageIcon },
@@ -152,6 +163,11 @@ export const settingsMenuItems: MenuItem[] = [
     label: "Security Settings",
     slug: "/mu/settings/security",
     icon: SecurityIcon,
+  },
+  {
+    label: "Billing History",
+    slug: "/mu/settings/billing-history",
+    icon: BillingIcon,
   },
 ];
 

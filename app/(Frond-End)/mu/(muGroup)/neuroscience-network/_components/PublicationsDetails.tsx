@@ -34,26 +34,6 @@ export default function PublicationsDetails({
     }
   };
 
-  const attachmentName = () => {
-    if (publication?.attachment_name) return publication.attachment_name;
-    if (publication?.attachment) {
-      const filename = String(publication.attachment)
-        .split("/")
-        .pop()
-        ?.split("?")[0];
-      if (filename) return filename;
-    }
-    if (publication?.attachment_url) {
-      const filename = String(publication.attachment_url)
-        .split("/")
-        .pop()
-        ?.split("?")[0];
-      if (filename) return filename;
-    }
-    return publication?.title
-      ? `${publication.title.slice(0, 35)}.pdf`
-      : "New wearable scanner a game-changer.pdf";
-  };
 
   const attachmentUrl =
     publication?.attachment_url || publication?.attachment || "#";
@@ -225,7 +205,7 @@ export default function PublicationsDetails({
           <PdfIcon />
           <div className="min-w-0">
             <p className="text-sm sm:text-base font-semibold text-headerColor truncate max-w-xs sm:max-w-md md:max-w-lg">
-              {attachmentName()}
+              {`${publication?.title}.${publication?.file_extension}` || "New wearable scanner a game-changer.pdf"}
             </p>
             <p className="text-xs sm:text-sm text-descriptionColor mt-0.5">
               {publication?.attachmentSize}

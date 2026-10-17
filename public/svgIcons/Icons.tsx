@@ -3020,41 +3020,50 @@ export const PublicationsMenueIcon = ({
     />
   </svg>
 );
-export const PdfIcon = ({
-  className,
-}: {
-  className?: string;
-}) => (
+export const PdfIcon = ({ className }: { className?: string }) => (
   <div className="relative w-10 h-12 shrink-0 flex items-center justify-center select-none">
-       <svg
-         viewBox="0 0 38 46"
-         fill="none"
-         xmlns="http://www.w3.org/2000/svg"
-         className="w-full h-full drop-shadow-2xs"
-       >
-         {/* Document sheet */}
-         <path
-           d="M0 4C0 1.79086 1.79086 0 4 0H24L38 14V42C38 44.2091 36.2091 46 34 46H4C1.79086 46 0 44.2091 0 42V4Z"
-           fill="#ECEFF1"
-         />
-         {/* Folded corner */}
-         <path
-           d="M24 0L38 14H28C25.7909 14 24 12.2091 24 10V0Z"
-           fill="#CFD8DC"
-         />
-         {/* Red PDF banner */}
-         <rect x="2" y="27" width="22" height="12" rx="2" fill="#E53935" />
-         <text
-           x="13"
-           y="36"
-           fill="white"
-           fontSize="7"
-           fontWeight="bold"
-           fontFamily="system-ui, sans-serif"
-           textAnchor="middle"
-         >
-           PDF
-         </text>
-       </svg>
-     </div>
+    <svg
+      viewBox="0 0 38 46"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-full drop-shadow-2xs"
+    >
+      {/* Document sheet */}
+      <path
+        d="M0 4C0 1.79086 1.79086 0 4 0H24L38 14V42C38 44.2091 36.2091 46 34 46H4C1.79086 46 0 44.2091 0 42V4Z"
+        fill="#ECEFF1"
+      />
+      {/* Folded corner */}
+      <path d="M24 0L38 14H28C25.7909 14 24 12.2091 24 10V0Z" fill="#CFD8DC" />
+      {/* Red PDF banner */}
+      <rect x="2" y="27" width="22" height="12" rx="2" fill="#E53935" />
+      <text
+        x="13"
+        y="36"
+        fill="white"
+        fontSize="7"
+        fontWeight="bold"
+        fontFamily="system-ui, sans-serif"
+        textAnchor="middle"
+      >
+        PDF
+      </text>
+    </svg>
+  </div>
+);
+
+export const BillingIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="14"
+    viewBox="0 0 18 14"
+    fill="none"
+    className={className}
+  >
+    <path
+      d="M1.33979 11.1667C0.974375 11.1667 0.659722 11.0371 0.395833 10.7779C0.131944 10.5187 0 10.2015 0 9.82604V1.33396C0 0.958542 0.131944 0.642361 0.395833 0.385417C0.659722 0.128472 0.974375 0 1.33979 0H13.8269C14.1923 0 14.5069 0.129514 14.7708 0.388542C15.0347 0.64757 15.1667 0.964653 15.1667 1.33979V5.24667H1.08333V9.82688C1.08333 9.89104 1.11007 9.94979 1.16354 10.0031C1.21688 10.0566 1.27562 10.0833 1.33979 10.0833H9.24667V11.1667H1.33979ZM1.08333 2.92H14.0833V1.33979C14.0833 1.27562 14.0566 1.21687 14.0031 1.16354C13.9498 1.11007 13.891 1.08333 13.8269 1.08333H1.33979C1.27562 1.08333 1.21688 1.11007 1.16354 1.16354C1.11007 1.21687 1.08333 1.27562 1.08333 1.33979V2.92ZM13.7917 13.375V10.875H11.2917V9.79167H13.7917V7.29167H14.875V9.79167H17.375V10.875H14.875V13.375H13.7917Z"
+      fill="currentColor"
+    />
+  </svg>
 );

@@ -190,7 +190,7 @@ export default function NotificationSettingsPage() {
             aria-checked={disableAll}
             onClick={handleToggleDisableAll}
             className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-none ${
-              disableAll ? "bg-[#04A1B7]" : "bg-gray-300"
+              disableAll ? "bg-primaryColor" : "bg-gray-300"
             }`}
           >
             <span
