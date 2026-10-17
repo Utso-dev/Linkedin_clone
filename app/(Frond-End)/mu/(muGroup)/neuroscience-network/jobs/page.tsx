@@ -1,59 +1,47 @@
-import Link from "next/link";
+"use client";
+
+import Breadcrumb from "@/app/(Frond-End)/_components/Breadcrumb";
+import { useGetJobCountByCityQuery } from "@/feature/slice/jobs/jobSlice";
+import { UsaMapIcon } from "@/public/svgIcons/UsaMap";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
+  const { data, isLoading } = useGetJobCountByCityQuery({
+    network_type: "neuroscience",
+  });
+  const jobCountData = data?.data;
+
   return (
-    <div className="py-10 px-4 sm:px-8 md:px-16 lg:px-32 xl:px-40 sm:py-12 md:py-16 lg:py-20">
+    <section className=" sm:pb-14!  md:pb-16!  lg:pb-20!">
+      <Breadcrumb />
       <div
-        className="rounded-lg sm:rounded-xl md:rounded-2xl lg:rounded-3xl p-6 sm:p-8 md:p-12 lg:p-16 text-center space-y-6 md:space-y-8"
+        className="h-fit space-y-4 md:space-y-6 py-10 px-4 sm:px-8 md:px-16 lg:px-32 sm:py-12  rounded-lg sm:rounded-xl md:rounded-2xl lg:rounded-3xl"
         style={{
           background:
             "linear-gradient(179deg, rgba(253, 253, 253, 0.10) -63.29%, rgba(1, 120, 242, 0.10) 98.84%)",
         }}
       >
-        <div className="space-y-2">
-          <p className="text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-primaryColor">
-            Watch for Announcements
-          </p>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-headerColor leading-tight">
-            Coming Soon!
-          </h1>
-        </div>
+        <p className="text-xl sm:text-2xl md:text-3xl lg:text-[32px] font-semibold leading-[130%] text-headerColor text-center">
+          Select a State
+        </p>
 
-        <div className="max-w-3xl mx-auto space-y-4 text-left">
-          <p className="text-sm sm:text-base md:text-lg text-grayColor1 leading-relaxed">
-            <span className="font-semibold text-primaryColor">
-              Mind Unite Premium
-            </span>{" "}
-            subscribers will be able to search for and directly apply for jobs
-            posted on the Mind Unite platform.
-          </p>
-
-          <p className="text-sm sm:text-base md:text-lg text-grayColor1 leading-relaxed">
-            <span className="font-semibold text-primaryColor">
-              Mind Unite Premium-Industry
-            </span>{" "}
-            subscribers will be able to post their available positions- whether
-            at a University, within a research lab, at a private practice, or
-            within another corporation or industry seeking brain health
-            professionals, let us connect you to our network.
-          </p>
-
-          <div className="border-t border-borderColor pt-4 mt-4">
-            <p className="text-sm sm:text-base md:text-lg text-grayColor1 leading-relaxed">
-              For now, if you have a position you want to advertise, click the
-              Contact Us button on the navbar and tell us about the position so
-              we can advertise it for you!
-            </p>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <span className="w-10 h-10 border-4 border-primaryColor border-t-transparent rounded-full animate-spin" />
           </div>
-        </div>
-
-        <Link
-          href="/mu/contact-us"
-          className="inline-block px-8 py-3 bg-buttonColor text-whiteColor font-medium rounded-full hover:opacity-90 transition-opacity active:scale-95 text-sm sm:text-base"
-        >
-          Contact Us
-        </Link>
+        ) : (
+          <UsaMapIcon
+            className="w-full"
+            data={jobCountData}
+            countLabel="Active Jobs"
+            onStateClick={(state, stateData) => {
+              const targetId = stateData?.state_id || state.id;
+              router.push(`/mu/neuroscience-network/jobs/${targetId}`);
+            }}
+          />
+        )}
       </div>
-    </div>
+    </section>
   );
 }

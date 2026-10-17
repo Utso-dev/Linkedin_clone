@@ -6,9 +6,10 @@ import { USAMapType } from "@/lib/type";
 type MapPopupProps = {
   name: string;
   count: number;
+  countLabel?: string;
 };
 
-const MapPopup = ({ name, count }: MapPopupProps) => (
+const MapPopup = ({ name, count, countLabel = "Resources" }: MapPopupProps) => (
   <div
     className="bg-white p-3 space-y-1 rounded-lg relative"
     style={{
@@ -18,7 +19,7 @@ const MapPopup = ({ name, count }: MapPopupProps) => (
     <h2 className="text-[#404040] text-xl font-semibold leading-[130%] tracking-[0.1px]">
       {name}
     </h2>
-    <p className="text-[#777980] ">Total {count} Resources</p>
+    <p className="text-[#777980] ">Total {count} {countLabel}</p>
     <div className="text-white text-3xl absolute -bottom-4.5 left-1/2 -translate-x-1/2">
       <IoMdArrowDropdown />
     </div>
@@ -540,12 +541,22 @@ const STATE_DATA = [
 ];
 
 type UsaMapProps = {
-  redirect: string;
+  redirect?: string;
   className?: string;
-  data: USAMapType[] | null;
+  data: USAMapType[] | any[] | null;
+  countLabel?: string;
+  countKey?: string;
+  onStateClick?: (state: (typeof STATE_DATA)[0], stateItem?: any) => void;
 };
 
-export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
+export const UsaMapIcon = ({
+  data,
+  redirect = "",
+  className,
+  countLabel = "Resources",
+  countKey,
+  onStateClick,
+}: UsaMapProps) => {
   const POPUP_WIDTH = 150;
   const POPUP_HEIGHT = 80;
   const washingtonDcState = STATE_DATA.find((state) => state.id === "WADC");
@@ -564,8 +575,10 @@ export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
   // Create a map for quick lookup
   const stateDataMap = useMemo(() => {
     const map = new Map();
-    data?.forEach((state) => {
-      const stateCode = state.code.toUpperCase();
+    data?.forEach((state: any) => {
+      const rawCode = state.state_code || state.code;
+      if (!rawCode) return;
+      const stateCode = String(rawCode).toUpperCase();
       map.set(stateCode, state);
 
       if (stateCode === "DC" || stateCode === "WADC") {
@@ -587,9 +600,15 @@ export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
   };
 
   const getStateCount = (stateId: string): number => {
-    // Get data from usaMapData instead of generating random
     const stateData = stateDataMap.get(stateId === "WADC" ? "DC" : stateId);
-    return stateData?.total_resources ?? 0;
+    if (!stateData) return 0;
+    if (countKey && stateData[countKey] !== undefined) {
+      return stateData[countKey] ?? 0;
+    }
+    if (stateData.active_jobs_count !== undefined) {
+      return stateData.active_jobs_count ?? 0;
+    }
+    return stateData.total_resources ?? 0;
   };
 
   const updatePopupPosition = (clientX: number, clientY: number) => {
@@ -656,6 +675,11 @@ export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
   const baseUrl = muId ? `/mu/${muId}` : "/mu";
 
   const handleClick = (state: (typeof STATE_DATA)[0]) => {
+    const stateItem = stateDataMap.get(state.id === "WADC" ? "DC" : state.id);
+    if (onStateClick) {
+      onStateClick(state, stateItem);
+      return;
+    }
     router.push(
       `${baseUrl}/academia/${state.id}?redirect=${redirect ? redirect + "_" : ""}stateacademia:${state.id}:${state.name}`,
     );
@@ -1679,7 +1703,11 @@ export const UsaMapIcon = ({ data, redirect, className }: UsaMapProps) => {
           }}
           aria-label={hoveredState.name}
         >
-          <MapPopup name={hoveredState.name} count={hoveredState.count} />
+          <MapPopup
+            name={hoveredState.name}
+            count={hoveredState.count}
+            countLabel={countLabel}
+          />
         </div>
       )}
     </div>
