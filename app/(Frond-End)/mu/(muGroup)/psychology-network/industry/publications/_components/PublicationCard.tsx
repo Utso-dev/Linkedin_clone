@@ -1,24 +1,27 @@
-"use client";
+
 
 import { PublicationDataType } from "@/lib/type";
 import dayjs from "dayjs";
 import { ChevronRight, Dot } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface PublicationCardProps {
   publication: PublicationDataType;
 }
 
 export const PublicationCard = ({ publication }: PublicationCardProps) => {
+  const pathName = usePathname();
+  console.log(pathName);
   return (
     <div className="group flex w-full flex-col items-start gap-3.25 self-stretch border-b border-borderColor md:p-3 py-3 hover:bg-sectionColor">
       {/* Journal and Tag Row */}
       <div className="flex w-full items-center justify-between">
-        <h4 className="font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C] group-hover:text-primaryColor">
+        <h4 className="font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-headerColor group-hover:text-primaryColor">
           {publication.title}
         </h4>
         {publication.publication_type && (
-          <span className="flex items-center gap-4 rounded-full bg-[#E9E9EA] px-2.5 py-1 font-['Segoe_UI'] text-xs font-normal text-[#4A4C56]">
+          <span className="flex items-center gap-4 rounded-full bg-bgLightColor px-2.5 py-1 font-['Segoe_UI'] text-xs font-normal text-descriptionColor">
             {publication.publication_type}
           </span>
         )}
@@ -58,28 +61,16 @@ export const PublicationCard = ({ publication }: PublicationCardProps) => {
               </span>
             )}
           </div>
-          {publication.website_url || publication.attachment_url ? (
-            <Link
-              href={
-                publication.website_url || publication.attachment_url || "#"
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-primaryColor hover:underline"
-            >
-              <span className="text-center font-['Arial'] text-sm font-normal leading-5">
-                Learn more
-              </span>
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          ) : (
-            <button className="flex items-center gap-1 text-primaryColor hover:underline">
-              <span className="text-center font-['Arial'] text-sm font-normal leading-5">
-                Learn more
-              </span>
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          )}
+
+          <Link
+            href={`${pathName}/${publication.id}`}
+            className="flex items-center gap-1 text-primaryColor hover:underline"
+          >
+            <span className="text-center font-['Arial'] text-sm font-normal leading-5">
+              Learn more
+            </span>
+            <ChevronRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </div>

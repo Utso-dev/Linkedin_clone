@@ -26,7 +26,7 @@ const publicationSlice = baseApiSlice.injectEndpoints({
     }),
     getSinglePublication: builder.query<any, string | number>({
       query: (id) => ({
-        url: `/publications/${id}`,
+        url: `/publications/${id}/details`,
         method: "GET",
       }),
       providesTags: ["publications"],
@@ -87,9 +87,4 @@ export const {
   usePublicationStatusUpdateMutation,
   usePublicationCreateMutation,
   usePublicationDeleteMutation,
-  // Backward compatible query aliases
-  useLikeSinglePublicationMutation: useLikeSinglePublicationQuery,
-  usePublicationUpdateMutation: usePublicationUpdateQuery,
-  usePublicationStatusUpdateMutation: usePublicationStatusUpdateQuery,
-  usePublicationDeleteMutation: usePublicationDeleteQuery,
 } = publicationSlice;
