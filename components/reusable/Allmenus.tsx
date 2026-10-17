@@ -2,6 +2,7 @@ import {
   AboutIcon,
   AdvertisementIcon,
   BarChartIcon,
+  BillingIcon,
   ClinicalIcon,
   ContactUsIcon,
   DashboardIcon,
@@ -130,7 +131,11 @@ export function getProIndustryMenuItems(
       icon: DashboardIcon,
     },
     { label: "Products", slug: "/mu/products", icon: AdvertisementIcon },
-    { label: "Publications", slug: "/mu/publications", icon: PublicationsMenueIcon },
+    {
+      label: "Publications",
+      slug: "/mu/publications",
+      icon: PublicationsMenueIcon,
+    },
     { label: "Job Listing", slug: "/mu/job-listing", icon: JobsIcon },
     { label: "Analytics", slug: "/mu/analytics", icon: BarChartIcon },
     { label: "Message", slug: "/mu/message", icon: MessageIcon },
@@ -152,6 +157,11 @@ export const settingsMenuItems: MenuItem[] = [
     label: "Security Settings",
     slug: "/mu/settings/security",
     icon: SecurityIcon,
+  },
+  {
+    label: "Billing History",
+    slug: "/mu/settings/billing-history",
+    icon: BillingIcon,
   },
 ];
 

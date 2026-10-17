@@ -1,5 +1,3 @@
-
-
 import { PublicationDataType } from "@/lib/type";
 import dayjs from "dayjs";
 import { ChevronRight, Dot } from "lucide-react";
@@ -17,9 +15,12 @@ export const PublicationCard = ({ publication }: PublicationCardProps) => {
     <div className="group flex w-full flex-col items-start gap-3.25 self-stretch border-b border-borderColor md:p-3 py-3 hover:bg-sectionColor">
       {/* Journal and Tag Row */}
       <div className="flex w-full items-center justify-between">
-        <h4 className="font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-headerColor group-hover:text-primaryColor">
+        <Link
+          href={`${pathName}/${publication.id}`}
+          className="font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-headerColor group-hover:text-primaryColor"
+        >
           {publication.title}
-        </h4>
+        </Link>
         {publication.publication_type && (
           <span className="flex items-center gap-4 capitalize rounded-full bg-bgLightColor px-2.5 py-1 font-['Segoe_UI'] text-xs font-normal text-descriptionColor">
             {publication.publication_type}
