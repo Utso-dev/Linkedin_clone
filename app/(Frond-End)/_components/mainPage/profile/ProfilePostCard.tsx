@@ -57,7 +57,7 @@ function PostCard({ post, userId, meta }: PostCardProps) {
     setIsExpanded((prev) => !prev);
   };
   return (
-    <article className="flex h-full flex-col gap-3 rounded-xl border border-borderColor p-2.5 md:p-3">
+    <article className="flex h-fit self-start flex-col gap-3 rounded-xl border border-borderColor p-2.5 md:p-3">
       <div>
         <div className="relative z-20 flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-start gap-2.5">
