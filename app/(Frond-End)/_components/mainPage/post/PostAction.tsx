@@ -11,9 +11,9 @@ import { useFollowIndustryMutation } from "@/feature/slice/jobs/industrySlice";
 import { setPostType } from "@/feature/slice/postCompose/postComposeSlice";
 import { useGetProfileByIdQuery } from "@/feature/slice/user/userSlice";
 import { PostFeedType } from "@/lib/type";
+import { MoreVertical } from "lucide-react";
 import {
   DeleteIcon,
-  DotIcon,
   PencileIcon,
   UserBanIcon,
 } from "@/public/svgIcons/Icons";
@@ -104,7 +104,7 @@ function PostAction({ post, meta }: PostCardProps) {
   })();
 
   return (
-    <div>
+    <div className="swiper-no-swiping relative z-20 shrink-0">
       <div className="flex items-center relative gap-1.5">
         {industry && !can_edit && !can_delete && (
           <button
@@ -151,10 +151,10 @@ function PostAction({ post, meta }: PostCardProps) {
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="cursor-pointer rounded-sm border p-1.5 focus:outline-0"
+                className="relative z-20 inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm border bg-white focus:outline-0"
                 aria-label="Open post actions"
               >
-                <DotIcon className="h-4 w-4" />
+                <MoreVertical className="h-5 w-5 pointer-events-none" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="p-3    w-full">

@@ -57,9 +57,9 @@ function PostCard({ post, userId, meta }: PostCardProps) {
     setIsExpanded((prev) => !prev);
   };
   return (
-    <article className="rounded-xl  h-full flex flex-col justify-between border border-borderColor  p-2.5 md:p-3">
+    <article className="flex h-full flex-col gap-3 rounded-xl border border-borderColor p-2.5 md:p-3">
       <div>
-        <div className="flex items-start justify-between gap-3">
+        <div className="relative z-20 flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-start gap-2.5">
             <div className="h-10  w-10 rounded-full">
               <Image
@@ -109,7 +109,7 @@ function PostCard({ post, userId, meta }: PostCardProps) {
             )}
           </div>
         )}
-        <div>
+        <div className="mt-3">
           <ProfileImagRender mediaItems={mediaItems} />
         </div>
       </div>

@@ -41,7 +41,7 @@ function ProfilePostList() {
 
 
   return (
-    <div>
+    <div className="pt-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg md:text-xl font-semibold text-headerColor">
           Activity

@@ -2,7 +2,7 @@
 import { useGetProfileTimelineQuery } from "@/feature/slice/post/postSlice";
 import { useParams } from "next/navigation";
 import { useRef, useState } from "react";
-import { FaLongArrowAltLeft, FaLongArrowAltRight } from "react-icons/fa";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -30,8 +30,8 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
     <div className="w-full relative grid  h-full">
       {posts.length > 2 && (
         <button onClick={goPrev}>
-          <div className=" z-10 flex top-[50%] left-2 absolute -translate-y-1/2 items-center group justify-center cursor-pointer w-10 h-10 rounded-full bg-white/20 border border-primaryColor hover:bg-primaryColor shadow shadow-stone-300 transition-all backdrop-blur-[5px]">
-            <FaLongArrowAltLeft className="text-primaryColor group-hover:text-whiteColor" />
+          <div className="absolute left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-700 shadow-sm transition-colors hover:bg-white">
+            <ChevronLeft className="h-5 w-5" />
           </div>
         </button>
       )}
@@ -88,8 +88,8 @@ function ProfileTimelinePost({ userId }: { userId: string | number }) {
       )}
       {posts.length > 2 && (
         <button onClick={goNext}>
-          <div className=" z-10 flex items-center group justify-center cursor-pointer w-10 h-10 rounded-full absolute top-[50%] right-2  -translate-y-1/2 bg-white/20 border border-primaryColor hover:bg-primaryColor shadow shadow-stone-300 transition-all backdrop-blur-[5px]">
-            <FaLongArrowAltRight className="text-primaryColor group-hover:text-whiteColor" />
+          <div className="absolute right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-700 shadow-sm transition-colors hover:bg-white">
+            <ChevronRight className="h-5 w-5" />
           </div>
         </button>
       )}

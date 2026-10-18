@@ -188,10 +188,10 @@ function UserHeaderInfo() {
           <div className="  relative sm:ml-0">
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild className="cursor-pointer">
-                <div className="flex gap-2 h-full items-end">
+                <div className="flex gap-1 h-full items-end">
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
                     <div
-                      className={`w-7 h-7 lg:w-12 border-2  ${isIndustry ? "border-secondaryColor" : isPremium ? "border-primaryColor" : "border-[#3EA1D6]"} lg:h-12 rounded-full overflow-hidden`}
+                      className={`w-7 h-7 lg:w-12 border-[3px]  ${isIndustry ? "border-secondaryColor" : isPremium ? "border-primaryColor" : "border-[#3EA1D6]"} lg:h-12 rounded-full overflow-hidden`}
                     >
                       <Image
                         src={
@@ -216,7 +216,7 @@ function UserHeaderInfo() {
                 <div className="">
                   <div className="flex items-center gap-2 pb-2 border-b border-borderColor">
                     <div
-                      className={` w-12 h-12 rounded-full border-2 ${isIndustry ? "border-secondaryColor" : isPremium ? "border-primaryColor" : "border-[#3EA1D6]"} overflow-hidden `}
+                      className={` w-12 h-12 rounded-full border-[3px] ${isIndustry ? "border-secondaryColor" : isPremium ? "border-primaryColor" : "border-[#3EA1D6]"} overflow-hidden `}
                     >
                       <Image
                         src={

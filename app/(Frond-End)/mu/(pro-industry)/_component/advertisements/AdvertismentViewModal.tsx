@@ -9,6 +9,7 @@ import {
 import dayjs from "dayjs";
 import { X } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 interface AdvertismentViewModalProps {
   open: boolean;
@@ -23,6 +24,12 @@ export default function AdvertismentViewModal({
   adId,
   is_owner,
 }: AdvertismentViewModalProps) {
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  useEffect(() => {
+    setIsDescriptionExpanded(false);
+  }, [adId, open]);
+
   const { data: response, isLoading } = !is_owner
     ? useGetAdvertisemetDetailsQuery(adId, {
         skip: !adId || !open,
@@ -69,85 +76,74 @@ export default function AdvertismentViewModal({
             ) : ad ? (
               <>
                 {/* Top Product Summary Card */}
-                <div className=" flex flex-col sm:flex-row gap-3">
+                <div className="grid gap-4 sm:grid-cols-[220px_minmax(0,1fr)]">
                   {/* Product Image */}
-                  <div className="w-full sm:w-48 h-44 sm:h-auto rounded-xl bg-gray-100 overflow-hidden relative shrink-0 border border-borderColor/60 flex items-center justify-center">
+                  <div className="relative aspect-[5/4] overflow-hidden rounded-lg border border-borderColor/60 bg-bgLightColor sm:aspect-auto sm:min-h-60">
                     {imageSrc ? (
                       <Image
                         src={imageSrc}
                         alt={ad.product_name || "Product"}
                         fill
                         className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 200px"
+                        sizes="(max-width: 640px) 100vw, 200px"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-100 text-descriptionColor font-bold text-2xl">
+                      <div className="flex h-full w-full items-center justify-center text-4xl font-semibold text-descriptionColor">
                         {(ad.product_name || "P").charAt(0)}
                       </div>
                     )}
                   </div>
 
                   {/* Product Info */}
-                  <div className="flex-1 bg-bgLightColor p-3 rounded-xl flex flex-col justify-between space-y-3">
-                    <div>
-                      <div className="flex items-start justify-between gap-2">
-                        <h3 className="text-base md:text-lg font-semibold text-descriptionColor leading-tight">
+                  <div className="flex min-w-0 flex-col justify-between gap-5 rounded-lg border border-borderColor bg-bgLightColor p-4 md:p-5">
+                    <div className="space-y-4">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <h3 className="min-w-0 break-words text-lg font-semibold leading-tight text-headerColor md:text-xl">
                           {ad.product_name || "Product Name"}
                         </h3>
-                        <span className="inline-flex items-center gap-1 leading-[130%] text-sm font-medium px-2.5 py-0.5 rounded-sm capitalize shrink-0 bg-lightGreenColor2/10 text-lightGreenColor2 border border-lightGreenColor2/30">
-                          + {ad.status || "Active"}
+                        <span className="inline-flex shrink-0 items-center rounded-full border border-lightGreenColor2/30 bg-lightGreenColor2/10 px-3 py-1 text-xs font-semibold capitalize text-lightGreenColor2">
+                          {ad.status || "Active"}
                         </span>
                       </div>
 
                       {/* Attributes */}
-                      <div className="mt-2.5 space-y-1 text-xs md:text-sm text-grayColor1">
-                        <p>
-                          <span className="">Network Type: </span>
-                          <span className=" font-semibold capitalize">
-                            {ad.network_type || "N/A"}
-                          </span>
-                        </p>
-                        <p>
-                          <span className="">Industry Type : </span>
-                          <span className="font-semibold capitalize">
-                            {ad.industry_type || "N/A"}
-                          </span>
-                        </p>
-                        <p>
-                          <span className="">Section: </span>
-                          <span className="font-semibold capitalize">
-                            {ad.section_name || ad.section?.name || "N/A"}
-                          </span>
-                        </p>
-                        <p>
-                          <span className="">Category : </span>
-                          <span className="font-semibold capitalize">
-                            {ad.category_name || ad.category?.name || "N/A"}
-                          </span>
-                        </p>
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        {[
+                          ["Network Type", ad.network_type],
+                          ["Industry Type", ad.industry_type],
+                          ["Section", ad.section_name || ad.section?.name],
+                          ["Category", ad.category_name || ad.category?.name],
+                        ].map(([label, value]) => (
+                          <div key={label} className="min-w-0">
+                            <p className="text-xs text-grayColor1">{label}</p>
+                            <p className="mt-0.5 truncate text-sm font-semibold capitalize text-descriptionColor">
+                              {value || "N/A"}
+                            </p>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
                     {/* View, Like, Published On */}
-                    <div className="pt-2 border-t border-borderColor/60 flex flex-wrap items-center justify-between gap-2 text-sm text-descriptionColor">
-                      <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-borderColor/60 pt-3 text-sm text-descriptionColor">
+                      <div className="flex items-center gap-4">
                         <p>
-                          View:{" "}
-                          <span className="font-semibold">
+                          <span className="text-grayColor1">Views</span>{" "}
+                          <span className="font-semibold text-descriptionColor">
                             {(ad.views_count ?? 0).toLocaleString()}
                           </span>
                         </p>
                         <p>
-                          Like:{" "}
-                          <span className=" font-semibold">
+                          <span className="text-grayColor1">Likes</span>{" "}
+                          <span className="font-semibold text-descriptionColor">
                             {(ad.likes_count ?? 0).toLocaleString()}
                           </span>
                         </p>
                       </div>
 
-                      <p>
-                        Published on:{" "}
-                        <span className=" font-semibold">
+                      <p className="text-xs text-grayColor1">
+                        Published{" "}
+                        <span className="font-medium text-descriptionColor">
                           {dayjs(ad.created_at).format(
                             "DD MMM YYYY, hh:mm A",
                           ) || "N/A"}
@@ -158,27 +154,33 @@ export default function AdvertismentViewModal({
                 </div>
 
                 {/* Description Section */}
-                <div className="space-y-1.5">
-                  <h4 className="text-sm md:text-base font-semibold text-descriptionColor tracking-wider">
+                <div className="space-y-1.5 rounded-lg border border-borderColor bg-bgLightColor p-4">
+                  <h4 className="text-base md:text-lg font-semibold text-headerColor tracking-wider">
                     Description
                   </h4>
-                  {ad.short_description && (
-                    <h5 className="text-sm md:text-base lg:text-lg font-semibold text-headerColor leading-[160%]">
-                      {ad.short_description}
-                    </h5>
-                  )}
                   {ad.description && (
-                    <div
-                      className="text-xs md:text-sm text-descriptionColor prose prose-sm max-w-none leading-[160%]"
-                      dangerouslySetInnerHTML={{ __html: ad.description }}
-                    />
+                    <>
+                      <div
+                        className={`text-xs md:text-sm text-descriptionColor prose prose-sm max-w-none leading-[160%] ${isDescriptionExpanded ? "" : "line-clamp-4 overflow-hidden"}`}
+                        dangerouslySetInnerHTML={{ __html: ad.description }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setIsDescriptionExpanded((expanded) => !expanded)
+                        }
+                        className="mt-1 cursor-pointer text-sm font-semibold text-primaryColor hover:underline"
+                      >
+                        {isDescriptionExpanded ? "See less" : "See more"}
+                      </button>
+                    </>
                   )}
                 </div>
 
                 {/* Product URL */}
-                <div className="space-y-4">
-                  <h4 className="text-sm md:text-base font-semibold text-descriptionColor  ">
-                    Product URL *
+                <div className="space-y-1">
+                  <h4 className="text-sm md:text-base font-semibold text-descriptionColor">
+                    Product Link
                   </h4>
                   {ad.product_url ? (
                     <a
@@ -222,31 +224,31 @@ export default function AdvertismentViewModal({
                   <h4 className="text-sm md:text-base font-semibold text-descriptionColor">
                     Person of Contact
                   </h4>
-                  <div className="grid grid-cols-1 text-sm md:text-base sm:grid-cols-3 gap-3 md:gap-4">
-                    <div>
-                      <p className=" font-semibold text-descriptionColor">
+                  <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-3 md:gap-4">
+                    <div className="min-w-0 rounded-lg border border-borderColor bg-bgLightColor p-4">
+                      <p className="font-semibold text-descriptionColor">
                         Name
                       </p>
-                      <p className="  text-descriptionColor mt-4 truncate">
+                      <p className="mt-2 truncate text-descriptionColor">
                         {ad.poc_name ||
                           ad.contact_name ||
                           ad.creator?.name ||
                           "N/A"}
                       </p>
                     </div>
-                    <div>
-                      <p className="font-semibold text-descriptionColor ">
+                    <div className="min-w-0 rounded-lg border border-borderColor bg-bgLightColor p-4">
+                      <p className="font-semibold text-descriptionColor">
                         Email
                       </p>
-                      <p className=" text-descriptionColor mt-4 truncate">
+                      <p className="mt-2 truncate text-descriptionColor">
                         {ad.poc_email || ad.contact_email || "N/A"}
                       </p>
                     </div>
-                    <div>
-                      <p className=" text-descriptionColor font-semibold">
+                    <div className="min-w-0 rounded-lg border border-borderColor bg-bgLightColor p-4">
+                      <p className="font-semibold text-descriptionColor">
                         Phone Number
                       </p>
-                      <p className="  text-descriptionColor mt-4 truncate">
+                      <p className="mt-2 truncate text-descriptionColor">
                         {ad.poc_phone || ad.contact_phone || "N/A"}
                       </p>
                     </div>
