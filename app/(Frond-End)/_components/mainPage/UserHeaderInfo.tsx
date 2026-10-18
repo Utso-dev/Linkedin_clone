@@ -12,8 +12,8 @@ import { useGetUnreadMessagesCountQuery } from "@/feature/slice/message/messageS
 import { useGetNotificationCountQuery } from "@/feature/slice/notifications/notificationSlice";
 import { onboardingReset } from "@/feature/slice/onboarding/onboardingSlice";
 import { resetPostComposeState } from "@/feature/slice/postCompose/postComposeSlice";
-import { persistor } from "@/feature/store";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
+import { persistor } from "@/feature/store";
 import echo from "@/lib/echo";
 import { clearToken } from "@/lib/token";
 import emptyImage from "@/public/empty_user.jpg";
@@ -114,12 +114,12 @@ function UserHeaderInfo() {
     } catch (error) {
       console.error("Error occurred while logging out:", error);
     } finally {
+      await clearToken();
+      router.replace("/login");
       dispatch(baseApiSlice.util.resetApiState());
       dispatch(onboardingReset());
       dispatch(resetPostComposeState());
       await persistor?.purge();
-      await clearToken();
-      router.replace("/login");
     }
   };
   const isMessagePage = patheName.startsWith("/mu/message");
@@ -279,7 +279,7 @@ function UserHeaderInfo() {
                         className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
                       >
                         <PublicationsMenueIcon className="w-5 h-5 text-grayColor1  " />
-                        publications
+                        Publications
                       </Link>
                     </DropdownMenuItem>
                   )}
@@ -302,7 +302,7 @@ function UserHeaderInfo() {
                         <Link
                           href={
                             planName == "basic_user"
-                              ? `/mu/subscription?billing=monthly`
+                              ? `/mu/subscription?billing=monthly&plan_type=industry`
                               : `/mu/create-company-page/`
                           }
                           className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"

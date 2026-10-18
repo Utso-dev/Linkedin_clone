@@ -14,7 +14,7 @@ import {
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { CloudUpload, FileText, Loader, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -89,18 +89,36 @@ export default function PublicationCreatePage({
   const [isDragging, setIsDragging] = useState(false);
   const { data: userProfileData } = useGetUserProfileQuery("user");
   const isPremium = userProfileData?.subscription?.plan_type === "premium";
-  const publicationOptions = isPremium
-    ? [
-        { value: "university", label: "University Publications" },
-        { value: "freelance", label: "Freelance Publications" },
-        { value: "other", label: "Other Publications" },
-      ]
-    : [{ value: "professional", label: "Professional Publications" }];
+  const publicationOptions = useMemo(() => {
+    const baseOptions = isPremium
+      ? [
+          { value: "university", label: "University Publications" },
+          { value: "freelance", label: "Freelance Publications" },
+          { value: "other", label: "Other Publications" },
+        ]
+      : [{ value: "professional", label: "Professional Publications" }];
+
+    const existingType = singleResponse?.data?.publication_type;
+    if (
+      existingType &&
+      !baseOptions.some(
+        (opt) => opt.value.toLowerCase() === existingType.trim().toLowerCase(),
+      )
+    ) {
+      const label =
+        existingType.toLowerCase() === "professional"
+          ? "Professional Publications"
+          : `${existingType.charAt(0).toUpperCase() + existingType.slice(1)} Publications`;
+      return [...baseOptions, { value: existingType, label }];
+    }
+    return baseOptions;
+  }, [isPremium, singleResponse?.data?.publication_type]);
 
   const {
     register,
     handleSubmit,
     control,
+    setValue,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<PublicationFormData>({
@@ -113,18 +131,35 @@ export default function PublicationCreatePage({
     const publication = singleResponse?.data;
     if (!publication || !id) return;
 
+    const publication_type =
+      publicationOptions.find(
+        (option) =>
+          option.value.toLowerCase() ===
+          publication.publication_type?.trim().toLowerCase(),
+      )?.value || publication.publication_type || "";
+
+    const network_type =
+      networkOptions.find(
+        (option) =>
+          option.value.toLowerCase() ===
+          publication.network_type?.trim().toLowerCase(),
+      )?.value || publication.network_type || "";
+
     reset({
-      publication_type:
-        isPremium && publication.publication_type
-          ? publication.publication_type
-          : "professional",
-      network_type: publication.network_type || "psychology",
+      publication_type,
+      network_type,
       title: publication.title || "",
       abstract: publication.abstract || publication.short_abstract || "",
       authors: Array.isArray(publication.authors) ? publication.authors : [],
       website_url: publication.website_url || "",
       status: publication.status || "active",
       information_confirmed: Boolean(publication.information_confirmed),
+    });
+    setValue("publication_type", publication_type, {
+      shouldValidate: true,
+    });
+    setValue("network_type", network_type, {
+      shouldValidate: true,
     });
 
     if (publication.attachment) {
@@ -133,7 +168,15 @@ export default function PublicationCreatePage({
       );
       setExistingAttachmentUrl(publication.attachment_url || "");
     }
-  }, [singleResponse, id, isPremium, reset]);
+  }, [singleResponse, id, setValue, reset, publicationOptions]);
+
+  // Set default values in create mode
+  useEffect(() => {
+    if (id) return;
+    const defaultType = isPremium ? "university" : "professional";
+    setValue("publication_type", defaultType, { shouldValidate: true });
+    setValue("network_type", "psychology", { shouldValidate: true });
+  }, [id, isPremium, setValue]);
 
   const validateAndSetFile = (file?: File) => {
     if (!file) return;
@@ -236,9 +279,9 @@ export default function PublicationCreatePage({
         toast.success("Publication created successfully.");
       }
       if (isPremium) {
-      router.push("/mu/premium/publications");
+        router.push("/mu/premium/publications");
       } else {
-      router.push("/mu/publications");
+        router.push("/mu/publications");
       }
     } catch (error: any) {
       const serverErrors = error?.data?.errors;
@@ -295,8 +338,9 @@ export default function PublicationCreatePage({
               rules={{ required: "Publication category is required" }}
               render={({ field }) => (
                 <SelecteInputField
+                  key={`publication_type-${field.value || "empty"}`}
                   id="publication_type"
-                  value={field.value}
+                  value={field.value || undefined}
                   onChange={field.onChange}
                   placeholder="Select Category"
                   options={publicationOptions}
@@ -324,8 +368,9 @@ export default function PublicationCreatePage({
               rules={{ required: "Network type is required" }}
               render={({ field }) => (
                 <SelecteInputField
+                  key={`network_type-${field.value || "empty"}`}
                   id="network_type"
-                  value={field.value}
+                  value={field.value || undefined}
                   onChange={field.onChange}
                   placeholder="Select Network"
                   options={networkOptions}

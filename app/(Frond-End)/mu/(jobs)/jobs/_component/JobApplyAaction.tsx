@@ -27,7 +27,6 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
   const isPremiumUser = planName === "premium";
   const isBasicUser = planName === "basic_user";
 
-
   const renderApplyAction = () => {
     if (!isPublished) {
       return (
@@ -63,7 +62,7 @@ function JobApplyAaction({ jobData }: JobApplyAactionProps) {
     if (isBasicUser) {
       return (
         <Link
-          href="/mu/subscription?billing=monthly"
+          href="/mu/subscription?plan_type=premium&billing=monthly"
           className="px-5 font-semibold! py-2! rounded-full! hover:bg-primaryColor! hover:text-whiteColor! bg-white! text-primaryColor! border border-primaryColor text-sm!"
         >
           Apply Now
