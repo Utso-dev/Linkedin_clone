@@ -3,6 +3,7 @@ import {
   useDeleteGroupPostMutation,
   useDeletePostMutation,
 } from "@/feature/slice/post/postSlice";
+import { useDeleteIndustryPostMutation } from "@/feature/slice/jobs/industrySlice";
 import { DeleteIcon } from "@/public/svgIcons/Icons";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -12,24 +13,31 @@ function DeleteGroup({
   setOpen,
   postId,
   groupId,
+  isIndustryPost = false,
 }: {
   open: boolean;
   setOpen: (value: boolean) => void;
   postId?: number;
   groupId?: string;
+  isIndustryPost?: boolean;
 }) {
-  console.log(groupId, "check group Id");
-
   const router = useRouter();
-  const [deletePost, { isLoading }] = groupId
-    ? useDeleteGroupPostMutation()
-    : useDeletePostMutation();
+  const [deletePost, { isLoading: isDeletingProfilePost }] =
+    useDeletePostMutation();
+  const [deleteGroupPost, { isLoading: isDeletingGroupPost }] =
+    useDeleteGroupPostMutation();
+  const [deleteIndustryPost, { isLoading: isDeletingIndustryPost }] =
+    useDeleteIndustryPostMutation();
+  const isLoading =
+    isDeletingProfilePost || isDeletingGroupPost || isDeletingIndustryPost;
 
   const handleDeletePost = async () => {
     try {
-      const response = await deletePost(
-        groupId ? { groupId, postId } : postId,
-      ).unwrap();
+      const response = isIndustryPost
+        ? await deleteIndustryPost(postId).unwrap()
+        : groupId
+          ? await deleteGroupPost({ groupId, postId }).unwrap()
+          : await deletePost(postId).unwrap();
       toast.success(response?.message || "Post deleted successfully");
       setOpen(false);
       // ask server to revalidate the newsfeed path so server components refresh

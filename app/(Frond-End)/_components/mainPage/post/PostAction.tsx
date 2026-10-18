@@ -227,6 +227,7 @@ function PostAction({ post, meta }: PostCardProps) {
           setOpen={setIsDeleted}
           groupId={meta?.group_id || post?.group?.id}
           postId={post?.id}
+          isIndustryPost={Boolean(industry)}
         />
       )}
       {isEdited && (
