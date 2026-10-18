@@ -191,7 +191,7 @@ function UserHeaderInfo() {
                 <div className="flex gap-1 h-full items-end">
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
                     <div
-                      className={`w-7 h-7 lg:w-12 border-[3px]  ${isIndustry ? "border-secondaryColor" : isPremium ? "border-primaryColor" : "border-[#3EA1D6]"} lg:h-12 rounded-full overflow-hidden`}
+                      className={`w-7 h-7 lg:w-12 border-[3px] ${isIndustry ? "border-[#F9C80E]" : isPremium ? "border-[#5FC3D0]" : "border-[#87D5FF]"} lg:h-12 rounded-full overflow-hidden`}
                     >
                       <Image
                         src={
@@ -212,11 +212,14 @@ function UserHeaderInfo() {
                 </div>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end" className="w-55.5 p-3">
+              <DropdownMenuContent
+                align="end"
+                className="w-60 border border-gray-200 bg-white p-3 text-gray-900 shadow-xl"
+              >
                 <div className="">
-                  <div className="flex items-center gap-2 pb-2 border-b border-borderColor">
+                  <div className="flex items-center gap-2 border-b border-gray-200 pb-2">
                     <div
-                      className={` w-12 h-12 rounded-full border-[3px] ${isIndustry ? "border-secondaryColor" : isPremium ? "border-primaryColor" : "border-[#3EA1D6]"} overflow-hidden `}
+                      className={`h-12 w-12 shrink-0 overflow-hidden rounded-full border-[3px] ${isIndustry ? "border-[#F9C80E]" : isPremium ? "border-[#5FC3D0]" : "border-[#87D5FF]"}`}
                     >
                       <Image
                         src={
@@ -229,36 +232,36 @@ function UserHeaderInfo() {
                       />
                     </div>
                     <div>
-                      <p className="text-base pl-1 font-semibold text-headerColor mb-0.5">
+                      <p className="mb-1 pl-1 text-base font-semibold text-gray-900">
                         {userProfileData?.user?.first_name +
                           " " +
                           userProfileData?.user?.last_name || "Vin Intini"}
                       </p>
                       <div
-                        className={`flex items-center ${isIndustry ? " bg-secondaryColor/12 text-secondaryColor " : isPremium ? " bg-primaryColor/12 text-primaryColor" : " bg-[#3EA1D6]/15 text-[#3EA1D6] "} justify-center gap-2 px-2.5 py-1 rounded-full `}
+                        className={`inline-flex items-center justify-center gap-2 rounded-full px-2.5 py-1 text-sm font-medium capitalize tracking-wide ${isIndustry ? "bg-[#FEF4CF] text-[#BB960B]" : isPremium ? "bg-[#D3F4EF] text-[#04A1B7]" : "bg-[#87D5FF]/20 text-[#3EA1D6]"}`}
                       >
                         {isIndustry || isPremium ? (
                           <FaCrown
                             size={16}
-                            className={`${isIndustry ? " text-secondaryColor" : isPremium ? " text-primaryColor" : " text-[#3EA1D6] "}`}
+                            className={`${isIndustry ? "text-[#BB960B]" : isPremium ? "text-[#04A1B7]" : "text-[#3EA1D6]"}`}
                           />
                         ) : (
-                          <SingleUserIcon className="w-4 h-4 text-[#3EA1D6]" />
+                          <SingleUserIcon className="h-4 w-4 text-[#3EA1D6]" />
                         )}
-                        <span className=" text-sm capitalize tracking-wide">
+                        <span className="text-sm capitalize tracking-wide">
                           {planName.split("_").join(" ")}
                         </span>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="py-1.5 space-y-0.5">
+                <div className="space-y-0.5 py-1.5">
                   <DropdownMenuItem asChild>
                     <Link
                       href={`/mu/profile`}
-                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                      className="flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-gray-800 hover:bg-gray-100 hover:text-gray-950"
                     >
-                      <UserCircleIcon className="w-5 h-5 text-grayColor1" />
+                      <UserCircleIcon className="h-5 w-5 text-grayColor1" />
                       Profile
                     </Link>
                   </DropdownMenuItem>
@@ -266,9 +269,9 @@ function UserHeaderInfo() {
                   <DropdownMenuItem asChild>
                     <Link
                       href={`/mu/settings/general`}
-                      className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                      className="flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-gray-800 hover:bg-gray-100 hover:text-gray-950"
                     >
-                      <SettingIcon className="w-5 h-5 text-grayColor1  " />
+                      <SettingIcon className="h-5 w-5 text-grayColor1" />
                       Account Setting
                     </Link>
                   </DropdownMenuItem>
@@ -276,9 +279,9 @@ function UserHeaderInfo() {
                     <DropdownMenuItem asChild>
                       <Link
                         href={`/mu/premium/publications`}
-                        className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                        className="flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-gray-800 hover:bg-gray-100 hover:text-gray-950"
                       >
-                        <PublicationsMenueIcon className="w-5 h-5 text-grayColor1  " />
+                        <PublicationsMenueIcon className="h-5 w-5 text-grayColor1" />
                         Publications
                       </Link>
                     </DropdownMenuItem>
@@ -289,9 +292,9 @@ function UserHeaderInfo() {
                       <DropdownMenuItem asChild>
                         <Link
                           href={`/mu/industry-profile/${userProfileData?.industry?.company?.id}`}
-                          className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                          className="flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-gray-800 hover:bg-gray-100 hover:text-gray-950"
                         >
-                          <DashboardIcon className="w-5 h-5 text-grayColor1  " />
+                          <DashboardIcon className="h-5 w-5 text-grayColor1" />
                           Industry Dashboard
                         </Link>
                       </DropdownMenuItem>
@@ -305,20 +308,20 @@ function UserHeaderInfo() {
                               ? `/mu/subscription?billing=monthly&plan_type=industry`
                               : `/mu/create-company-page/`
                           }
-                          className="text-headerColor hover:font-semibold  rounded-sm items-center gap-2 group hover:bg-bgLightColor flex  w-full  py-1 px-2 cursor-pointer"
+                          className="flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-gray-800 hover:bg-gray-100 hover:text-gray-950"
                         >
-                          <CompanyIcon className="w-5 h-5 text-grayColor1  " />
+                          <CompanyIcon className="h-5 w-5 text-grayColor1" />
                           Create a Company Page
                         </Link>
                       </DropdownMenuItem>
                     )}
                 </div>
-                <div className="pt-2  border-t border-borderColor">
+                <div className="border-t border-gray-200 pt-2">
                   <button
                     onClick={handleLogout}
-                    className="text-headerColor  items-center gap-2 group hover:bg-redColor/8 flex  w-full hover:text-redColor py-1 px-2 font-semibold cursor-pointer"
+                    className="group flex w-full cursor-pointer items-center gap-2 px-2 py-1 font-semibold text-gray-800 hover:bg-redColor/8 hover:text-redColor"
                   >
-                    <LogoutIcon className="w-4 h-4 group-hover:text-redColor group-hover:fill-redColor" />
+                    <LogoutIcon className="h-4 w-4 group-hover:text-redColor group-hover:fill-redColor" />
                     Log Out
                   </button>
                 </div>

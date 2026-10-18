@@ -12,22 +12,22 @@ function SubscriptionCard() {
 
   return (
     <div
-      className={`${isIndustry ? "bg-[#B7A504]" : isPremium ? "bg-primaryColor" : "bg-primaryColor"}  flex flex-col justify-center text-center gap-1 rounded-2xl md:p-4 p-3`}
+      className={`${isIndustry ? "border-[#F9C80E]/20 bg-[#C2B32A]" : isPremium ? "border-[#04A1B7]/20 bg-[#04A1B7]" : "border-primaryColor/20 bg-primaryColor"} flex flex-col justify-center gap-1 rounded-xl border p-3 text-center shadow-sm md:p-4`}
     >
       {isIndustry || isPremium ? (
         <div>
           <div className="flex items-center text-whiteColor justify-center gap-2 pb-2">
             {isIndustry ? (
-              <FaCrown size={24} />
-            ) : (
               <ProIndustryIcon className="w-6 h-6" />
+            ) : (
+              <FaCrown size={24} />
             )}
             <span className="font-bold text-whiteColor tracking-wide">
               {planName}
             </span>
           </div>
           <p className="text-sm text-whiteColor">
-            Your’e experiencing {data?.subscription?.plan_type} subscription.
+            Experience with {data?.subscription?.plan_type} features.
           </p>
         </div>
       ) : (
