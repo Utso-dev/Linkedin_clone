@@ -8,7 +8,7 @@ function MainFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="  border-t border-[#DFE1E7] bg-whiteColor py-10">
+    <footer className="  border-t border-borderColor bg-whiteColor py-10">
       <div className="container py-5 sm:py-6">
         <div className="flex flex-col gap-5 sm:gap-6">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start sm:gap-8">
@@ -42,18 +42,18 @@ function MainFooter() {
             </div>
 
             <div className="flex flex-col md:flex-row  items-center gap-1.5" >
-              <p className="sm:text-right text-center text-sm text-[#A5A5AB] hidden md:block"> &copy; {year} Mind Unite, All Rights Reserved.</p>
+              <p className="sm:text-right text-center text-sm text-liteDescriptionColor hidden md:block"> &copy; {year} Mind Unite, All Rights Reserved.</p>
 
               <div className="flex gap-1.5">
                 <Link href="/terms-conditions" className=" text-sm font-normal text-primaryColor">
                   Terms & Conditions
                 </Link>
-                <hr className="h-5 border-[#4A4C56] border w-[2px]" />
+                <hr className="h-5 border-[#4A4C56] border w-0.5" />
                 <Link href="/privacy-policy" className=" text-sm font-normal text-primaryColor">
                   Privacy Policy
                 </Link>
               </div>
-              <p className="sm:text-right text-center text-sm text-[#A5A5AB] block md:hidden"> &copy; {year} Mind Unite, All Rights Reserved.</p>
+              <p className="sm:text-right text-center text-sm text-liteDescriptionColor block md:hidden"> &copy; {year} Mind Unite, All Rights Reserved.</p>
 
             </div>
           </div>
