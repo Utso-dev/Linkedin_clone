@@ -9,6 +9,7 @@ import {
   LocationIcon,
 } from "@/public/svgIcons/Icons";
 import { Clock3 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import JobApplyAaction from "../../../(jobs)/jobs/_component/JobApplyAaction";
@@ -29,19 +30,30 @@ function JobDetailsHeader() {
     <div>
       <section className="rounded-xl border border-grayColor2 bg-white p-4  md:p-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="xl:max-w-145 md:max-w-90 lg:max-w-85">
-            <h1 className="text-base font-bold text-headerColor md:text-lg xl:text-xl ">
-              {job.job_title}
-            </h1>
-            <p className="mt-1 text-base text-descriptionColor">
-              Position -{" "}
-              <span className="font-semibold text-descriptionColor">
-                {job.position}
-              </span>
-            </p>
+          <div className="flex items-start md:items-center gap-2">
+            <div className="relative  w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100">
+              <Image
+                src={job?.industry?.logo}
+                alt={job?.industry?.name}
+                fill
+                sizes="48px"
+                className="object-cover"
+              />
+            </div>
+            <div className="xl:max-w-145 md:max-w-90 lg:max-w-85">
+              <h1 className="text-base font-semibold text-headerColor md:text-lg xl:text-xl ">
+                {job.job_title}
+              </h1>
+              <p className="mt-1 text-sm md:text-base text-descriptionColor">
+                Position -{" "}
+                <span className="font-semibold text-descriptionColor">
+                  {job.position}
+                </span>
+              </p>
+            </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex justify-end w-full md:w-auto items-center gap-2">
             <p className="text-descriptionColor  flex justify-center items-center capitalize bg-bgLightColor text-sm px-5 py-1.5 rounded-full">
               {job.network_type}
             </p>

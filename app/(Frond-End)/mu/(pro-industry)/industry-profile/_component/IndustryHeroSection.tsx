@@ -5,6 +5,7 @@ import logoPreview from "@/public/empty_user.jpg";
 import coverPreview from "@/public/images/cover imager.png";
 import {
   CompanyIcon,
+  GlobalIcon,
   GroupUserIcon,
   PencileIcon,
 } from "@/public/svgIcons/Icons";
@@ -78,6 +79,12 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
                 {industryData?.name || "Vin Intini"}
               </h4>
 
+              <div className="flex items-center gap-2.5 my-2 text-grayColor1 ">
+                <GlobalIcon className="w-4 h-4" />
+                <Link href={industryData?.website || ""} target="_blank" rel="noopener noreferrer" className="text-sm underline hover:text-primaryColor  line-clamp-3">
+                  {industryData?.website || ""}
+                </Link>
+              </div>
               <div className="flex items-center gap-2.5 my-2 text-grayColor1">
                 <IoPricetagsOutline className="w-4 h-4" />
                 <p className="text-sm   line-clamp-3">

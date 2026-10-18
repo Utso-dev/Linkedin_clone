@@ -1,7 +1,9 @@
 "use client";
 
 import { jobsMenuItems } from "@/components/reusable/Allmenus";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { LineChartIcon } from "@/public/svgIcons/Icons";
+import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -10,6 +12,8 @@ import SubscriptionCard from "../../../(subscription)/_component/SubscriptionCar
 function JobsLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname();
   const [isMobile, setOpenMobile] = useState(false);
+  const { data: userProfileData } = useGetUserProfileQuery("");
+  console.log(userProfileData?.subscription?.plan_type, "userProfileData");
 
   const isActive = (href: string): boolean => {
     if (href === "/mu/jobs") {
@@ -47,18 +51,33 @@ function JobsLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
 
       {/* Bottom Common Navigation */}
       <div className="pt-6 mt-auto ">
-        <Link
-          href={`/mu/jobs/my-applications`}
-          onClick={onItemClick}
-          className={`flex items-center gap-3 p-2 text-sm rounded-md transition ${
-            isActive(`/mu/jobs/my-applications`)
-              ? "text-headerColor bg-lightGreenColor font-medium"
-              : "text-grayColor1 hover:text-headerColor hover:bg-gray-50"
-          }`}
-        >
-          <LineChartIcon className="w-4.5 h-4.5" />
-          My Applications
-        </Link>
+        {userProfileData?.subscription?.plan_type === "industry" ? (
+          <Link
+            href={`/mu/post-job-position`}
+            onClick={onItemClick}
+            className={`flex items-center gap-3 p-2 text-sm rounded-md transition ${
+              isActive(`/mu/post-job-position`)
+                ? "text-headerColor bg-lightGreenColor font-medium"
+                : "text-grayColor1 hover:text-headerColor hover:bg-gray-50"
+            }`}
+          >
+            <PlusIcon className="w-4.5 h-4.5" />
+            Create a New Position
+          </Link>
+        ) : (
+          <Link
+            href={`/mu/jobs/my-applications`}
+            onClick={onItemClick}
+            className={`flex items-center gap-3 p-2 text-sm rounded-md transition ${
+              isActive(`/mu/jobs/my-applications`)
+                ? "text-headerColor bg-lightGreenColor font-medium"
+                : "text-grayColor1 hover:text-headerColor hover:bg-gray-50"
+            }`}
+          >
+            <LineChartIcon className="w-4.5 h-4.5" />
+            My Applications
+          </Link>
+        )}
       </div>
       <div className="pt-6 mt-auto ">
         <SubscriptionCard />

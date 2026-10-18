@@ -45,11 +45,6 @@ function SaveJobcard({
   const networkType =
     jobData?.network_type || jobData?.category || jobData?.position || "Design";
 
-  const rawDescription =
-    jobData?.job_description ||
-    jobData?.description ||
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
-
   const location =
     jobData?.location ||
     [jobData?.city?.name, jobData?.state?.name].filter(Boolean).join(", ") ||
@@ -157,9 +152,10 @@ function SaveJobcard({
         </div>
 
         {/* Description */}
-        <p className="text-sm text-grayColor1 leading-relaxed line-clamp-2 mt-3.5">
-          {rawDescription}
-        </p>
+        <p
+          dangerouslySetInnerHTML={{ __html: jobData?.job_description }}
+          className="text-sm text-grayColor1 leading-relaxed line-clamp-2 mt-3.5"
+        ></p>
       </div>
 
       {/* Bottom Row: Status Banner or Location/Salary */}
