@@ -31,15 +31,19 @@ export default function EmploymentCard({ data }: PropType) {
       console.error("Error saving job:", error);
     }
   };
+  console.log(data, "data");
 
   return (
     <div className="p-4 sm:p-5 bg-white border border-[#D2D2D5] rounded-2xl space-y-3 hover:shadow-md transition-all duration-300">
       {/* Top section */}
       <div className="flex items-start justify-between gap-2">
         <div className="space-y-1 sm:space-y-2  w-full">
-          <h2 className="text-base sm:text-lg font-semibold line-clamp-1 text-headerColor">
+          <Link
+            href={`/mu/industry/${data?.industry?.id}`}
+            className="text-base sm:text-lg font-semibold line-clamp-1 text-headerColor"
+          >
             {companyName}
-          </h2>
+          </Link>
           <p className="text-sm text-grayColor1">
             {data?.location || "Location"}
           </p>
@@ -69,9 +73,12 @@ export default function EmploymentCard({ data }: PropType) {
       </div>
 
       {/* Job title */}
-      <h2 className="text-base sm:text-lg font-semibold line-clamp-2 text-headerColor">
+      <Link
+        href={`/mu/jobs-details/${data?.id}`}
+        className="text-base hover:text-primaryColor sm:text-lg font-semibold line-clamp-2 text-headerColor"
+      >
         {jobTitle}
-      </h2>
+      </Link>
 
       {/* Bottom section */}
       <div className="flex flex-row items-center justify-between gap-3">
