@@ -198,7 +198,7 @@ function PostCard({ post, meta }: PostCardProps) {
         <div className="mt-4 space-y-1">
           <div
             ref={contentRef}
-            className={`wrap-break-word text-[16px] leading-7 text-headerColor/85 [&_p]:min-h-[1.5rem] break-words overflow-hidden ${
+            className={`wrap-break-word text-[16px] leading-7 text-headerColor/85 [&_p]:min-h-6  overflow-hidden ${
               !isExpanded ? "line-clamp-3" : ""
             }`}
             dangerouslySetInnerHTML={{

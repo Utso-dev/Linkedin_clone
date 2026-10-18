@@ -5,15 +5,15 @@ import SubscriptionCards from "../_component/SubscriptionPricingTable";
 async function page({
   searchParams,
 }: {
-  searchParams: Promise<{ billing?: string }>;
+  searchParams: Promise<{ billing?: string; plan_type?: string }>;
 }) {
-  const { billing: billingCycle } = await searchParams;
+  const { billing: billingCycle, plan_type } = await searchParams;
 
   const token = await getToken();
   const data = await (async () => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/plans?billing_cycle=${billingCycle}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/plans?billing_cycle=${billingCycle}&plan_type=${plan_type ? plan_type : ""}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
