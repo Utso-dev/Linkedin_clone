@@ -7,6 +7,7 @@ import { JobCard } from "./JobCard";
 import { JobCardSection } from "./JobCardSection";
 import { JobCardSkeleton } from "./JobCardSkeleton";
 import { JobSearchBar } from "./JobSearchBar";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 
 export default function JobsPage() {
   const limit = 10;
@@ -15,8 +16,9 @@ export default function JobsPage() {
   const searchParam = params?.search || "";
 
   const queryLimit = params?.limit ? Number(params.limit) : limit;
-
+  
   const {
+    data: jobsResponse,
     combinedData: jobs,
     isInitialLoading,
     isFetchingMore,
@@ -26,6 +28,7 @@ export default function JobsPage() {
   } = useCursorQuery(useGetUserAllJobsQuery, params, {
     limit: queryLimit,
   });
+
 
   const jobsType =
     activeFilter === "all"
@@ -44,7 +47,9 @@ export default function JobsPage() {
     <main className="w-full">
       <header className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold text-[#1D1F2C]">
-          {jobsType} Jobs
+          {jobsResponse?.state?.name
+            ? `${jobsResponse.state.name} ${jobsType} Jobs`
+            : `${jobsType} Jobs`}
         </h1>
         <p className="text-sm text-[#4A4C56] mt-1">
           {jobsType} jobs that will perfectly match your profile.

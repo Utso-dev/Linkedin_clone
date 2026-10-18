@@ -80,9 +80,9 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
     defaultValues: {
       job_title: "",
       position: "",
-      network_type: "Psychology",
+      network_type: "",
       category: "",
-      employment_offering: "State and Institution",
+      employment_offering: "",
       work_mode: "",
       employment_type: "",
       level: "",
