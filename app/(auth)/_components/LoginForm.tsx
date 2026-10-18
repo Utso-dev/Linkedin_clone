@@ -1,6 +1,8 @@
 "use client";
 
 import { useLoginMutation } from "@/feature/slice/auth/authSlice";
+import baseApiSlice from "@/feature/slice/baseApi";
+import { store } from "@/feature/store";
 import { setToken } from "@/lib/token";
 import { OpenEyeIcon } from "@/public/svgIcons/Icons";
 
@@ -40,6 +42,7 @@ function LoginForm() {
       } else {
         toast.success("Login successful!");
         await setToken(response?.token || response.data.token);
+        store.dispatch(baseApiSlice.util.resetApiState());
         if (response?.user?.role === "admin") {
           route.push(`/dashboard`);
         } else {

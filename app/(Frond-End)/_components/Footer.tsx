@@ -35,7 +35,7 @@ export default function Footer() {
           </div>
           <div>
             <div className="flex flex-col md:flex-row  items-center gap-1.5">
-              <p className="sm:text-right text-center text-sm text-[#A5A5AB] hidden md:block">
+              <p className="sm:text-right text-center text-sm text-liteDescriptionColor hidden md:block">
                 {" "}
                 © {new Date().getFullYear()} Mind Unite, All right
                 Reserved.{" "}
@@ -43,14 +43,14 @@ export default function Footer() {
 
               <div className="flex gap-1.5">
                 <Link
-                  href="/tearm-condition"
+                  href="/terms-conditions"
                   className=" text-sm font-normal text-[#4A4C56]"
                 >
                   Terms & condition
                 </Link>
                 <hr className="h-5 border-[#4A4C56] border w-0.5" />
                 <Link
-                  href="/privecy-policy"
+                  href="/privacy-policy"
                   className=" text-sm font-normal text-[#4A4C56]"
                 >
                   Privecy Policy

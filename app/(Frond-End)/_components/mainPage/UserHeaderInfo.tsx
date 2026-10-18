@@ -11,6 +11,8 @@ import baseApiSlice from "@/feature/slice/baseApi";
 import { useGetUnreadMessagesCountQuery } from "@/feature/slice/message/messageSlice";
 import { useGetNotificationCountQuery } from "@/feature/slice/notifications/notificationSlice";
 import { onboardingReset } from "@/feature/slice/onboarding/onboardingSlice";
+import { resetPostComposeState } from "@/feature/slice/postCompose/postComposeSlice";
+import { persistor } from "@/feature/store";
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import echo from "@/lib/echo";
 import { clearToken } from "@/lib/token";
@@ -107,15 +109,18 @@ function UserHeaderInfo() {
     };
   }, [dispatch, userProfileData?.user?.id]);
   const handleLogout = async () => {
-    // Clear the access token cookie
     try {
-      await logout();
-      await clearToken();
-      router.push("/login");
+      await logout().unwrap();
     } catch (error) {
       console.error("Error occurred while logging out:", error);
+    } finally {
+      dispatch(baseApiSlice.util.resetApiState());
+      dispatch(onboardingReset());
+      dispatch(resetPostComposeState());
+      await persistor?.purge();
+      await clearToken();
+      router.replace("/login");
     }
-    // Redirect to the login page
   };
   const isMessagePage = patheName.startsWith("/mu/message");
 

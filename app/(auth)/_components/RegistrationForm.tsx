@@ -144,11 +144,11 @@ function RegistrationForm() {
               <div className="  text-sm  text-descriptionColor pt-1">
                 By clicking <span className="font-medium">Join Now</span>, you
                 agree to the <span className="font-medium">MindUnite</span>{" "}
-                <Link href={"/tearm-condition"} className="text-primaryColor">
+                <Link href={"/terms-conditions"} className="text-primaryColor">
                   Terms & Condition
                 </Link>{" "}
                 &{" "}
-                <Link href={"/privecy-policy"} className="text-primaryColor">
+                <Link href={"/privacy-policy"} className="text-primaryColor">
                   Privacy Policy
                 </Link>
                 {/* <Link href={"#"} className="text-primaryColor">
