@@ -44,6 +44,7 @@ function Page() {
               key={product.id || product.product_id}
               card={product}
               priority={index < 2}
+             
             />
           ))}
         </div>

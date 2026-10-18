@@ -195,7 +195,7 @@ export interface PostFeedType {
     tagline?: string | null;
     is_following?: boolean;
     slug?: string | null;
-  } 
+  };
 
   created_at: string;
   can_edit: boolean;
@@ -209,10 +209,17 @@ export interface IndustryItemType {
   product_name: string;
   network_type: string;
   industry_type: string;
-  product_id:string | number;
+  product_id: string | number;
   tag: string | null;
   sub_title: string;
   description: string;
+  industry: {
+    id: number;
+    name: string;
+    slug: string;
+    logo: string | null;
+    is_own_industry: boolean;
+  };
   image: string;
   is_liked: boolean;
   views_count: number;
@@ -229,7 +236,12 @@ export interface PublicationDataType {
   id: number;
   publication_id: string;
   network_type: "psychology" | "neuroscience" | string;
-  publication_type: "professional" | "university" | "freelance" | "other" | string;
+  publication_type:
+    | "professional"
+    | "university"
+    | "freelance"
+    | "other"
+    | string;
   title: string;
   slug: string;
   authors: string[];
@@ -428,7 +440,7 @@ export interface userJobType {
   status: string;
   is_applied: boolean;
   application_status: string | null;
-  
+
   network_type: string;
   employment_offering: string;
   category: string;

@@ -46,6 +46,14 @@ const advertisementSlice = baseApiSlice.injectEndpoints({
         };
       },
     }),
+    getAdvertisemetDetails: builder.query({
+      query: (id) => {
+        return {
+          url: `/industry/products/${id}/details`,
+          method: "GET",
+        };
+      },
+    }),
     createAdvertisement: builder.mutation({
       query: (data) => {
         return {
@@ -91,6 +99,7 @@ export const {
   useGetAdvertisementDataQuery,
   useGetAdvertisemetSectionQuery,
   useUpdateAdvertisementStatusMutation,
+  useGetAdvertisemetDetailsQuery,
   useGetAdvertisemetCategoriesQuery,
   useCreateAdvertisementMutation,
   useUpdateAdvertisementMutation,

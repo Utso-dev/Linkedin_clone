@@ -26,10 +26,13 @@ export const EquipmentCard = ({
       console.error("Error liking product:", error);
     }
   };
+console.log(card);
+
+  
   return (
     <div>
       <div
-        className={`flex w-full flex-col items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white ${card.image_url ? "pt-0" : "pt-2"} pb-2 pr-px`}
+        className={`flex w-full h-full flex-col justify-between items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white ${card.image_url ? "pt-0" : "pt-2"} pb-2 pr-px`}
       >
         {card.image_url && (
           <div className="relative h-45 w-full overflow-hidden rounded-[10px]">
@@ -63,7 +66,7 @@ export const EquipmentCard = ({
           </p>
         )}
 
-        <p className="self-stretch px-3 font-['Segoe_UI'] text-sm font-normal leading-[140%] tracking-[0.07px] text-grayColor1">
+        <p className="self-stretch px-3 font-['Segoe_UI'] text-sm line-clamp-2 font-normal leading-[140%] tracking-[0.07px] text-grayColor1">
           {card.description}
         </p>
 
@@ -103,6 +106,7 @@ export const EquipmentCard = ({
         open={viewModalOpen}
         setOpen={setViewModalOpen}
         adId={card.id}
+         is_owner={card?.industry?.is_own_industry}
       />
     </div>
   );
