@@ -73,6 +73,26 @@ export default function PostListClient({
     };
   }, [initialUrl, cursor, limit]);
 
+  // Ensure only one video plays at a time across the entire feed
+  useEffect(() => {
+    const handleGlobalPlay = (e: Event) => {
+      const currentVideo = e.target as HTMLVideoElement;
+      if (!currentVideo || currentVideo.tagName !== "VIDEO") return;
+
+      const allVideos = document.querySelectorAll("video");
+      allVideos.forEach((video) => {
+        if (video !== currentVideo && !video.paused) {
+          video.pause();
+        }
+      });
+    };
+
+    document.addEventListener("play", handleGlobalPlay, true);
+    return () => {
+      document.removeEventListener("play", handleGlobalPlay, true);
+    };
+  }, []);
+
   return (
     <section className="space-y-4">
       {combinedData.map((post: any) => (

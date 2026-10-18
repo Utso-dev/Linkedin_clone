@@ -113,7 +113,6 @@ function PostModal({
     };
   }, []);
 
-
   // Track cursor position and selection range in the textarea
   const updateSelection = () => {
     if (textareaRef.current) {
@@ -500,4 +499,3 @@ function PostModal({
 }
 
 export default PostModal;
-
