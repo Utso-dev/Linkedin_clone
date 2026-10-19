@@ -73,7 +73,7 @@ export default function AuthenticationMethods({
   const handleVerifyRecoveryEmail = async (continueToEnableTwoFactor = false) => {
     setEnableTwoFactorAfterEmailVerification(continueToEnableTwoFactor);
     try {
-      await resendRecoveryOtp().unwrap();
+      await resendRecoveryOtp(undefined).unwrap();
       toast.success("Verification code sent to your recovery email.");
       setRecoveryDetailsModalOpen(false);
       setStep(2);
@@ -315,7 +315,7 @@ export default function AuthenticationMethods({
                 type="button"
                 disabled={isResendingRecoveryOtp}
                 className="w-full rounded-sm bg-primaryColor px-4 py-2 text-center text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
-                onClick={handleVerifyRecoveryEmail}
+                onClick={() => void handleVerifyRecoveryEmail()}
               >
                 {isResendingRecoveryOtp ? "Sending Code..." : "Verify Email"}
               </button>

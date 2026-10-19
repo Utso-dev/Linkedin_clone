@@ -37,7 +37,7 @@ export default function TwoFactorAuthentication() {
   const handleRecoveryEmailAction = async () => {
     if (hasRecoveryEmail) {
       try {
-        await resendRecoveryOtp().unwrap();
+        await resendRecoveryOtp(undefined).unwrap();
         toast.success("Verification code sent to your recovery email.");
         setRecoveryEmailStep(2);
       } catch (error: any) {
