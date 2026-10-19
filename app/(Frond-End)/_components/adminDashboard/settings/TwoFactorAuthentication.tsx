@@ -6,6 +6,12 @@ import { AdLockIcon } from "@/public/svgIcons/AdminIcon";
 import Disable2FAModal from "./2FactorAuthentication/Disable2FAModal";
 import Enable2FactorModal from "./2FactorAuthentication/Enable2FactorModal/Enable2FactorModal";
 import { useGetSecurityOverviewQuery } from "@/feature/slice/admin/securitySettings";
+import { useResendRecoveryEmailOtpMutation } from "@/feature/slice/admin/securitySettings";
+import CustomModal from "@/components/reusable/dashboard/CustomModal";
+import RecoveryEmail from "./recoverymailSetup/RecoveryEmail";
+import VerifyOtp from "./recoverymailSetup/VerifyOtp";
+import Success from "./recoverymailSetup/Success";
+import toast from "react-hot-toast";
 import {
   Dialog,
   DialogContent,
@@ -18,14 +24,43 @@ export default function TwoFactorAuthentication() {
   const [showEnableModal, setShowEnableModal] = useState(false);
   const [showDisableModal, setShowDisableModal] = useState(false);
   const [showVerifyEmailModal, setShowVerifyEmailModal] = useState(false);
+  const [showRecoveryEmailModal, setShowRecoveryEmailModal] = useState(false);
+  const [recoveryEmailStep, setRecoveryEmailStep] = useState(1);
   const { data, isLoading, refetch } = useGetSecurityOverviewQuery({});
+  const [resendRecoveryOtp, { isLoading: isResendingRecoveryOtp }] =
+    useResendRecoveryEmailOtpMutation();
 
   const is2FAEnabled = data?.data?.two_factor_enabled ?? false;
   const recoveryEmailVerified = data?.data?.recovery_email_verified ?? false;
+  const hasRecoveryEmail = Boolean(data?.data?.recovery_email);
+
+  const handleRecoveryEmailAction = async () => {
+    if (hasRecoveryEmail) {
+      try {
+        await resendRecoveryOtp().unwrap();
+        toast.success("Verification code sent to your recovery email.");
+        setRecoveryEmailStep(2);
+      } catch (error: any) {
+        toast.error(
+          error?.data?.message || "Unable to resend the verification code.",
+        );
+        return;
+      }
+    } else {
+      setRecoveryEmailStep(1);
+    }
+
+    setShowVerifyEmailModal(false);
+    setShowRecoveryEmailModal(true);
+  };
 
   const handleEnableSuccess = () => {
     setShowEnableModal(false);
     refetch();
+  };
+
+  const handleEnableTwoFactorFromBackupCodes = () => {
+    setShowEnableModal(true);
   };
 
   const handleDisableSuccess = () => {
@@ -98,7 +133,9 @@ export default function TwoFactorAuthentication() {
         </div>
 
         <div className="mt-6 h-full">
-          <AuthenticationMethods />
+          <AuthenticationMethods
+            onEnableTwoFactor={handleEnableTwoFactorFromBackupCodes}
+          />
         </div>
       </div>
 
@@ -128,8 +165,45 @@ export default function TwoFactorAuthentication() {
               Please verify your recovery email before enabling 2FA.
             </DialogDescription>
           </DialogHeader>
+          <button
+            type="button"
+            disabled={isResendingRecoveryOtp}
+            onClick={handleRecoveryEmailAction}
+            className="mt-4 w-full rounded-md bg-primaryColor px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primaryColor/90 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isResendingRecoveryOtp
+              ? "Sending Code..."
+              : hasRecoveryEmail
+                ? "Verify Recovery Email"
+                : "Add Recovery Email"}
+          </button>
         </DialogContent>
       </Dialog>
+
+      <CustomModal
+        open={showRecoveryEmailModal}
+        onOpenChange={(open) => {
+          setShowRecoveryEmailModal(open);
+          if (!open) setRecoveryEmailStep(1);
+        }}
+        title={recoveryEmailStep === 2 ? "Verify OTP" : "Recovery Email"}
+        size="sm"
+      >
+        {recoveryEmailStep === 1 && (
+          <RecoveryEmail onSuccess={() => setRecoveryEmailStep(2)} />
+        )}
+        {recoveryEmailStep === 2 && (
+          <VerifyOtp onSuccess={() => setRecoveryEmailStep(3)} />
+        )}
+        {recoveryEmailStep === 3 && (
+          <Success
+            onClose={() => {
+              setShowRecoveryEmailModal(false);
+              refetch();
+            }}
+          />
+        )}
+      </CustomModal>
     </section>
   );
 }

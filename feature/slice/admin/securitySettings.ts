@@ -179,6 +179,12 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["overview"],
     }),
+    ResendRecoveryEmailOtp: builder.mutation({
+      query: () => ({
+        url: "/2fa/recovery-email/resend-otp",
+        method: "POST",
+      }),
+    }),
 
     //singele trusted session
     SingeleSessionTrusted: builder.mutation({
@@ -215,5 +221,6 @@ export const {
 
   useRecoveryEmailOtpVerifyMutation,
   useRecoveryEmailUpdateMutation,
+  useResendRecoveryEmailOtpMutation,
   useSingeleSessionTrustedMutation,
 } = securitySettingsSlice;
