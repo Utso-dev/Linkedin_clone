@@ -104,13 +104,15 @@ function BillingHistoryPage() {
     }
   };
 
-  // Helper for masking card number to match "************5675"
+  // Keep the card number masked while showing only its final four digits.
   const getMaskedCardNumber = (row: BillingHistoryItem) => {
     if (row.card_last4) {
-      return `************${row.card_last4}`;
+      return `•••• ${row.card_last4}`;
     }
     if (row.payment_method) {
-      return row.payment_method.replace(/^[A-Za-z\s]+(?=\*)/, "").trim();
+      const lastFour = row.payment_method.match(/(\d{4})\s*$/)?.[1];
+      if (lastFour) return `•••• ${lastFour}`;
+      return row.payment_method.replace(/\*{2,}/g, "••••").trim();
     }
     return "-";
   };
@@ -120,7 +122,7 @@ function BillingHistoryPage() {
       label: "Invoice No.",
       accessor: "invoice_no",
       position: "justify-start",
-      width: "140px",
+      width: "110px",
       formatter: (_: any, row: BillingHistoryItem) => (
         <div className="py-4 px-4 text-left font-semibold text-sm text-headerColor whitespace-nowrap">
           {row.invoice_no || `#MU${String(row.id).padStart(6, "0")}`}
@@ -131,7 +133,7 @@ function BillingHistoryPage() {
       label: "Status",
       accessor: "status",
       position: "justify-center",
-      width: "110px",
+      width: "85px",
       formatter: (_: any, row: BillingHistoryItem) => {
         const normalized = (
           row.status ||
@@ -180,7 +182,7 @@ function BillingHistoryPage() {
       label: "Plan",
       accessor: "plan",
       position: "justify-center",
-      width: "125px",
+      width: "105px",
       formatter: (_: any, row: BillingHistoryItem) => (
         <div className="flex items-center justify-center py-4 px-2">
           <span className="inline-flex items-center justify-center px-3 py-0.5 text-sm font-medium rounded-md border border-[#FFD9B3] bg-[#FFF6ED] text-[#E05300] whitespace-nowrap">
@@ -193,7 +195,7 @@ function BillingHistoryPage() {
       label: "Issue Date",
       accessor: "issue_date",
       position: "justify-start",
-      width: "140px",
+      width: "110px",
       formatter: (val: string) => (
         <div className="py-4 px-3 text-left">
           <p className="text-sm font-medium text-grayColor1 whitespace-nowrap">
@@ -209,7 +211,7 @@ function BillingHistoryPage() {
       label: "Due Date",
       accessor: "due_date",
       position: "justify-start",
-      width: "140px",
+      width: "110px",
       formatter: (val: string) => (
         <div className="py-4 px-3 text-left">
           <p className="text-sm font-medium text-gray-700 whitespace-nowrap">
@@ -225,7 +227,7 @@ function BillingHistoryPage() {
       label: "Payment Method",
       accessor: "payment_method",
       position: "justify-start",
-      width: "200px",
+      width: "160px",
       formatter: (_: any, row: BillingHistoryItem) => (
         <div className="flex items-center gap-2.5 py-4 px-3 text-sm text-descriptionColor whitespace-nowrap">
           <CardBrandIcon
@@ -242,7 +244,7 @@ function BillingHistoryPage() {
       label: "Amount",
       accessor: "amount",
       position: "justify-start",
-      width: "150px",
+      width: "120px",
       formatter: (_: any, row: BillingHistoryItem) => {
         if (row.amount_formatted) {
           const parts = row.amount_formatted.split("/");
@@ -315,7 +317,7 @@ function BillingHistoryPage() {
             <DynamicTable
               columns={columns}
               data={billingList}
-              tableMinWidth="920px"
+              tableMinWidth="100%"
               header={{
                 bg: "#F9FAFB",
                 padding: "14px 14px",
