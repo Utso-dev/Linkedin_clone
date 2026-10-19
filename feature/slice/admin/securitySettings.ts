@@ -195,6 +195,14 @@ const securitySettingsSlice = baseApiSlice.injectEndpoints({
       invalidatesTags: ["loginActivities"],
     }),
 
+    SecureAccountFromLoginActivity: builder.mutation({
+      query: (id) => ({
+        url: `/security/secure-account/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["loginActivities", "activeSessions", "overview"],
+    }),
+
     //
   }),
 });
@@ -223,4 +231,5 @@ export const {
   useRecoveryEmailUpdateMutation,
   useResendRecoveryEmailOtpMutation,
   useSingeleSessionTrustedMutation,
+  useSecureAccountFromLoginActivityMutation,
 } = securitySettingsSlice;

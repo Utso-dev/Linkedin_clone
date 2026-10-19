@@ -4,6 +4,7 @@ import AdminPagination from "@/components/reusable/dashboard/AdminPagination";
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
+import CustomModal from "@/components/reusable/dashboard/CustomModal";
 
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -15,6 +16,7 @@ import {
   useDeleteLoginActivityMutation,
   useGetLoginActivityQuery,
   useLogoutActiveSessionsMutation,
+  useSecureAccountFromLoginActivityMutation,
   useSingeleSessionTrustedMutation,
 } from "@/feature/slice/admin/securitySettings";
 import { TikIcon } from "@/public/svgIcons/AdminIcon";
@@ -44,9 +46,23 @@ type LoginActivity = {
   activity_status: string;
 };
 
+type SessionActionConfirmation = {
+  activity: LoginActivity;
+  action: "logout" | "delete";
+};
+
 export default function LoginActivityTable() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [selectedLoginActivity, setSelectedLoginActivity] =
+    useState<LoginActivity | null>(null);
+  const [secureAccountMessage, setSecureAccountMessage] = useState<string | null>(
+    null,
+  );
+  const [sessionActionConfirmation, setSessionActionConfirmation] =
+    useState<SessionActionConfirmation | null>(null);
+  const [isSessionActionConfirmationOpen, setIsSessionActionConfirmationOpen] =
+    useState(false);
 
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -64,16 +80,40 @@ export default function LoginActivityTable() {
 
   const [singeleSessionTrusted, { isLoading: singeleSessionTrustedLoading }] =
     useSingeleSessionTrustedMutation();
+  const [secureAccount, { isLoading: secureAccountLoading }] =
+    useSecureAccountFromLoginActivityMutation();
 
   const [deletAllAcitivity, { isLoading: deletAllAcitivityLoading }] =
     useDeleteAllLoginActivityMutation();
 
+  const openSessionActionConfirmation = (
+    activity: LoginActivity,
+    action: SessionActionConfirmation["action"],
+  ) => {
+    setSessionActionConfirmation({ activity, action });
+    setIsSessionActionConfirmationOpen(true);
+  };
+
   const handleSingeleSessionTrusted = async (id: number) => {
     try {
-      await singeleSessionTrusted(id).unwrap();
-      toast.success("Session trusted successfully");
+      const response = await singeleSessionTrusted(id).unwrap();
+      toast.success(response?.message || "Session trusted successfully");
+      setSelectedLoginActivity(null);
     } catch (error) {
+      toast.error("Unable to trust this login activity.");
       console.error("Session trusted failed:", error);
+    }
+  };
+
+  const handleSecureAccount = async (id: number) => {
+    try {
+      const response = await secureAccount(id).unwrap();
+      setSecureAccountMessage(
+        response?.message || "Your account has been secured successfully.",
+      );
+    } catch (error) {
+      toast.error("Unable to secure your account.");
+      console.error("Account security action failed:", error);
     }
   };
 
@@ -81,7 +121,9 @@ export default function LoginActivityTable() {
     try {
       await logoutActivity(id).unwrap();
       toast.success("Logout successful");
+      setIsSessionActionConfirmationOpen(false);
     } catch (error) {
+      toast.error("Unable to sign out this session.");
       console.error("Logout failed:", error);
     }
   };
@@ -89,9 +131,11 @@ export default function LoginActivityTable() {
   const handelDelete = async (id: number) => {
     try {
       await deleteLoginActivity(id).unwrap();
-      toast.success("Logout successful");
+      toast.success("Login activity deleted successfully.");
+      setIsSessionActionConfirmationOpen(false);
     } catch (error) {
-      console.log(error);
+      toast.error("Unable to delete this login activity.");
+      console.error("Login activity deletion failed:", error);
     }
   };
 
@@ -229,7 +273,10 @@ export default function LoginActivityTable() {
             {/* suspecious */}
 
             <button
-              onClick={() => handleSingeleSessionTrusted(row.id)}
+              onClick={() => {
+                setSecureAccountMessage(null);
+                setSelectedLoginActivity(row);
+              }}
               disabled={isTrustedDisabled || singeleSessionTrustedLoading}
               className={`flex items-center gap-1  rounded-sm bg-[#E9FAF7] p-3 text-[12px] font-medium ${
                 isTrustedDisabled || singeleSessionTrustedLoading
@@ -248,7 +295,10 @@ export default function LoginActivityTable() {
 
             {/* Logout */}
             <button
-              onClick={() => !isLogoutDisabled && handleLogout(row.id)}
+              onClick={() =>
+                !isLogoutDisabled &&
+                openSessionActionConfirmation(row, "logout")
+              }
               disabled={isLogoutDisabled}
               className={`flex items-center gap-1 rounded-sm bg-bgLightColor p-2 text-[12px] font-medium text-[#1D1F2C] ${
                 isLogoutDisabled
@@ -261,7 +311,10 @@ export default function LoginActivityTable() {
 
             {/* Delete */}
             <button
-              onClick={() => !isDeleteDisabled && handelDelete(row.id)}
+              onClick={() =>
+                !isDeleteDisabled &&
+                openSessionActionConfirmation(row, "delete")
+              }
               disabled={isDeleteDisabled}
               className={`flex items-center gap-1 rounded-sm p-2 text-[12px] font-medium text-red-500 ${
                 isDeleteDisabled
@@ -300,6 +353,127 @@ export default function LoginActivityTable() {
       </div>
 
       <DataTable columns={columns} data={loginActivities} />
+
+      <CustomModal
+        open={isSessionActionConfirmationOpen}
+        onOpenChange={(open) => {
+          setIsSessionActionConfirmationOpen(open);
+        }}
+        title={
+          sessionActionConfirmation?.action === "logout"
+            ? "Sign out this session?"
+            : "Delete this login activity?"
+        }
+        size="xsm"
+        className="!pb-4"
+      >
+        <div className="px-3 pb-0">
+          <p className="text-sm text-[#7B7B7B]">
+            {sessionActionConfirmation?.action === "logout"
+              ? "This will sign out the selected session. You can sign in again later."
+              : "This will permanently remove the selected login activity from your history."}
+          </p>
+          <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={() => setIsSessionActionConfirmationOpen(false)}
+              disabled={logoutLoading || deleteLoading}
+              className="w-full rounded-sm border border-borderColor px-4 py-2 text-sm font-medium text-headerColor hover:bg-gray-50 disabled:opacity-60 sm:w-auto"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (!sessionActionConfirmation) return;
+                if (sessionActionConfirmation.action === "logout") {
+                  void handleLogout(sessionActionConfirmation.activity.id);
+                } else {
+                  void handelDelete(sessionActionConfirmation.activity.id);
+                }
+              }}
+              disabled={logoutLoading || deleteLoading}
+              className={`w-full rounded-sm px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto ${
+                sessionActionConfirmation?.action === "delete"
+                  ? "bg-red-500 hover:bg-red-600"
+                  : "bg-primaryColor hover:bg-primaryColor/90"
+              }`}
+            >
+              {logoutLoading || deleteLoading
+                ? "Please wait..."
+                : sessionActionConfirmation?.action === "logout"
+                  ? "Sign out"
+                  : "Delete"}
+            </button>
+          </div>
+        </div>
+      </CustomModal>
+
+      <CustomModal
+        open={selectedLoginActivity !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelectedLoginActivity(null);
+        }}
+        title="Your account secure successfully."
+        size="xsm"
+        className="!pb-4"
+      >
+        <div className="px-3 pb-0">
+          {secureAccountMessage ? (
+            <div>
+              <p className="text-sm text-[#4A4C56]">{secureAccountMessage}</p>
+              <div className="mt-5 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSecureAccountMessage(null);
+                    setSelectedLoginActivity(null);
+                  }}
+                  className="rounded-sm bg-primaryColor px-4 py-2 text-sm font-semibold text-white hover:bg-primaryColor/90"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <p className="text-sm text-[#7B7B7B]">
+                Confirm whether you recognize this login activity.
+              </p>
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  disabled={
+                    singeleSessionTrustedLoading || secureAccountLoading
+                  }
+                  onClick={() => {
+                    if (selectedLoginActivity) {
+                      void handleSingeleSessionTrusted(selectedLoginActivity.id);
+                    }
+                  }}
+                  className="w-full rounded-sm bg-primaryColor px-4 py-2 text-sm font-semibold text-white hover:bg-primaryColor/90 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  Yes, it’s me
+                </button>
+                <button
+                  type="button"
+                  disabled={
+                    singeleSessionTrustedLoading || secureAccountLoading
+                  }
+                  onClick={() => {
+                    if (selectedLoginActivity) {
+                      void handleSecureAccount(selectedLoginActivity.id);
+                    }
+                  }}
+                  className="w-full rounded-sm border border-[#F38B94] bg-white px-4 py-2 text-sm font-semibold text-redColor hover:bg-[#FEECEE] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  No, it’s not me
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </CustomModal>
 
       {/* Backend Pagination */}
       <Pagination
