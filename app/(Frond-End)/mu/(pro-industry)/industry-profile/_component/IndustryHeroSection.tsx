@@ -13,6 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { GrLocation } from "react-icons/gr";
 import { IoPricetagsOutline } from "react-icons/io5";
+import { HiOutlineUsers } from "react-icons/hi2";
 import RelatedIndustryFollowButton from "../../_component/RelatedIndustryFollowButton";
 function IndustryHeroSection({ userId }: { userId?: string }) {
   const UId = userId;
@@ -107,6 +108,16 @@ function IndustryHeroSection({ userId }: { userId?: string }) {
                 <GroupUserIcon />
                 <p className="text-sm   line-clamp-3">
                   {industryData?.company_size || 0} Employees
+                </p>
+              </div>
+              <div className="flex items-center gap-2.5 my-2 text-grayColor1">
+                <HiOutlineUsers className="h-4 w-4" />
+                <p className="text-sm line-clamp-3">
+                  {Number(
+                    industryData?.followers_count ??
+                      industryData?.total_followers ??
+                      0,
+                  ).toLocaleString()} Followers
                 </p>
               </div>
             </div>

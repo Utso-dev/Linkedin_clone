@@ -30,7 +30,7 @@ import {
   locationTypeOptions,
   networkOptions,
 } from "@/public/demoData/RealData";
-import { format } from "date-fns";
+import { format, isBefore } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -44,13 +44,6 @@ interface CreateJobsFromProps {
 }
 
 const flatCategoryOptions = categoryOptions.flatMap((group) => group.options);
-
-const getEditorText = (value: string) =>
-  value
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&nbsp;|&#160;/gi, " ")
-    .replace(/\s+/g, " ")
-    .trim();
 
 function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
   const router = useRouter();
@@ -102,6 +95,8 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
   });
 
   const selectedStateId = watch("state_id");
+  const selectedStartDate = watch("start_date");
+  const selectedEndDate = watch("end_date");
 
   // Find the selected state's code from statesData
   const selectedStateObj = (statesData?.data || []).find(
@@ -130,8 +125,6 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
       };
     });
   }, [citiesData]);
-
-  const watchedDescription = watch("job_description");
 
   const getOptionValue = (
     options: { value: string; label: string }[],
@@ -669,21 +662,11 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
               htmlFor="job_description"
               className="text-sm text-descriptionColor font-medium"
             >
-              Job Description <span className="text-redColor">*</span>
+              Job Description
             </Label>
             <Controller
               control={control}
               name="job_description"
-              rules={{
-                validate: (value) => {
-                  const text = getEditorText(value || "");
-                  if (!text) return "Job description is required";
-                  return (
-                    text.length <= 5000 ||
-                    "Description cannot exceed 5000 characters"
-                  );
-                },
-              }}
               render={({ field }) => (
                 <JoditEditor
                   value={field.value || ""}
@@ -693,14 +676,6 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                 />
               )}
             />
-            {errors.job_description && (
-              <p className="text-redColor text-xs">
-                {errors.job_description.message}
-              </p>
-            )}
-            <div className="text-xs text-gray-500 font-normal">
-              {getEditorText(watchedDescription || "").length}/5000
-            </div>
           </div>
 
           {/* Row 10: Start Date & End Date */}
@@ -742,6 +717,13 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                       selected={field.value}
                       onSelect={(date) => {
                         field.onChange(date);
+                        if (
+                          date &&
+                          selectedEndDate &&
+                          isBefore(selectedEndDate, date)
+                        ) {
+                          setValue("end_date", undefined);
+                        }
                         setStartDateOpen(false);
                       }}
                     />
@@ -787,6 +769,11 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
                     <Calendar
                       mode="single"
                       selected={field.value}
+                      disabled={
+                        selectedStartDate
+                          ? { before: selectedStartDate }
+                          : undefined
+                      }
                       onSelect={(date) => {
                         field.onChange(date);
                         setEndDateOpen(false);

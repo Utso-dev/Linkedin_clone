@@ -197,7 +197,9 @@ export default function CreateCompanyPage({ UId }: { UId?: string }) {
     payload.append("address", data.address);
     payload.append("website", data.website);
     payload.append("industry", data.industry);
-    payload.append("company_size", data.company_size);
+    if (data.company_size) {
+      payload.append("company_size", data.company_size);
+    }
     payload.append("tagline", data.tagline);
     payload.append("description", data.description);
     if (data.logo) {
@@ -263,6 +265,19 @@ export default function CreateCompanyPage({ UId }: { UId?: string }) {
                   })}
                 />
 
+                {/* Tagline */}
+                <ReusableInput
+                  id="tagline"
+                  label="Tagline"
+                  required
+                  placeholder="ex: An information services firm helping small businesses succeed."
+                  className="rounded-lg border-borderColor text-sm text-headerColor"
+                  error={errors.tagline?.message}
+                  {...register("tagline", {
+                    required: "Tagline is required",
+                  })}
+                />
+
                 {/* Company Address */}
                 <ReusableInput
                   id="address"
@@ -325,12 +340,11 @@ export default function CreateCompanyPage({ UId }: { UId?: string }) {
                     htmlFor="company_size"
                     className="text-sm text-descriptionColor font-medium"
                   >
-                    Company Size <span className="text-redColor">*</span>
+                    Company Size
                   </Label>
                   <Controller
                     control={control}
                     name="company_size"
-                    rules={{ required: "Company size is required" }}
                     render={({ field }) => (
                       <SelecteInputField
                         key={`company-size-${field.value || "empty"}`}
@@ -349,19 +363,19 @@ export default function CreateCompanyPage({ UId }: { UId?: string }) {
                     </p>
                   )}
                 </div>
+                
                 <div className="space-y-1.5">
                   {/* Description */}
                   <Label
                     htmlFor="description"
                     className="text-sm text-descriptionColor font-medium"
                   >
-                    Description <span className="text-redColor">*</span>
+                    Description
                   </Label>
                   <ReusableTextarea
                     id="description"
                     name="description"
                     rows={5}
-                    required
                     placeholder="Add your company description"
                     className="w-full border border-borderColor text-sm text-headerColor rounded-sm p-3"
                     error={errors.description?.message}
@@ -507,18 +521,7 @@ export default function CreateCompanyPage({ UId }: { UId?: string }) {
                   </div>
                 </div>
 
-                {/* Tagline */}
-                <ReusableInput
-                  id="tagline"
-                  label="Tagline"
-                  required
-                  placeholder="ex: An information services firm helping small businesses succeed."
-                  className="rounded-lg border-borderColor text-sm text-headerColor"
-                  error={errors.tagline?.message}
-                  {...register("tagline", {
-                    required: "Tagline is required",
-                  })}
-                />
+                
 
                 {/* Verification Checkbox */}
                 <div className="space-y-1.5 pt-1">
