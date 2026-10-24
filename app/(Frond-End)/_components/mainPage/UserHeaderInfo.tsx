@@ -238,12 +238,12 @@ function UserHeaderInfo() {
                           userProfileData?.user?.last_name || "Vin Intini"}
                       </p>
                       <div
-                        className={`inline-flex items-center justify-center gap-2 rounded-full px-2.5 py-1 text-sm font-medium capitalize tracking-wide ${isIndustry ? "bg-[#FEF4CF] text-[#BB960B]" : isPremium ? "bg-[#D3F4EF] text-[#04A1B7]" : "bg-[#87D5FF]/20 text-[#3EA1D6]"}`}
+                        className={`inline-flex items-center justify-center gap-2 rounded-full px-2.5 py-1 text-sm font-medium capitalize tracking-wide ${isIndustry ? "bg-[#FEF4CF] text-[#BB960B]" : isPremium ? "bg-lightGreenColor text-primaryColor" : "bg-[#87D5FF]/20 text-[#3EA1D6]"}`}
                       >
                         {isIndustry || isPremium ? (
                           <FaCrown
                             size={16}
-                            className={`${isIndustry ? "text-[#BB960B]" : isPremium ? "text-[#04A1B7]" : "text-[#3EA1D6]"}`}
+                            className={`${isIndustry ? "text-[#BB960B]" : isPremium ? "text-primaryColor" : "text-[#3EA1D6]"}`}
                           />
                         ) : (
                           <SingleUserIcon className="h-4 w-4 text-[#3EA1D6]" />
