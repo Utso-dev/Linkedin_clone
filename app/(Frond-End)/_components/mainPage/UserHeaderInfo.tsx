@@ -191,7 +191,7 @@ function UserHeaderInfo() {
                 <div className="flex gap-1 h-full items-end">
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
                     <div
-                      className={`w-7 h-7 lg:w-12 border-[3px] ${isIndustry ? "border-[#F9C80E]" : isPremium ? "border-[#5FC3D0]" : "border-[#87D5FF]"} lg:h-12 rounded-full overflow-hidden`}
+                      className={`w-7 h-7 lg:w-12 border-[3px] ${isIndustry ? "border-proIdustryColor" : isPremium ? "border-[#5FC3D0]" : "border-[#87D5FF]"} lg:h-12 rounded-full overflow-hidden`}
                     >
                       <Image
                         src={
@@ -219,7 +219,7 @@ function UserHeaderInfo() {
                 <div className="">
                   <div className="flex items-center gap-2 border-b border-gray-200 pb-2">
                     <div
-                      className={`h-12 w-12 shrink-0 overflow-hidden rounded-full border-[3px] ${isIndustry ? "border-[#F9C80E]" : isPremium ? "border-[#5FC3D0]" : "border-[#87D5FF]"}`}
+                      className={`h-12 w-12 shrink-0 overflow-hidden rounded-full border-[3px] ${isIndustry ? "border-proIdustryColor" : isPremium ? "border-[#5FC3D0]" : "border-[#87D5FF]"}`}
                     >
                       <Image
                         src={
