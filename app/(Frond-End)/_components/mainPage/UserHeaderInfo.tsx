@@ -191,7 +191,7 @@ function UserHeaderInfo() {
                 <div className="flex gap-1 h-full items-end">
                   <div className="flex items-center  rounded-full cursor-pointer hover:opacity-90">
                     <div
-                      className={`w-7 h-7 lg:w-12 border-[3px] ${isIndustry ? "border-[#F9C80E]" : isPremium ? "border-[#5FC3D0]" : "border-[#87D5FF]"} lg:h-12 rounded-full overflow-hidden`}
+                      className={`w-7 h-7 lg:w-12 border-[3px] ${isIndustry ? "border-proIdustryColor" : isPremium ? "border-[#5FC3D0]" : "border-[#87D5FF]"} lg:h-12 rounded-full overflow-hidden`}
                     >
                       <Image
                         src={
@@ -219,7 +219,7 @@ function UserHeaderInfo() {
                 <div className="">
                   <div className="flex items-center gap-2 border-b border-gray-200 pb-2">
                     <div
-                      className={`h-12 w-12 shrink-0 overflow-hidden rounded-full border-[3px] ${isIndustry ? "border-[#F9C80E]" : isPremium ? "border-[#5FC3D0]" : "border-[#87D5FF]"}`}
+                      className={`h-12 w-12 shrink-0 overflow-hidden rounded-full border-[3px] ${isIndustry ? "border-proIdustryColor" : isPremium ? "border-[#5FC3D0]" : "border-[#87D5FF]"}`}
                     >
                       <Image
                         src={
@@ -238,12 +238,12 @@ function UserHeaderInfo() {
                           userProfileData?.user?.last_name || "Vin Intini"}
                       </p>
                       <div
-                        className={`inline-flex items-center justify-center gap-2 rounded-full px-2.5 py-1 text-sm font-medium capitalize tracking-wide ${isIndustry ? "bg-[#FEF4CF] text-[#BB960B]" : isPremium ? "bg-[#D3F4EF] text-[#04A1B7]" : "bg-[#87D5FF]/20 text-[#3EA1D6]"}`}
+                        className={`inline-flex items-center justify-center gap-2 rounded-full px-2.5 py-1 text-sm font-medium capitalize tracking-wide ${isIndustry ? "bg-[#FEF4CF] text-[#BB960B]" : isPremium ? "bg-lightGreenColor text-primaryColor" : "bg-[#87D5FF]/20 text-[#3EA1D6]"}`}
                       >
                         {isIndustry || isPremium ? (
                           <FaCrown
                             size={16}
-                            className={`${isIndustry ? "text-[#BB960B]" : isPremium ? "text-[#04A1B7]" : "text-[#3EA1D6]"}`}
+                            className={`${isIndustry ? "text-[#BB960B]" : isPremium ? "text-primaryColor" : "text-[#3EA1D6]"}`}
                           />
                         ) : (
                           <SingleUserIcon className="h-4 w-4 text-[#3EA1D6]" />
