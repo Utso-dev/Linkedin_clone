@@ -3,7 +3,6 @@
 import IndustrySkleton from "@/components/reusable/All Skleton/IndustrySkleton";
 import { useGetBiotechnologyQuery } from "@/feature/slice/biotechnologySlice";
 import { IndustryDataType } from "@/lib/type";
-import { IndustryHeader } from "../_components";
 import { EquipmentGrid } from "./_components";
 
 export default function BiotechnologyPage() {
@@ -12,14 +11,6 @@ export default function BiotechnologyPage() {
   return (
     <div className="flex w-full flex-col min-w-0">
       <div className="flex w-full flex-1 flex-col min-w-0">
-        {/* Desktop Header - Hidden on mobile */}
-        <div className="hidden md:block">
-          <IndustryHeader
-            title="Biotechnology"
-            description="Explore the latest biotech equipment releases advancing brain health research and treatment."
-          />
-        </div>
-
         <div className="flex w-full flex-col  gap-10 py-6 min-w-0">
           {isLoading ? (
             <IndustrySkleton />
