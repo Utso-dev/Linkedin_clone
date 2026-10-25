@@ -2,15 +2,15 @@ import { usePostToggleLikeMutation } from "@/feature/slice/post/likeSlice";
 import { PostFeedType } from "@/lib/type";
 import { formatContentForDisplay, formatPostDate } from "@/lib/utils";
 import emptyImage from "@/public/empty_user.jpg";
-import { CommentIcon, IndustryIcon, LikeIcon } from "@/public/svgIcons/Icons";
+import { CommentIcon, LikeIcon } from "@/public/svgIcons/Icons";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 import PostAction from "./PostAction";
 import PostComment from "./PostComment";
 import PostImageRender from "./PostImageRender";
 import PostLikeList from "./PostLikeList";
-import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 
 type PostCardProps = {
   post?: PostFeedType;
@@ -64,7 +64,6 @@ function PostCard({ post, meta }: PostCardProps) {
     setIsExpanded((prev) => !prev);
   };
 
-
   const [postToggleLike] = usePostToggleLikeMutation();
   const likedByMe = Boolean(post?.liked_by_me);
   const likesCount = Math.max(
@@ -100,9 +99,7 @@ function PostCard({ post, meta }: PostCardProps) {
                   sizes="80px"
                   className="h-full w-full object-cover rounded-md"
                 />
-                <HiOutlineBuildingOffice2
-                  className="absolute -bottom-1 bg-white rounded-xs -right-1 md:h-7 w-5 h-5 md:w-7 md:rounded-sm border-2 border-whiteColor object-contain shadow-sm"
-                />
+                <HiOutlineBuildingOffice2 className="absolute -bottom-1 bg-white rounded-xs -right-1 md:h-7 w-5 h-5 md:w-7 md:rounded-sm border-2 border-whiteColor object-contain shadow-sm" />
               </div>
               <div>
                 <Link
@@ -250,8 +247,12 @@ function PostCard({ post, meta }: PostCardProps) {
           <span>Comments</span>
         </button>
       </div>
-
-      <div className="mt-2">{isCommented && <PostComment post={post} />}</div>
+      {isCommented && (
+        <div className="mt-2">
+          {" "}
+          <PostComment post={post} />
+        </div>
+      )}
       {likeList && (
         <PostLikeList postId={post?.id} open={likeList} setOpen={setLikeList} />
       )}
