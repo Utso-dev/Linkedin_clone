@@ -1,7 +1,10 @@
 "use client";
 
 import Search from "@/components/reusable/Search";
-import { useGetBiotechnologyQuery } from "@/feature/slice/biotechnologySlice";
+import {
+  useGetBiotechnologyQuery,
+  useGetProductFeedQuery,
+} from "@/feature/slice/biotechnologySlice";
 import { LayoutGrid, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,32 +13,23 @@ import { IndustryHeader } from "../_components";
 
 function BioTechLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { data } = useGetBiotechnologyQuery("biotechnology");
+  const { data: biotechData } = useGetBiotechnologyQuery("biotechnology");
+  const { data: feedData } = useGetProductFeedQuery({
+    network_type: "psychology",
+    industry_type: "biotechnology",
+    view: "all",
+    per_page: 12,
+  });
 
   const isSectionsActive = pathname.includes("/biotechnology/sections");
   const isAllProductsActive = !isSectionsActive;
 
-  const sectionsCount = Array.isArray(data?.data)
-    ? data.data.length
-    : data?.data?.sections?.length || 5;
+  const sectionsCount = Array.isArray(biotechData?.data)
+    ? biotechData.data.length
+    : biotechData?.data?.sections?.length || 2;
 
   const productsCount =
-    data?.total ||
-    data?.total_products ||
-    (Array.isArray(data?.data)
-      ? data.data.reduce(
-          (acc: number, s: any) =>
-            acc + (s.total_products || s.products?.length || 0),
-          0
-        )
-      : data?.data?.sections?.reduce(
-          (acc: number, s: any) =>
-            acc +
-            (s.industry_category?.flatMap((c: any) => c.industry_item)?.length ||
-              0),
-          0
-        )) ||
-    80;
+    feedData?.pagination?.total || feedData?.total_products || feedData?.total;
 
   return (
     <div className="w-full flex flex-col">
@@ -50,12 +44,12 @@ function BioTechLayout({ children }: { children: React.ReactNode }) {
       {/* Navigation Menu and Search Bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-4 mb-2">
         {/* Left Tabs */}
-        <div className="flex items-center p-1 bg-[#EEF2F6] rounded-2xl gap-1 self-start sm:self-auto">
+        <div className="flex items-center p-1 bg-sectionColor rounded-lg gap-1 self-start sm:self-auto">
           <Link
             href="/mu/psychology-network/industry/biotechnology"
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs md:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all ${
               isAllProductsActive
-                ? "bg-white text-primaryColor shadow-xs"
+                ? "bg-white text-primaryColor"
                 : "text-slate-500 hover:text-slate-800 font-medium"
             }`}
           >
@@ -68,7 +62,7 @@ function BioTechLayout({ children }: { children: React.ReactNode }) {
             <span
               className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
                 isAllProductsActive
-                  ? "bg-[#E0F2FE] text-[#04A1B7]"
+                  ? "bg-[#E0F2FE] text-primaryColor"
                   : "bg-[#E2E8F0] text-slate-500"
               }`}
             >
@@ -78,9 +72,9 @@ function BioTechLayout({ children }: { children: React.ReactNode }) {
 
           <Link
             href="/mu/psychology-network/industry/biotechnology/sections"
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs md:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all ${
               isSectionsActive
-                ? "bg-white text-primaryColor shadow-xs"
+                ? "bg-white text-primaryColor "
                 : "text-slate-500 hover:text-slate-800 font-medium"
             }`}
           >
@@ -93,7 +87,7 @@ function BioTechLayout({ children }: { children: React.ReactNode }) {
             <span
               className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
                 isSectionsActive
-                  ? "bg-[#E0F2FE] text-[#04A1B7]"
+                  ? "bg-[#E0F2FE] text-primaryColor"
                   : "bg-[#E2E8F0] text-slate-500"
               }`}
             >
@@ -114,4 +108,3 @@ function BioTechLayout({ children }: { children: React.ReactNode }) {
 }
 
 export default BioTechLayout;
-
