@@ -5,7 +5,7 @@ const limit = 10;
 
 export default async function PostList({ url }: { url?: string }) {
   let initialData = { data: [] } as any;
- 
+
   try {
     initialData = await fetchWrapper(url, {
       next: { tags: ["posts"] },
@@ -13,13 +13,9 @@ export default async function PostList({ url }: { url?: string }) {
   } catch (err) {
     console.error("PostList server fetch error:", err);
   }
-  
+  console.log(initialData, "initialData========");
 
   return (
-    <PostListClient
-      initialData={initialData}
-      initialUrl={url}
-      limit={limit}
-    />
+    <PostListClient initialData={initialData} initialUrl={url} limit={limit} />
   );
 }
