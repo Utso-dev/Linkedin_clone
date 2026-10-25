@@ -46,7 +46,7 @@ export default function JobsPage() {
 
   return (
     <main className="w-full">
-      <header className="mb-6 flex items-start justify-between">
+      <header className="mb-6 flex items-start md:items-center justify-between">
         <div className="flex-1">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-headerColor">
             {jobsResponse?.state?.name
