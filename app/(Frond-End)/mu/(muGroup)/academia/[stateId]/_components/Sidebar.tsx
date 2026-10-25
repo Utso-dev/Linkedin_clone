@@ -50,7 +50,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     },
     {
       label: "Employment Opportunities",
-      href: `/mu/academia/${stateId}/employemnts`,
+      href: `/mu/jobs?state_id=${stateId}`,
       Icon: JobSearchIcon,
       redirectKey: "employmentopportunities",
     },
@@ -122,17 +122,24 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           </button>
         </div>
         <div className="flex flex-col p-6 space-y-0.5 items-center">
-          {navigationItems.map(({ label, href, Icon, redirectKey }) => (
-            <Link
-              href={`${href}?redirect=${redirectUrl ? redirectUrl?.split("_")?.slice(0, currentIndex).join("_") + "_" : ""}${redirectKey}:${currentState}`}
-              onClick={() => setIsOpen(false)}
-              key={href}
-              className={`flex items-center p-1.5 sm:p-2 hover:bg-[#E2E8F0] gap-1.5 rounded-md sm:gap-2 ${redirectUrl?.includes(redirectKey) ? "bg-[#E2E8F0]" : ""} ${toggleSidebar ? "w-fit" : "w-full"}`}
-            >
-              <Icon className="w-6 h-6" />
-              {!toggleSidebar && <span>{label}</span>}
-            </Link>
-          ))}
+          {navigationItems.map(({ label, href, Icon, redirectKey }) => {
+            const isJobs = href.startsWith("/mu/jobs");
+            const targetHref = isJobs
+              ? href
+              : `${href}?redirect=${redirectUrl ? redirectUrl?.split("_")?.slice(0, currentIndex).join("_") + "_" : ""}${redirectKey}:${currentState}`;
+
+            return (
+              <Link
+                href={targetHref}
+                onClick={() => setIsOpen(false)}
+                key={href}
+                className={`flex items-center p-1.5 sm:p-2 hover:bg-[#E2E8F0] gap-1.5 rounded-md sm:gap-2 ${redirectUrl?.includes(redirectKey) ? "bg-[#E2E8F0]" : ""} ${toggleSidebar ? "w-fit" : "w-full"}`}
+              >
+                <Icon className="w-6 h-6" />
+                {!toggleSidebar && <span>{label}</span>}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </div>
