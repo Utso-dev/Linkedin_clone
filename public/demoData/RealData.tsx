@@ -439,10 +439,13 @@ export const categoryOptions = [
 ];
 
 export const employmentOfferingOptions = [
-  { value: "state", label: "State and Institution" },
-  { value: "private", label: "Private Practice" },
+  { value: "state_institutions", label: "State and Institution" },
+  { value: "academic_institutions", label: "Academic Institutions" },
+  { value: "private_practice", label: "Private Practice" },
+  { value: "biotech_pharma", label: "Biotech/Pharma" },
+  { value: "psychotropics_industry", label: "Psychotropics Industry" },
+  { value: "publications_industry", label: "Publications Industry" },
 ];
-
 
 export const levelOptions = [
   { value: "Entry-Level", label: "Entry-Level" },

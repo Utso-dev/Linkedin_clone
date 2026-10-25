@@ -229,7 +229,6 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
 
       if (id) {
         const response = await updateJobs({ id, data: payload }).unwrap();
-        console.log(response, "setJobId");
 
         toast.success("Job position updated successfully!");
         setJobId(response.data?.id);
@@ -237,7 +236,7 @@ function CreateJobsFrom({ onSuccess, id }: CreateJobsFromProps) {
       } else {
         const response = await createJobs(payload).unwrap();
         toast.success("Job position posted successfully!");
-        console.log(response, "setJobId");
+
         setJobId(response.data?.id);
         setIsCreated(true);
       }

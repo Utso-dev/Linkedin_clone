@@ -1,22 +1,24 @@
 "use client";
 
 import { useGetUserAllJobsQuery } from "@/feature/slice/jobs/userJobSlice";
+import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { useCursorQuery } from "@/hooks/useCursorPagination";
 import { useUrlQueryParams } from "@/hooks/useUrlQueryParams";
+import { PlusIcon } from "lucide-react";
+import Link from "next/link";
 import { JobCard } from "./JobCard";
 import { JobCardSection } from "./JobCardSection";
 import { JobCardSkeleton } from "./JobCardSkeleton";
 import { JobSearchBar } from "./JobSearchBar";
-import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 
 export default function JobsPage() {
   const limit = 10;
   const { params, updateParam } = useUrlQueryParams();
   const activeFilter = params?.employment_type || "all";
   const searchParam = params?.search || "";
-
+  const { data: userData } = useGetUserProfileQuery("userProfile");
   const queryLimit = params?.limit ? Number(params.limit) : limit;
-  
+
   const {
     data: jobsResponse,
     combinedData: jobs,
@@ -28,7 +30,6 @@ export default function JobsPage() {
   } = useCursorQuery(useGetUserAllJobsQuery, params, {
     limit: queryLimit,
   });
-
 
   const jobsType =
     activeFilter === "all"
@@ -45,15 +46,27 @@ export default function JobsPage() {
 
   return (
     <main className="w-full">
-      <header className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#1D1F2C]">
-          {jobsResponse?.state?.name
-            ? `${jobsResponse.state.name} ${jobsType} Jobs`
-            : `${jobsType} Jobs`}
-        </h1>
-        <p className="text-sm text-[#4A4C56] mt-1">
-          {jobsType} jobs that will perfectly match your profile.
-        </p>
+      <header className="mb-6 flex items-start md:items-center justify-between">
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-headerColor">
+            {jobsResponse?.state?.name
+              ? `${jobsResponse.state.name} - ${jobsType} Jobs`
+              : `${jobsType} Jobs`}
+          </h1>
+          <p className="text-sm text-descriptionColor mt-1">
+            {jobsType} jobs that will perfectly match your profile.
+          </p>
+        </div>
+        {userData?.subscription?.plan_type == "industry" && (
+          <div className="">
+            <Link
+              className="flex items-center gap-1 text-whiteColor bg-primaryColor px-2  md:px-4 py-2 rounded-lg hover:shadow-lg"
+              href={`/mu/post-job-position`}
+            >
+              <PlusIcon size={16} /> Post New Job
+            </Link>
+          </div>
+        )}
       </header>
 
       <JobSearchBar
