@@ -33,16 +33,16 @@ export default function JobsPage() {
 
   const jobsType =
     activeFilter === "all"
-      ? "All"
+      ? "All Jobs"
       : activeFilter === "full_time"
-        ? "Full-Time"
+        ? "Full-Time Jobs"
         : activeFilter === "part_time"
-          ? "Part-Time"
+          ? "Part-Time Jobs"
           : activeFilter === "short_term"
-            ? "Short-Term"
+            ? "Short-Term Jobs"
             : activeFilter === "internship"
               ? "Internships"
-              : "Contract";
+              : "Contract Jobs";
 
   return (
     <main className="w-full">
@@ -50,8 +50,8 @@ export default function JobsPage() {
         <div className="flex-1">
           <h1 className="text-xl sm:text-2xl  font-bold text-headerColor">
             {jobsResponse?.state?.name
-              ? `${jobsResponse.state.name} - ${jobsType} Jobs`
-              : `${jobsType} Jobs`}
+              ? `${jobsResponse.state.name} - ${jobsType}`
+              : `${jobsType}`}
           </h1>
           <p className="text-sm text-descriptionColor mt-1">
             {jobsType} jobs that will perfectly match your profile.
