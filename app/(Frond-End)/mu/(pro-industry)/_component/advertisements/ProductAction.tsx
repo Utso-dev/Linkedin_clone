@@ -5,7 +5,6 @@ import Link from "next/link";
 import React, { useState } from "react";
 import AdvertisementDeleteModal from "./AdvertisementDeleteModal";
 import AdvertismentViewModal from "./AdvertismentViewModal";
-import BoostingPriceModal from "../boosting/BoostingPriceModal";
 
 interface ProductActionProps {
   row: any;
@@ -20,7 +19,6 @@ export default function ProductAction({
 }: ProductActionProps) {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [boostingModalOpen, setBoostingModalOpen] = useState(false);
 
   const isBoosted = Boolean(
     row.is_boosted || (row.boost_days_left && row.boost_days_left > 0)
@@ -33,28 +31,25 @@ export default function ProductAction({
           className || "flex items-center justify-end gap-2 pr-3"
         }
       >
-        {/* Boost Now Button */}
-        <button
-          type="button"
-          disabled={isBoosted}
-          onClick={() => {
-            if (!isBoosted) {
-              setBoostingModalOpen(true);
-            }
-          }}
-          className={`px-2.5 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1 transition ${
-            isBoosted
-              ? "border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed"
-              : "border-[#7C3AED] bg-white text-[#7C3AED] hover:bg-[#F5F3FF] cursor-pointer"
-          }`}
-        >
-          <Zap
-            className={`w-3.5 h-3.5 ${
-              isBoosted ? "fill-slate-300" : "fill-[#7C3AED]"
-            }`}
-          />
-          <span>Boost Now</span>
-        </button>
+        {/* Boost Now Button -> Navigate to dedicated Boosting Plan page */}
+        {isBoosted ? (
+          <button
+            type="button"
+            disabled
+            className="px-2.5 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1 border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed"
+          >
+            <Zap className="w-3.5 h-3.5 fill-slate-300" />
+            <span>Boost Now</span>
+          </button>
+        ) : (
+          <Link
+            href={`/mu/products/${row.id}/boosting-plan`}
+            className="px-2.5 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1 transition border-[#7C3AED] bg-white text-[#7C3AED] hover:bg-[#F5F3FF] cursor-pointer"
+          >
+            <Zap className="w-3.5 h-3.5 fill-[#7C3AED]" />
+            <span>Boost Now</span>
+          </Link>
+        )}
 
         {/* View Ad Button */}
         <button
@@ -101,16 +96,6 @@ export default function ProductAction({
           open={deleteModalOpen}
           setOpen={setDeleteModalOpen}
           adId={row.id}
-        />
-      )}
-
-      {/* Boosting Price Modal */}
-      {boostingModalOpen && (
-        <BoostingPriceModal
-          open={boostingModalOpen}
-          setOpen={setBoostingModalOpen}
-          product={row}
-          onSuccess={onSuccess}
         />
       )}
     </>

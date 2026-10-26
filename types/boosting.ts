@@ -123,4 +123,9 @@ export interface PurchaseRequiresActionResponse {
     payment_status: "requires_action";
     campaign_id: number;
   };
+}// Plan Configuration for Steps
+export interface PlanConfig {
+  pkgId: number | null;
+  customDays: number;
+  isCustom: boolean;
 }
