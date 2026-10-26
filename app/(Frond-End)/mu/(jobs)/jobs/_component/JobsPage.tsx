@@ -35,20 +35,20 @@ export default function JobsPage() {
     activeFilter === "all"
       ? "All"
       : activeFilter === "full_time"
-        ? "Full Time"
+        ? "Full-Time"
         : activeFilter === "part_time"
-          ? "Part Time"
+          ? "Part-Time"
           : activeFilter === "short_term"
-            ? "Short Term"
+            ? "Short-Term"
             : activeFilter === "internship"
-              ? "Internship"
+              ? "Internships"
               : "Contract";
 
   return (
     <main className="w-full">
       <header className="mb-6 flex items-start md:items-center justify-between">
         <div className="flex-1">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-headerColor">
+          <h1 className="text-xl sm:text-2xl  font-bold text-headerColor">
             {jobsResponse?.state?.name
               ? `${jobsResponse.state.name} - ${jobsType} Jobs`
               : `${jobsType} Jobs`}

@@ -439,10 +439,10 @@ export const categoryOptions = [
 ];
 
 export const employmentOfferingOptions = [
-  { value: "state_institutions", label: "State and Institution" },
+  { value: "state_institutions", label: "State Institutions" },
   { value: "academic_institutions", label: "Academic Institutions" },
   { value: "private_practice", label: "Private Practice" },
-  { value: "biotech_pharma", label: "Biotech/Pharma" },
+  { value: "biotech_industry", label: "Biotech Industry" },
   { value: "psychotropics_industry", label: "Psychotropics Industry" },
   { value: "publications_industry", label: "Publications Industry" },
 ];
