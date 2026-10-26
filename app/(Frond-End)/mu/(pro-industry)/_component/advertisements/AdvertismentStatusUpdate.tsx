@@ -80,7 +80,7 @@ function AdvertismentStatusUpdate({
             disabled={disabled || isUpdatingStatus}
             className={buttonClassName}
           >
-            <span>{statusConfig.label}</span>
+              <span>{statusConfig.label}</span>
             <ChevronDown className="h-3.5 w-3.5 opacity-70" />
           </button>
         </DropdownMenuTrigger>
