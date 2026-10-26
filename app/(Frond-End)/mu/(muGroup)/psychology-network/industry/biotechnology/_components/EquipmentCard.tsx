@@ -15,6 +15,8 @@ interface EquipmentCardProps {
   priority?: boolean;
 }
 
+const toBool = (val: any) => Boolean(val && val !== "0" && val !== "false");
+
 export const EquipmentCard = ({
   card,
   priority = false,
@@ -27,56 +29,44 @@ export const EquipmentCard = ({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasUserScrolledRef = useRef(false);
 
-  const title = card?.title || card?.product_name || "Equipment Title";
-
+  const title = card?.title || card?.product_name || "Product Title";
   const primaryTag =
     card?.tag ||
-    (Array.isArray(card?.tags) && card.tags.length > 0
-      ? card.tags[0]
-      : typeof card?.tags === "string" && card.tags.trim()
-        ? card.tags.split(",")[0]?.trim()
-        : null) ||
+    (Array.isArray(card?.tags) ? card.tags[0] : null) ||
+    (typeof card?.tags === "string" ? card.tags.split(",")[0]?.trim() : null) ||
     card?.category_name ||
     null;
-
   const subTitle =
     card?.sub_title || card?.industry?.name || card?.creator?.name || "";
   const description = card?.short_description || card?.description || "";
-  const isBoosted = Boolean(
-    card?.is_boosted &&
-    card?.is_boosted !== "0" &&
-    card?.is_boosted !== "false",
-  );
-  const isNewRelease = Boolean(
-    card?.is_new_release &&
-    card?.is_new_release !== "0" &&
-    card?.is_new_release !== "false",
-  );
+  const displayImage =
+    card?.image_url || card?.image || card?.product_image || image1;
+  const viewsCount = Number(card?.views_count) || 0;
+
+  const isBoosted = toBool(card?.is_boosted);
+  const isNewRelease = toBool(card?.is_new_release);
   const badgeLabel =
     typeof card?.badge === "string" && card.badge.trim()
       ? card.badge.trim()
       : null;
 
-  const imageUrl = card?.image_url || card?.image || card?.product_image || "";
-  const displayImage = imageUrl || image1;
-  const viewsCount = Number(card?.views_count) || 0;
+  const badgeText = isBoosted
+    ? badgeLabel || "Sponsored"
+    : isNewRelease
+      ? badgeLabel || "New Release"
+      : badgeLabel;
+  const badgeGradient = isNewRelease
+    ? "from-amber-400 to-orange-400"
+    : "from-cyan-500 to-blue-500";
 
-  const initialLiked = Boolean(
-    card?.is_liked && card?.is_liked !== "0" && card?.is_liked !== "false",
+  const [isLiked, setIsLiked] = useState<boolean>(toBool(card?.is_liked));
+  const [likesCount, setLikesCount] = useState<number>(
+    Number(card?.likes_count) || 0,
   );
-  const initialLikesCount = Number(card?.likes_count) || 0;
-
-  const [isLiked, setIsLiked] = useState<boolean>(initialLiked);
-  const [likesCount, setLikesCount] = useState<number>(initialLikesCount);
   const [isLiking, setIsLiking] = useState<boolean>(false);
 
-  // Sync state if card prop changes from parent
   useEffect(() => {
-    setIsLiked(
-      Boolean(
-        card?.is_liked && card?.is_liked !== "0" && card?.is_liked !== "false",
-      ),
-    );
+    setIsLiked(toBool(card?.is_liked));
     setLikesCount(Number(card?.likes_count) || 0);
   }, [card?.is_liked, card?.likes_count]);
 
@@ -174,35 +164,25 @@ export const EquipmentCard = ({
   const handleLike = async (productId: string | number) => {
     if (!productId || isLiking) return;
 
-    // 1. Optimistic UI update immediately
     const prevLiked = isLiked;
     const prevCount = likesCount;
-
     const nextLiked = !prevLiked;
-    const nextCount = nextLiked ? prevCount + 1 : Math.max(0, prevCount - 1);
 
     setIsLiked(nextLiked);
-    setLikesCount(nextCount);
+    setLikesCount(nextLiked ? prevCount + 1 : Math.max(0, prevCount - 1));
     setIsLiking(true);
 
     try {
       const response = await likebyIndustryProduct(productId).unwrap();
       const payload = response?.data || response;
       if (payload && typeof payload.is_liked !== "undefined") {
-        setIsLiked(
-          Boolean(
-            payload.is_liked &&
-            payload.is_liked !== "0" &&
-            payload.is_liked !== "false",
-          ),
-        );
+        setIsLiked(toBool(payload.is_liked));
       }
       if (payload && typeof payload.likes_count !== "undefined") {
         setLikesCount(Number(payload.likes_count));
       }
     } catch (error) {
       console.error("Error liking product:", error);
-      // Rollback to previous state on failure
       setIsLiked(prevLiked);
       setLikesCount(prevCount);
     } finally {
@@ -214,20 +194,13 @@ export const EquipmentCard = ({
     <div ref={cardRef}>
       <div className="flex w-full h-full flex-col justify-between items-start gap-3 rounded-[10px] border border-[#ECEFF3] bg-white pt-0 pb-2 pr-px">
         <div className="relative h-45 w-full overflow-hidden rounded-[10px]">
-          {/* Top Right Product Badge */}
-          {isBoosted ? (
-            <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1 bg-linear-to-r from-cyan-500 to-blue-500 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
-              <span>{badgeLabel || "Sponsored"}</span>
+          {badgeText && (
+            <div
+              className={`absolute top-2.5 right-2.5 z-10 flex items-center gap-1 bg-linear-to-r ${badgeGradient} text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm`}
+            >
+              <span>{badgeText}</span>
             </div>
-          ) : isNewRelease ? (
-            <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1 bg-linear-to-r from-amber-400 to-orange-400 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
-              <span>{badgeLabel || "New Release"}</span>
-            </div>
-          ) : badgeLabel ? (
-            <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1 bg-linear-to-r from-cyan-600 to-blue-600 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
-              <span>{badgeLabel}</span>
-            </div>
-          ) : null}
+          )}
 
           <Image
             src={displayImage}
@@ -272,7 +245,7 @@ export const EquipmentCard = ({
           <ChevronRight className="h-4 w-4" />
         </button>
 
-        <div className=" flex justify-between items-center px-10 w-full ">
+        <div className="flex justify-between items-center px-10 w-full">
           <button
             type="button"
             onClick={() => handleLike(card?.id || card?.product_id)}
@@ -289,7 +262,7 @@ export const EquipmentCard = ({
           <button
             type="button"
             onClick={() => setViewModalOpen(true)}
-            className="flex items-center justify-center gap-2 py-1.5 text-[16px]  text-headerColor/90 cursor-pointer hover:opacity-80"
+            className="flex items-center justify-center gap-2 py-1.5 text-[16px] text-headerColor/90 cursor-pointer hover:opacity-80"
           >
             <OpenEyeIcon className="h-4.5 w-4.5" />
             <span>{viewsCount}</span>

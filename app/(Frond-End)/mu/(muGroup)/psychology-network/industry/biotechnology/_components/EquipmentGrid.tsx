@@ -10,11 +10,13 @@ import ButtonReuseable from "@/components/reusable/CustomButton";
 interface EquipmentGridProps {
   industryData?: IndustryCategoryType[] | any[];
   initialProducts?: any[];
+  emptyMessage?: string;
 }
 
 export const EquipmentGrid = ({
   industryData = [],
   initialProducts = [],
+  emptyMessage = "No items found in this category",
 }: EquipmentGridProps) => {
   const [activeCategoryId, setActiveCategoryId] = useState<number | "all">(
     "all",
@@ -66,7 +68,7 @@ export const EquipmentGrid = ({
       {allItems.length === 0 && (
         <div className="flex w-full justify-center py-12">
           <p className="text-liteDescriptionColor font-['Segoe_UI'] text-base">
-            No equipment found in this category
+            {emptyMessage}
           </p>
         </div>
       )}

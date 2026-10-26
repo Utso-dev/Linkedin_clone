@@ -1,41 +1,69 @@
 "use client";
 
 import IndustrySkleton from "@/components/reusable/All Skleton/IndustrySkleton";
-import { useGetNeuroscienceBiotechnologyQuery } from "@/feature/slice/neuroscienceSlice";
-import { IndustryDataType } from "@/lib/type";
-import { EquipmentGrid } from "../../../psychology-network/industry/biotechnology/_components";
-import { IndustryHeader } from "../_components";
+import { useGetProductFeedQuery } from "@/feature/slice/biotechnologySlice";
+import { useCursorQuery } from "@/hooks/useCursorPagination";
+import { useSearchParams } from "next/navigation";
+import { useMemo } from "react";
+import { EquipmentCard } from "../_components";
 
-export default function BiotechnologyPage() {
-  const { data, isLoading } =
-    useGetNeuroscienceBiotechnologyQuery("biotechnology");
+export default function NeuroscienceBiotechnologyPage() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search") || "";
+
+  const queryParams = useMemo(() => {
+    return {
+      network_type: "neuroscience",
+      industry_type: "biotechnology",
+      view: "all",
+      per_page: 12,
+      ...(search.trim() ? { search: search.trim() } : {}),
+    };
+  }, [search]);
+
+  const {
+    items: products,
+    isInitialLoading,
+    isFetchingMore,
+    observerRef,
+  } = useCursorQuery<any>(useGetProductFeedQuery, queryParams, {
+    getItemId: (item) => item.id,
+  });
+
   return (
-    <div className="">
-      <div className="">
-        {/* Desktop Header - Hidden on mobile */}
-        <div className="hidden md:block">
-          <IndustryHeader
-            title="Biotechnology"
-            description="Explore the latest biotech equipment releases advancing brain health research and treatment."
-          />
-        </div>
-
-        {/* Added min-w-0 to keep the Assessments inside the available width */}
-        <div className="flex w-full flex-col  gap-10 py-6 ">
-          {isLoading ? (
+    <div className="flex w-full flex-col min-w-0">
+      <div className="flex w-full flex-1 flex-col min-w-0">
+        <div className="flex w-full flex-col gap-6 py-6 min-w-0">
+          {isInitialLoading ? (
             <IndustrySkleton />
-          ) : (
-            data?.data?.sections?.map((section: IndustryDataType) => (
-              <div
-                className="flex w-full flex-col  gap-6"
-                key={section?.id}
-              >
-                <h3 className="self-stretch font-['Segoe_UI'] text-base font-semibold leading-[150%] tracking-[0.08px] text-[#1D1F2C]">
-                  {section?.name || "Section Title"}
-                </h3>
-                <EquipmentGrid industryData={section.industry_category} />
+          ) : products.length > 0 ? (
+            <>
+              <div className="grid w-full grid-cols-1 gap-4 xl:gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+                {products.map((item, index) => (
+                  <EquipmentCard
+                    key={item.id}
+                    card={item}
+                    priority={index < 2}
+                  />
+                ))}
               </div>
-            ))
+
+              {isFetchingMore && (
+                <div className="py-4 text-center text-sm text-[#78797E]">
+                  Loading more products...
+                </div>
+              )}
+
+              <div ref={observerRef} className="h-1" />
+            </>
+          ) : (
+            <div className="flex w-full justify-center py-16">
+              <p className="text-liteDescriptionColor font-['Segoe_UI'] text-base">
+                {search
+                  ? `No equipment found matching "${search}".`
+                  : "No equipment found."}
+              </p>
+            </div>
           )}
         </div>
       </div>
