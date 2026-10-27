@@ -362,7 +362,7 @@ export default function BoostingPlansStep({
                 setSelectedPkgId(null);
                 handleSelectPlan(null, customDays);
               }}
-              className="w-full h-auto! py-3.5! rounded-xl bg-primaryColor! hover:bg-primaryColor/9! 0text-white font-bold text-sm cursor-pointer shadow-sm"
+              className="w-full h-auto! py-3.5! rounded-xl bg-primaryColor! hover:bg-primaryColor/90! text-white font-bold text-sm cursor-pointer shadow-sm"
             />
           </div>
         )}
