@@ -63,7 +63,7 @@ export default function JobsPage() {
               className="flex items-center gap-1 text-whiteColor bg-primaryColor px-2  md:px-4 py-2 rounded-lg hover:shadow-lg"
               href={`/mu/post-job-position`}
             >
-              <PlusIcon size={16} /> Post New Job
+              <PlusIcon size={16} /> Post A New Job
             </Link>
           </div>
         )}

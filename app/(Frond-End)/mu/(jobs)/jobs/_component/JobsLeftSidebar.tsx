@@ -14,7 +14,6 @@ function JobsLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
   const [isMobile, setOpenMobile] = useState(false);
   const { data: userProfileData } = useGetUserProfileQuery("");
 
-
   const isActive = (href: string): boolean => {
     if (href === "/mu/jobs") {
       return pathname === "/mu/jobs";
@@ -62,7 +61,7 @@ function JobsLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
             }`}
           >
             <PlusIcon className="w-4.5 h-4.5" />
-            Post New Job
+            Post A New Job
           </Link>
         ) : (
           <Link
