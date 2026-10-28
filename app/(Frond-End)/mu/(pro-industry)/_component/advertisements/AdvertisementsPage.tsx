@@ -1,12 +1,12 @@
 "use client";
 
 import GraphSkeleton from "@/components/reusable/All Skleton/GraphSkeleton";
-import Pagination from "@/components/reusable/Pagination";
 import StateCardSkleton from "@/components/reusable/All Skleton/StateCardSkleton";
 import CommonStateCard, {
   CommonStateCardProps,
 } from "@/components/reusable/CommonStateCard";
 import DynamicTable from "@/components/reusable/DynamicTable";
+import Pagination from "@/components/reusable/Pagination";
 import {
   useGetAdvertisementDashboardQuery,
   useGetAdvertisementDataQuery,
@@ -101,7 +101,6 @@ export default function AdvertisementsPage() {
         const boostText =
           row.boost_remaining_text ||
           (row.boost_days_left ? `${row.boost_days_left} days Left` : null);
-
         return (
           <div className="flex items-center gap-3 py-2 px-3 w-50">
             <div className="w-14 h-12 rounded-lg bg-bgColor border border-borderColor/60 overflow-hidden shrink-0 flex items-center justify-center">

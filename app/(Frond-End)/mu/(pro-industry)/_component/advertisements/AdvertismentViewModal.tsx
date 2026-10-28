@@ -42,6 +42,7 @@ export default function AdvertismentViewModal({
 
   const imageSrc = ad?.image_url;
 
+
   return (
     <RootDialog
       open={open}
@@ -141,12 +142,17 @@ export default function AdvertismentViewModal({
                             {(ad.views_count ?? 0).toLocaleString()}
                           </span>
                         </p>
-                        <p>
-                          <span className="text-grayColor1">Unique Views</span>{" "}
-                          <span className="font-semibold text-descriptionColor">
-                            {(ad.unique_views_count ?? 0).toLocaleString()}
-                          </span>
-                        </p>
+                        {is_owner && (
+                          <p>
+                            <span className="text-grayColor1">
+                              Unique Views
+                            </span>{" "}
+                            <span className="font-semibold text-descriptionColor">
+                              {(ad.unique_views_count ?? 0).toLocaleString()}
+                            </span>
+                          </p>
+                        )}
+
                         <p>
                           <span className="text-grayColor1">Likes</span>{" "}
                           <span className="font-semibold text-descriptionColor">
@@ -154,8 +160,6 @@ export default function AdvertismentViewModal({
                           </span>
                         </p>
                       </div>
-
-                      
                     </div>
                   </div>
                 </div>
