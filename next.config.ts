@@ -41,7 +41,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "shall-crops-month-ira.trycloudflare.com",
+        hostname: "cleared-month-virgin-murphy.trycloudflare.com",
       },
       {
         protocol: "http",

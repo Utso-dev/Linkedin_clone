@@ -165,12 +165,12 @@ function AddCampaignContent() {
     {
       label: "No.",
       accessor: "no",
-      position: "justify-center",
-      width: "60px",
+      position: "justify-center", 
+      width: "40px",
       formatter: (_: any, __: any, index: number) => {
         const rowNumber = (page - 1) * pageSize + index + 1;
         return (
-          <span className="text-xs font-semibold text-slate-500 block text-center px-4 py-3.5">
+          <span className="text-xs font-semibold text-slate-500 block text-center px-2 py-3.5">
             {rowNumber}
           </span>
         );
@@ -180,19 +180,13 @@ function AddCampaignContent() {
       label: "Products",
       accessor: "product_name",
       position: "justify-start",
-      width: "200px",
+      width:"210px",
       formatter: (_: any, item: BoostCampaignItem) => {
-        const isItemActive = item.is_active || item.status === "active";
-        const isItemPaused = item.is_paused || item.status === "paused";
-        const isItemExpired =
-          item.is_completed ||
-          item.status === "completed" ||
-          item.status === "expired";
-
+        const isItemActive = item.is_active || item.status === "active" || item.status === "paused";
         const imageUrl = item.boostable?.image_url;
 
         return (
-          <div className="flex items-center gap-3 py-3.5 px-4 min-w-60">
+          <div className="flex items-center gap-3 py-3.5 px-2 ">
             {/* Product Image */}
             <div className="relative w-14 h-14 rounded-lg overflow-hidden border border-borderColor bg-slate-100 shrink-0 flex items-center justify-center">
               {imageUrl ? (
@@ -211,34 +205,24 @@ function AddCampaignContent() {
             </div>
 
             {/* Info */}
-            <div className="min-w-0">
+            <div className="">
               <h4
-                className="text-sm font-bold text-headerColor truncate max-w-55"
+                className="text-sm font-bold text-headerColor line-clamp-1"
                 title={item.boostable?.product_name}
               >
                 {item.boostable?.product_name || "BioPac MP160"}
               </h4>
-              <p className="text-xs text-descriptionColor truncate max-w-55 mt-0.5">
-                {item.boostable?.slug || item.boostable?.product_name}
-              </p>
+             
 
               {/* Badge below title */}
               {isItemActive && (
-                <div className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-md text-[11px] font-bold bg-[#F5F3FF] border border-[#DDD6FE] text-[#7C3AED]">
-                  <Zap className="w-3 h-3 fill-[#7C3AED]" />
+                <div className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-md text-[11px] font-bold bg-[#F5F3FF] border border-[#DDD6FE] text-LiteBlueColor">
+                  <Zap className="w-3 h-3 fill-LiteBlueColor" />
                   <span>{item.remaining_days} days Left</span>
                 </div>
               )}
-              {isItemPaused && (
-                <div className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-md text-[11px] font-medium bg-amber-50 border border-amber-200 text-amber-600">
-                  <span>• Paused</span>
-                </div>
-              )}
-              {isItemExpired && (
-                <div className="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-md text-[11px] font-medium bg-slate-100 border border-slate-200 text-slate-500">
-                  <span>• Expired</span>
-                </div>
-              )}
+           
+            
             </div>
             </div>
           );
@@ -249,7 +233,7 @@ function AddCampaignContent() {
         accessor: "amount_paid",
         position: "justify-start",
         formatter: (_: any, item: BoostCampaignItem) => (
-          <div className="py-3.5 px-4 whitespace-nowrap">
+          <div className="py-3.5 px-2 whitespace-nowrap">
             <span className="text-xs text-descriptionColor block leading-tight">
               {item.duration_days} days
             </span>
@@ -265,7 +249,7 @@ function AddCampaignContent() {
         accessor: "starts_at",
         position: "justify-start",
         formatter: (_: any, item: BoostCampaignItem) => (
-          <span className="text-xs sm:text-sm text-headerColor font-medium whitespace-nowrap px-4 py-3.5 block">
+          <div className="text-xs sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
             {item.starts_at_formatted ||
               (item.starts_at &&
                 new Date(item.starts_at).toLocaleDateString("en-US", {
@@ -274,7 +258,7 @@ function AddCampaignContent() {
                   year: "numeric",
                 })) ||
               "—"}
-          </span>
+          </div>
         ),
       },
       {
@@ -282,7 +266,7 @@ function AddCampaignContent() {
         accessor: "ends_at",
         position: "justify-start",
         formatter: (_: any, item: BoostCampaignItem) => (
-          <span className="text-xs sm:text-sm text-headerColor font-medium whitespace-nowrap px-4 py-3.5 block">
+          <div className="text-xs sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
             {item.ends_at_formatted ||
               (item.ends_at &&
                 new Date(item.ends_at).toLocaleDateString("en-US", {
@@ -291,7 +275,7 @@ function AddCampaignContent() {
                   year: "numeric",
                 })) ||
               "—"}
-          </span>
+          </div>
         ),
       },
       {
@@ -299,9 +283,9 @@ function AddCampaignContent() {
         accessor: "total_impressions",
         position: "justify-start",
         formatter: (_: any, item: BoostCampaignItem) => (
-          <span className="text-xs sm:text-sm text-headerColor font-medium whitespace-nowrap px-4 py-3.5 block">
+          <div className="text-xs text-center sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
             {Number(item.total_impressions || 0).toLocaleString()}
-          </span>
+          </div>
         ),
       },
       {
@@ -309,9 +293,9 @@ function AddCampaignContent() {
         accessor: "total_clicks",
         position: "justify-start",
         formatter: (_: any, item: BoostCampaignItem) => (
-          <span className="text-xs sm:text-sm text-headerColor font-medium whitespace-nowrap px-4 py-3.5 block">
+          <div className="text-xs text-center sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
             {Number(item.total_clicks || 0).toLocaleString()}
-          </span>
+          </div>
         ),
       },
       {
@@ -319,9 +303,9 @@ function AddCampaignContent() {
         accessor: "ctr",
         position: "justify-start",
         formatter: (_: any, item: BoostCampaignItem) => (
-          <span className="text-xs sm:text-sm text-headerColor font-medium whitespace-nowrap px-4 py-3.5 block">
+          <div className="text-xs text-center sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
             {item.ctr_formatted || `${item.ctr || 0}%`}
-          </span>
+          </div>
         ),
       },
       {
@@ -337,25 +321,25 @@ function AddCampaignContent() {
             item.status === "expired";
 
           return (
-            <div className="py-3.5 px-4 text-center whitespace-nowrap flex justify-center">
+            <div className="py-3.5 px-2 text-center whitespace-nowrap flex justify-center">
               {isItemActive ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#F0FDFA] border border-[#5EEAD4] text-[#0D9488]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#0D9488]" />
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-[#F0FDFA] border border-lightGreenColor2/60 text-lightGreenColor2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-lightGreenColor2" />
                   Active
                 </span>
               ) : isItemPaused ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FFFBEB] border border-[#FCD34D] text-[#D97706]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#D97706]" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FFFBEB] border border-ratingColor/60 text-ratingColor">
+                  <span className="w-1.5 h-1.5 rounded-full bg-ratingColor" />
                   Paused
                 </span>
               ) : isItemExpired ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FAF5FF] border border-[#E9D5FF] text-[#9333EA]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#9333EA]" />
-                  Inactive
+                <span className="inline-flex capitalize items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FAF5FF] border border-[#E9D5FF] text-LiteBlueColor">
+                  <span className="w-1.5 h-1.5 rounded-full bg-LiteBlueColor" />
+                {  item.status}
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FEF2F2] border border-[#FECACA] text-[#DC2626]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626]" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FEF2F2] border border-redColor/60 text-redColor">
+                  <span className="w-1.5 h-1.5 rounded-full bg-redColor" />
                   Cancel
                 </span>
               )}
@@ -368,11 +352,11 @@ function AddCampaignContent() {
         accessor: "actions",
         position: "justify-end",
         formatter: (_: any, item: BoostCampaignItem) => {
-          const isItemActive = item.is_active || item.status === "active";
+          const isItemActive = item.is_active || item.status === "active" || item.status === "paused";
           const isItemPaused = item.is_paused || item.status === "paused";
 
           return (
-            <div className="inline-flex items-center justify-end gap-2 py-3.5 px-4 pr-6 whitespace-nowrap w-full">
+            <div className="inline-flex items-center justify-end gap-2 py-3.5 px-2 pr-2 whitespace-nowrap w-full">
               {/* 1. Boost Now Button */}
               {isItemActive ? (
                 <button
@@ -386,9 +370,9 @@ function AddCampaignContent() {
               ) : (
                 <Link
                   href={`/mu/products/${item.boostable_id}/boosting-plan`}
-                  className="px-2.5 py-1.5 rounded-lg border border-[#7C3AED] bg-white text-[#7C3AED] hover:bg-[#F5F3FF] text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
+                  className="px-2.5 py-1.5 rounded-lg border border-LiteBlueColor/80 bg-white text-LiteBlueColor hover:bg-[#F5F3FF] text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
                 >
-                  <Zap className="w-3.5 h-3.5 fill-[#7C3AED]" />
+                  <Zap className="w-3.5 h-3.5 fill-LiteBlueColor" />
                   <span>Boost Now</span>
                 </Link>
               )}
@@ -413,11 +397,11 @@ function AddCampaignContent() {
                   type="button"
                   disabled={actionLoadingId === item.id}
                   onClick={() => handleResume(item.id)}
-                  className="w-8 h-8 rounded-lg border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-600 flex items-center justify-center transition cursor-pointer disabled:opacity-50 shrink-0"
+                  className="w-8 h-8 rounded-lg border border-ratingColor/60 bg-amber-50 hover:bg-amber-100 text-ratingColor flex items-center justify-center transition cursor-pointer disabled:opacity-50 shrink-0"
                   title="Resume Campaign"
                 >
                   {actionLoadingId === item.id ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-600" />
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-orengeColor" />
                   ) : (
                     <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                   )}

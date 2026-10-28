@@ -125,8 +125,8 @@ export default function AdvertisementsPage() {
               </p>
               {isBoosted && (
                 <div className="mt-1">
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F5F3FF] text-[#7C3AED] border border-[#DDD6FE]">
-                    <Zap className="w-3 h-3 fill-[#7C3AED]" />
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F5F3FF] text-LiteBlueColor border border-[#DDD6FE]">
+                    <Zap className="w-3 h-3 fill-LiteBlueColor" />
                     {boostText || "Boosted"}
                   </span>
                 </div>
