@@ -22,7 +22,6 @@ import AdvertismentStatusUpdate from "./AdvertismentStatusUpdate";
 import ProductAction from "./ProductAction";
 
 export default function AdvertisementsPage() {
-
   const { data: dashboardResponse, isLoading: isDashboardLoading } =
     useGetAdvertisementDashboardQuery({});
 
@@ -89,7 +88,7 @@ export default function AdvertisementsPage() {
       accessor: "product_name",
       formatter: (_: any, row: any) => {
         const isBoosted = Boolean(
-          row.is_boosted || (row.boost_days_left && row.boost_days_left > 0)
+          row.is_boosted || (row.boost_days_left && row.boost_days_left > 0),
         );
         const boostText =
           row.boost_remaining_text ||
@@ -121,7 +120,10 @@ export default function AdvertisementsPage() {
                 {row.product_name}
               </Link>
               <p className="text-xs text-descriptionColor truncate mt-0.5">
-                {row.industry?.name || row.creator?.name || row.product_id || "BioPac Systems"}
+                {row.industry?.name ||
+                  row.creator?.name ||
+                  row.product_id ||
+                  "BioPac Systems"}
               </p>
               {isBoosted && (
                 <div className="mt-1">
@@ -190,11 +192,10 @@ export default function AdvertisementsPage() {
     {
       label: "Views",
       accessor: "views_count",
-      formatter: (_: any, row: any) => {
-        const count = row.impressions_count ?? row.views_count ?? 0;
+      formatter: (value: any, row: any) => {
         return (
           <span className="text-sm font-medium text-descriptionColor px-3 block">
-            {Number(count).toLocaleString()}
+            {value}
           </span>
         );
       },
@@ -202,11 +203,10 @@ export default function AdvertisementsPage() {
     {
       label: "Likes",
       accessor: "likes_count",
-      formatter: (_: any, row: any) => {
-        const count = row.clicks_count ?? row.likes_count ?? 0;
+      formatter: (value: any, row: any) => {
         return (
           <span className="text-sm font-medium text-descriptionColor px-3 block">
-            {Number(count).toLocaleString()}
+            {value}
           </span>
         );
       },

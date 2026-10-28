@@ -229,8 +229,8 @@ function PostAddedCard({ ad }: { ad: SponsoredAd }) {
             <p className="truncate font-semibold text-slate-900">
               {ad.industry?.name || "Sponsored"}
             </p>
-            <p className="truncate text-xs text-slate-500">
-              {ad.industry?.tagline || "Sponsored"} <span>•</span>{" "}
+            <p className="truncate text-xs flex items-center gap-1 text-slate-500">
+              {ad.industry?.tagline || "Sponsored"} 
               <Globe2 className="inline h-3 w-3" />
             </p>
             <p className="text-xs font-medium text-primaryColor">Promoted</p>
@@ -253,9 +253,7 @@ function PostAddedCard({ ad }: { ad: SponsoredAd }) {
       </div>
 
       <div className="px-3 pb-3">
-        <span className="text-xs font-medium text-primaryColor">
-          {ad.badge || "Sponsored"}
-        </span>
+        
         {description && (
           <div className="mt-2 text-sm leading-6 text-headerColor">
             {isExpanded ? description : shortDescription}
