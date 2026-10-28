@@ -62,7 +62,7 @@ function JobsLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
             }`}
           >
             <PlusIcon className="w-4.5 h-4.5" />
-            Post New Job
+            Post A New Job
           </Link>
         ) : (
           <Link
