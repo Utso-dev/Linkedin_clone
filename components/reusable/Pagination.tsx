@@ -1,7 +1,7 @@
 "use client";
 
 import { LeftAngleIcon } from "@/public/svgIcons/Icons";
-import CustomSelect from "./dashboard/CustomSelect";
+import SelecteInputField from "./InputFiled/SelecteInputField";
 
 interface PaginationProps {
   page: number;
@@ -58,14 +58,14 @@ export default function Pagination({
             onPageChange(page - 1);
           }
         }}
-        className={`pr-2 py-1 flex items-center justify-center rounded-md border border-liteDescriptionColor bg-white shadow-sm transition ${
+        className={` pl-1 pr-2 py-1.75 text-sm flex items-center justify-center rounded-md border border-liteDescriptionColor bg-white shadow-sm transition ${
           isFirstPage
             ? "opacity-40 cursor-not-allowed"
             : "hover:bg-gray-50 cursor-pointer"
         }`}
       >
-        <LeftAngleIcon className="w-5 h-5" />
-        <span>Previous</span>
+        <LeftAngleIcon className="w-4 h-4" />
+        <span>Prev</span>
       </button>
 
       {/* Page Numbers */}
@@ -82,7 +82,7 @@ export default function Pagination({
                   type="button"
                   disabled={page === p}
                   onClick={() => onPageChange(Number(p))}
-                  className={`px-3 py-1 flex items-center justify-center rounded-md font-medium transition ${
+                  className={` px-3 py-1.75 flex items-center text-sm justify-center rounded-md font-medium transition ${
                     page === p
                       ? "bg-[#E9E9EA] text-[#4A4C56] cursor-default"
                       : "bg-red-100 text-red-500 hover:bg-red-200 cursor-pointer"
@@ -105,25 +105,25 @@ export default function Pagination({
             onPageChange(page + 1);
           }
         }}
-        className={`pl-2 py-1 flex items-center justify-center rounded-md border border-liteDescriptionColor bg-white shadow-sm transition ${
+        className={` pl-2 pr-1 py-1.75 flex text-sm items-center justify-center rounded-md border border-liteDescriptionColor bg-white shadow-sm transition ${
           isLastPage
             ? "opacity-40 cursor-not-allowed"
             : "hover:bg-gray-50 cursor-pointer"
         }`}
       >
         <span>Next</span>
-        <LeftAngleIcon className="w-5 h-5 rotate-180" />
+        <LeftAngleIcon className="w-4 h-4 rotate-180" />
       </button>
 
       {/* Page Size */}
       {showPageSize && onPageSizeChange && (
-        <div className="w-27.5 shrink-0">
-          <CustomSelect
+        <div className="w-18.5 shrink-0">
+          <SelecteInputField
             options={pageSizeOptions.map((size) => ({
-              label: `${size} Result`,
-              value: size,
+              label: `${size}`,
+              value: String(size),
             }))}
-            value={pageSize}
+            value={String(pageSize)}
             onChange={(value) => onPageSizeChange(Number(value))}
             placeholder="Select Result"
             className="h-10 w-full"

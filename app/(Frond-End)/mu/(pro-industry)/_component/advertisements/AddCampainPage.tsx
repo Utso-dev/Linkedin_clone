@@ -1,5 +1,6 @@
 "use client";
 
+import StateCardSkleton from "@/components/reusable/All Skleton/StateCardSkleton";
 import CommonStateCard, {
   CommonStateCardProps,
 } from "@/components/reusable/CommonStateCard";
@@ -9,7 +10,6 @@ import SelecteInputField, {
 } from "@/components/reusable/InputFiled/SelecteInputField";
 import Pagination from "@/components/reusable/Pagination";
 import Search from "@/components/reusable/Search";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   useGetBoostingAdvertisementCampaignQuery,
   usePauseBoostingCampaignMutation,
@@ -18,6 +18,7 @@ import {
 import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { LikeIcon, OpenEyeIcon } from "@/public/svgIcons/Icons";
 import { BoostCampaignItem } from "@/types/boosting";
+import dayjs from "dayjs";
 import {
   Calendar,
   CircleDot,
@@ -165,7 +166,7 @@ function AddCampaignContent() {
     {
       label: "No.",
       accessor: "no",
-      position: "justify-center", 
+      position: "justify-center",
       width: "40px",
       formatter: (_: any, __: any, index: number) => {
         const rowNumber = (page - 1) * pageSize + index + 1;
@@ -180,9 +181,12 @@ function AddCampaignContent() {
       label: "Products",
       accessor: "product_name",
       position: "justify-start",
-      width:"210px",
+      width: "210px",
       formatter: (_: any, item: BoostCampaignItem) => {
-        const isItemActive = item.is_active || item.status === "active" || item.status === "paused";
+        const isItemActive =
+          item.is_active ||
+          item.status === "active" ||
+          item.status === "paused";
         const imageUrl = item.boostable?.image_url;
 
         return (
@@ -212,7 +216,6 @@ function AddCampaignContent() {
               >
                 {item.boostable?.product_name || "BioPac MP160"}
               </h4>
-             
 
               {/* Badge below title */}
               {isItemActive && (
@@ -221,205 +224,196 @@ function AddCampaignContent() {
                   <span>{item.remaining_days} days Left</span>
                 </div>
               )}
-           
-            
             </div>
-            </div>
-          );
-        },
-      },
-      {
-        label: "Price",
-        accessor: "amount_paid",
-        position: "justify-start",
-        formatter: (_: any, item: BoostCampaignItem) => (
-          <div className="py-3.5 px-2 whitespace-nowrap">
-            <span className="text-xs text-descriptionColor block leading-tight">
-              {item.duration_days} days
-            </span>
-            <span className="text-sm font-bold text-headerColor block mt-0.5">
-              {item.amount_paid_formatted ||
-                `$${Number(item.amount_paid || 0).toFixed(2)}`}
-            </span>
           </div>
-        ),
+        );
       },
-      {
-        label: "Start date",
-        accessor: "starts_at",
-        position: "justify-start",
-        formatter: (_: any, item: BoostCampaignItem) => (
-          <div className="text-xs sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
-            {item.starts_at_formatted ||
-              (item.starts_at &&
-                new Date(item.starts_at).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "2-digit",
-                  year: "numeric",
-                })) ||
-              "—"}
-          </div>
-        ),
-      },
-      {
-        label: "End Date",
-        accessor: "ends_at",
-        position: "justify-start",
-        formatter: (_: any, item: BoostCampaignItem) => (
-          <div className="text-xs sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
-            {item.ends_at_formatted ||
-              (item.ends_at &&
-                new Date(item.ends_at).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "2-digit",
-                  year: "numeric",
-                })) ||
-              "—"}
-          </div>
-        ),
-      },
-      {
-        label: "Impression",
-        accessor: "total_impressions",
-        position: "justify-start",
-        formatter: (_: any, item: BoostCampaignItem) => (
-          <div className="text-xs text-center sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
-            {Number(item.total_impressions || 0).toLocaleString()}
-          </div>
-        ),
-      },
-      {
-        label: "Click",
-        accessor: "total_clicks",
-        position: "justify-start",
-        formatter: (_: any, item: BoostCampaignItem) => (
-          <div className="text-xs text-center sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
-            {Number(item.total_clicks || 0).toLocaleString()}
-          </div>
-        ),
-      },
-      {
-        label: "CTR",
-        accessor: "ctr",
-        position: "justify-start",
-        formatter: (_: any, item: BoostCampaignItem) => (
-          <div className="text-xs text-center sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
-            {item.ctr_formatted || `${item.ctr || 0}%`}
-          </div>
-        ),
-      },
-      {
-        label: "Status",
-        accessor: "status",
-        position: "justify-center",
-        formatter: (_: any, item: BoostCampaignItem) => {
-          const isItemActive = item.is_active || item.status === "active";
-          const isItemPaused = item.is_paused || item.status === "paused";
-          const isItemExpired =
-            item.is_completed ||
-            item.status === "completed" ||
-            item.status === "expired";
+    },
+    {
+      label: "Price",
+      accessor: "amount_paid",
+      position: "justify-start",
+      formatter: (_: any, item: BoostCampaignItem) => (
+        <div className="py-3.5 px-2 whitespace-nowrap">
+          <span className="text-xs text-descriptionColor block leading-tight">
+            {item.duration_days} days
+          </span>
+          <span className="text-sm font-bold text-headerColor block mt-0.5">
+            {item.amount_paid_formatted ||
+              `$${Number(item.amount_paid || 0).toFixed(2)}`}
+          </span>
+        </div>
+      ),
+    },
+    {
+      label: "Start date",
+      accessor: "starts_at",
+      position: "justify-start",
+      formatter: (_: any, item: BoostCampaignItem) => (
+        <div className="text-xs sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
+          {item.starts_at_formatted ||
+            (item.starts_at && dayjs(item.starts_at).format("MMM DD, YYYY")) ||
+            "—"}
+        </div>
+      ),
+    },
+    {
+      label: "End Date",
+      accessor: "ends_at",
+      position: "justify-start",
+      formatter: (_: any, item: BoostCampaignItem) => (
+        <div className="text-xs sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
+          {item.ends_at_formatted ||
+            (item.ends_at && dayjs(item.ends_at).format("MMM DD, YYYY")) ||
+            "—"}
+        </div>
+      ),
+    },
+    {
+      label: "Impression",
+      accessor: "total_impressions",
+      position: "justify-start",
+      formatter: (_: any, item: BoostCampaignItem) => (
+        <div className="text-xs text-center sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
+          {Number(item.total_impressions || 0).toLocaleString()}
+        </div>
+      ),
+    },
+    {
+      label: "Click",
+      accessor: "total_clicks",
+      position: "justify-start",
+      formatter: (_: any, item: BoostCampaignItem) => (
+        <div className="text-xs text-center sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
+          {Number(item.total_clicks || 0).toLocaleString()}
+        </div>
+      ),
+    },
+    {
+      label: "CTR",
+      accessor: "ctr",
+      position: "justify-start",
+      formatter: (_: any, item: BoostCampaignItem) => (
+        <div className="text-xs text-center sm:text-sm text-headerColor font-medium whitespace-nowrap px-2 py-3.5 block">
+          {item.ctr_formatted || `${item.ctr || 0}%`}
+        </div>
+      ),
+    },
+    {
+      label: "Status",
+      accessor: "status",
+      position: "justify-center",
+      formatter: (_: any, item: BoostCampaignItem) => {
+        const isItemActive = item.is_active || item.status === "active";
+        const isItemPaused = item.is_paused || item.status === "paused";
+        const isItemExpired =
+          item.is_completed ||
+          item.status === "completed" ||
+          item.status === "expired";
 
-          return (
-            <div className="py-3.5 px-2 text-center whitespace-nowrap flex justify-center">
-              {isItemActive ? (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-[#F0FDFA] border border-lightGreenColor2/60 text-lightGreenColor2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-lightGreenColor2" />
-                  Active
-                </span>
-              ) : isItemPaused ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FFFBEB] border border-ratingColor/60 text-ratingColor">
-                  <span className="w-1.5 h-1.5 rounded-full bg-ratingColor" />
-                  Paused
-                </span>
-              ) : isItemExpired ? (
-                <span className="inline-flex capitalize items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FAF5FF] border border-[#E9D5FF] text-LiteBlueColor">
-                  <span className="w-1.5 h-1.5 rounded-full bg-LiteBlueColor" />
-                {  item.status}
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FEF2F2] border border-redColor/60 text-redColor">
-                  <span className="w-1.5 h-1.5 rounded-full bg-redColor" />
-                  Cancel
-                </span>
-              )}
-            </div>
-          );
-        },
+        return (
+          <div className="py-3.5 px-2 text-center whitespace-nowrap flex justify-center">
+            {isItemActive ? (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-[#F0FDFA] border border-lightGreenColor2/60 text-lightGreenColor2">
+                <span className="w-1.5 h-1.5 rounded-full bg-lightGreenColor2" />
+                Active
+              </span>
+            ) : isItemPaused ? (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FFFBEB] border border-ratingColor/60 text-ratingColor">
+                <span className="w-1.5 h-1.5 rounded-full bg-ratingColor" />
+                Paused
+              </span>
+            ) : isItemExpired ? (
+              <span className="inline-flex capitalize items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FAF5FF] border border-[#E9D5FF] text-LiteBlueColor">
+                <span className="w-1.5 h-1.5 rounded-full bg-LiteBlueColor" />
+                {item.status}
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#FEF2F2] border border-redColor/60 text-redColor">
+                <span className="w-1.5 h-1.5 rounded-full bg-redColor" />
+                Cancel
+              </span>
+            )}
+          </div>
+        );
       },
-      {
-        label: "Action",
-        accessor: "actions",
-        position: "justify-end",
-        formatter: (_: any, item: BoostCampaignItem) => {
-          const isItemActive = item.is_active || item.status === "active" || item.status === "paused";
-          const isItemPaused = item.is_paused || item.status === "paused";
+    },
+    {
+      label: "Action",
+      accessor: "actions",
+      position: "justify-end",
+      formatter: (_: any, item: BoostCampaignItem) => {
+        const isItemActive =
+          item.is_active ||
+          item.status === "active" ||
+          item.status === "paused";
+        const isItemPaused = item.is_paused || item.status === "paused";
 
-          return (
-            <div className="inline-flex items-center justify-end gap-2 py-3.5 px-2 pr-2 whitespace-nowrap w-full">
-              {/* 1. Boost Now Button */}
-              {isItemActive ? (
-                <button
-                  type="button"
-                  disabled
-                  className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-400 text-xs font-semibold flex items-center gap-1 cursor-not-allowed select-none"
-                >
-                  <Zap className="w-3.5 h-3.5 fill-slate-300" />
-                  <span>Boost Now</span>
-                </button>
-              ) : (
-                <Link
-                  href={`/mu/products/${item.boostable_id}/boosting-plan`}
-                  className="px-2.5 py-1.5 rounded-lg border border-LiteBlueColor/80 bg-white text-LiteBlueColor hover:bg-[#F5F3FF] text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
-                >
-                  <Zap className="w-3.5 h-3.5 fill-LiteBlueColor" />
-                  <span>Boost Now</span>
-                </Link>
-              )}
+        return (
+          <div className="inline-flex items-center justify-end gap-2 py-3.5 px-2 pr-2 whitespace-nowrap w-full">
+            {/* 1. Boost Now Button */}
+            {isItemActive ? (
+              <button
+                type="button"
+                disabled
+                className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-400 text-xs font-semibold flex items-center gap-1 cursor-not-allowed select-none"
+              >
+                <Zap className="w-3.5 h-3.5 fill-slate-300" />
+                <span>Boost Now</span>
+              </button>
+            ) : (
+              <Link
+                href={`/mu/products/${item.boostable_id}/boosting-plan`}
+                className="px-2.5 py-1.5 rounded-lg border border-LiteBlueColor/80 bg-white text-LiteBlueColor hover:bg-[#F5F3FF] text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
+              >
+                <Zap className="w-3.5 h-3.5 fill-LiteBlueColor" />
+                <span>Boost Now</span>
+              </Link>
+            )}
 
-              {/* 2. Pause / Resume Button */}
-              {isItemActive ? (
-                <button
-                  type="button"
-                  disabled={actionLoadingId === item.id}
-                  onClick={() => handlePause(item.id)}
-                  className="w-8 h-8 rounded-lg border border-borderColor bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 flex items-center justify-center transition cursor-pointer disabled:opacity-50 shrink-0"
-                  title="Pause Campaign"
-                >
-                  {actionLoadingId === item.id ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-600" />
-                  ) : (
-                    <Pause className="w-3.5 h-3.5 fill-current" />
-                  )}
-                </button>
-              ) : isItemPaused ? (
-                <button
-                  type="button"
-                  disabled={actionLoadingId === item.id}
-                  onClick={() => handleResume(item.id)}
-                  className="w-8 h-8 rounded-lg border border-ratingColor/60 bg-amber-50 hover:bg-amber-100 text-ratingColor flex items-center justify-center transition cursor-pointer disabled:opacity-50 shrink-0"
-                  title="Resume Campaign"
-                >
-                  {actionLoadingId === item.id ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-orengeColor" />
-                  ) : (
-                    <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
-                  )}
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  disabled
-                  className="w-8 h-8 rounded-lg border border-slate-200 bg-slate-50 text-slate-300 flex items-center justify-center cursor-not-allowed shrink-0"
-                >
+            {/* 2. Pause / Resume Button */}
+            {isItemActive ? (
+              <button
+                type="button"
+                disabled={actionLoadingId === item.id}
+                onClick={() => handlePause(item.id)}
+                className="w-8 h-8 rounded-lg border border-borderColor bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 flex items-center justify-center transition cursor-pointer disabled:opacity-50 shrink-0"
+                title="Pause Campaign"
+              >
+                {actionLoadingId === item.id ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-600" />
+                ) : (
                   <Pause className="w-3.5 h-3.5 fill-current" />
-                </button>
-              )}
-            </div>
-          );
-        },
+                )}
+              </button>
+            ) : isItemPaused ? (
+              <button
+                type="button"
+                disabled={actionLoadingId === item.id}
+                onClick={() => handleResume(item.id)}
+                className="w-8 h-8 rounded-lg border border-ratingColor/60 bg-amber-50 hover:bg-amber-100 text-ratingColor flex items-center justify-center transition cursor-pointer disabled:opacity-50 shrink-0"
+                title="Resume Campaign"
+              >
+                {actionLoadingId === item.id ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-ratingColor" />
+                ) : (
+                  <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                )}
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="w-8 h-8 rounded-lg border border-slate-200 bg-slate-50 text-slate-300 flex items-center justify-center cursor-not-allowed shrink-0"
+              >
+                <Pause className="w-3.5 h-3.5 fill-current" />
+              </button>
+            )}
+          </div>
+        );
       },
-    ];
+    },
+  ];
 
   return (
     <div className="space-y-6 w-full">
@@ -435,30 +429,11 @@ function AddCampaignContent() {
           </p>
         </div>
 
-        {/* Date Range Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-borderColor bg-white text-xs sm:text-sm font-medium text-headerColor shadow-2xs self-start sm:self-auto">
-          <Calendar className="w-4 h-4 text-slate-500" />
-          <span>{dateRangeDisplay}</span>
-        </div>
       </div>
 
       {/* 2. Top Summary Metric Cards */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="bg-white rounded-2xl border border-borderColor/80 p-4 space-y-3 shadow-2xs"
-            >
-              <div className="flex items-center gap-2.5">
-                <Skeleton className="w-8 h-8 rounded-lg" />
-                <Skeleton className="w-20 h-4 rounded" />
-              </div>
-              <Skeleton className="w-24 h-8 rounded mt-3" />
-              <Skeleton className="w-32 h-4 rounded mt-2" />
-            </div>
-          ))}
-        </div>
+        <StateCardSkleton />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {stateCards.map((card) => (
