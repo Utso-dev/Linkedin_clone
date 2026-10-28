@@ -47,7 +47,7 @@ export default function WhoAre() {
                 <div className='grid grid-cols-1 md:grid-cols-12 gap-4 pb-4  items-start'>
 
                     <div className='flex w-full col-span-12 md:col-span-4'>
-                        <div className="relative w-full h-[480px] rounded-lg overflow-hidden">
+                        <div className="relative w-full h-120 rounded-lg overflow-hidden">
                             <Image
                                 src={aboutUs.photo_url}
                                 alt="Founder"
@@ -58,7 +58,7 @@ export default function WhoAre() {
                     </div>
 
 
-                    <div className='flex flex-col justify-between col-span-12 md:col-span-8 p-4 lg:p-6 bg-[#F8FAFB] rounded-sm h-full w-full'>
+                    <div className='flex flex-col justify-between col-span-12 md:col-span-8 p-4 lg:p-6 bg-bgLightColor rounded-sm h-full w-full'>
                         <div>
                             <p className='text-[32px] font-semibold text-[#0B0B0B] mb-2'>Hello, I'm        <span className='text-3xl font-bold text-primaryColor '>{aboutUs.name}</span></p>
 

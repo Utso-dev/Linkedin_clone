@@ -1,6 +1,7 @@
 "use client";
 
 import GraphSkeleton from "@/components/reusable/All Skleton/GraphSkeleton";
+import Pagination from "@/components/reusable/Pagination";
 import StateCardSkleton from "@/components/reusable/All Skleton/StateCardSkleton";
 import CommonStateCard, {
   CommonStateCardProps,
@@ -17,10 +18,14 @@ import {
 } from "@/public/svgIcons/Icons";
 import { FileText, Zap } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 import AdvertismentStatusUpdate from "./AdvertismentStatusUpdate";
 import ProductAction from "./ProductAction";
 
 export default function AdvertisementsPage() {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
   const { data: dashboardResponse, isLoading: isDashboardLoading } =
     useGetAdvertisementDashboardQuery({});
 
@@ -29,10 +34,14 @@ export default function AdvertisementsPage() {
     isLoading: isListingLoading,
     isError,
     refetch,
-  } = useGetAdvertisementDataQuery({});
+  } = useGetAdvertisementDataQuery({
+    page,
+    per_page: pageSize,
+  });
 
   const dashboardData = dashboardResponse?.data;
   const advertisements = listingResponse?.data || [];
+  const pagination = listingResponse?.pagination;
   const stateCards: CommonStateCardProps[] = [
     {
       title: "All Product",
@@ -78,7 +87,7 @@ export default function AdvertisementsPage() {
       accessor: "no",
       formatter: (_: any, __: any, index: number) => (
         <span className="text-sm font-semibold text-headerColor px-3">
-          {index + 1}
+          {(page - 1) * pageSize + index + 1}
         </span>
       ),
     },
@@ -261,6 +270,21 @@ export default function AdvertisementsPage() {
             noDataMessage="No product advertisements found."
           />
         </div>
+        {pagination && pagination.total > 0 && (
+          <Pagination
+            page={pagination.current_page || page}
+            pageSize={pagination.per_page || pageSize}
+            total={pagination.total}
+            totalPages={pagination.last_page}
+            onPageChange={setPage}
+            showPageSize
+            onPageSizeChange={(newPageSize) => {
+              setPageSize(newPageSize);
+              setPage(1);
+            }}
+            pageSizeOptions={[10, 15, 20, 30]}
+          />
+        )}
       </div>
     </div>
   );

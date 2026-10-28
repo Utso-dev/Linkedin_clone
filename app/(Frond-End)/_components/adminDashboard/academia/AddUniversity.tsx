@@ -120,7 +120,7 @@ export default function AddUniversity({ onClose }: AddUniversityProps) {
           />
         </div>
 
-        <div className="rounded-xl bg-[#D3F4EF] p-4">
+        <div className="rounded-xl bg-lightGreenColor p-4">
           <p className="mb-4 text-base font-semibold leading-6 tracking-[0.08px] text-grayColor1">
             Map Coordinates
           </p>

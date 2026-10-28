@@ -48,7 +48,7 @@ export default function Pagination({
   const isLastPage = totalPages === 0 || page >= totalPages;
 
   return (
-    <div className="flex items-center justify-end gap-3 mt-5">
+    <div className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:justify-end sm:gap-3">
       {/* Previous */}
       <button
         type="button"
@@ -58,7 +58,7 @@ export default function Pagination({
             onPageChange(page - 1);
           }
         }}
-        className={` pl-1 pr-2 py-1.75 text-sm flex items-center justify-center rounded-md border border-liteDescriptionColor bg-white shadow-sm transition ${
+        className={`flex h-9 items-center justify-center rounded-md border border-liteDescriptionColor bg-white pl-1 pr-2 text-sm shadow-sm transition sm:h-10 ${
           isFirstPage
             ? "opacity-40 cursor-not-allowed"
             : "hover:bg-gray-50 cursor-pointer"
@@ -70,7 +70,7 @@ export default function Pagination({
 
       {/* Page Numbers */}
       {pagesToShow.length > 0 && (
-        <ul className="flex items-center gap-3">
+        <ul className="flex min-w-0 items-center gap-1 sm:gap-3">
           {pagesToShow.map((p, idx) =>
             p === "..." ? (
               <li key={`ellipsis-${idx}`} className="text-gray-400 select-none">
@@ -82,7 +82,7 @@ export default function Pagination({
                   type="button"
                   disabled={page === p}
                   onClick={() => onPageChange(Number(p))}
-                  className={` px-3 py-1.75 flex items-center text-sm justify-center rounded-md font-medium transition ${
+                  className={`flex h-9 items-center justify-center rounded-md px-2 text-sm font-medium transition sm:h-10 sm:px-3 ${
                     page === p
                       ? "bg-[#E9E9EA] text-[#4A4C56] cursor-default"
                       : "bg-red-100 text-red-500 hover:bg-red-200 cursor-pointer"
@@ -105,7 +105,7 @@ export default function Pagination({
             onPageChange(page + 1);
           }
         }}
-        className={` pl-2 pr-1 py-1.75 flex text-sm items-center justify-center rounded-md border border-liteDescriptionColor bg-white shadow-sm transition ${
+        className={`flex h-9 items-center justify-center rounded-md border border-liteDescriptionColor bg-white pl-2 pr-1 text-sm shadow-sm transition sm:h-10 ${
           isLastPage
             ? "opacity-40 cursor-not-allowed"
             : "hover:bg-gray-50 cursor-pointer"
@@ -117,7 +117,7 @@ export default function Pagination({
 
       {/* Page Size */}
       {showPageSize && onPageSizeChange && (
-        <div className="w-18.5 shrink-0">
+        <div className="order-last flex w-full justify-center sm:order-none sm:w-18.5 sm:shrink-0">
           <SelecteInputField
             options={pageSizeOptions.map((size) => ({
               label: `${size}`,
@@ -126,7 +126,7 @@ export default function Pagination({
             value={String(pageSize)}
             onChange={(value) => onPageSizeChange(Number(value))}
             placeholder="Select Result"
-            className="h-10 w-full"
+            className="h-9 w-20 sm:h-10 sm:w-full"
           />
         </div>
       )}

@@ -237,7 +237,7 @@ export default function PremiumeUser() {
             </button>
 
             {/* Search */}
-            <div className="relative w-full md:w-[220px]">
+            <div className="relative w-full md:w-55">
               <SearchIcon className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#808897]" />
 
               <input
@@ -249,7 +249,7 @@ export default function PremiumeUser() {
 
             {/* Sort */}
             <Select value={sort} onValueChange={(value) => setSort(value)}>
-              <SelectTrigger className="h-10 w-full cursor-pointer gap-2 md:w-[170px]">
+              <SelectTrigger className="h-10 w-full cursor-pointer gap-2 md:w-42.5">
                 <ArrowUpDown className="h-4 w-4" />
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
