@@ -19,15 +19,7 @@ import { useGetUserProfileQuery } from "@/feature/slice/user/userSlice";
 import { LikeIcon, OpenEyeIcon } from "@/public/svgIcons/Icons";
 import { BoostCampaignItem } from "@/types/boosting";
 import dayjs from "dayjs";
-import {
-  Calendar,
-  CircleDot,
-  Clock,
-  Loader2,
-  Pause,
-  Play,
-  Zap,
-} from "lucide-react";
+import { CircleDot, Clock, Loader2, Pause, Play, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -44,7 +36,6 @@ const statusOptions: Option[] = [
 function AddCampaignContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams?.get("search") || "";
-
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -114,14 +105,6 @@ function AddCampaignContent() {
       setActionLoadingId(null);
     }
   };
-
-  // Date range formatted
-  const now = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth(), 1);
-  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  const fmt = (d: Date) =>
-    d.toLocaleDateString("en-US", { month: "short", day: "2-digit" });
-  const dateRangeDisplay = `${fmt(start)} - ${fmt(end)}, ${now.getFullYear()}`;
 
   const stateCards: CommonStateCardProps[] = [
     {
@@ -209,7 +192,7 @@ function AddCampaignContent() {
             </div>
 
             {/* Info */}
-            <div className="">
+            <div className=" text-start">
               <h4
                 className="text-sm font-bold text-headerColor line-clamp-1"
                 title={item.boostable?.product_name}
@@ -372,7 +355,7 @@ function AddCampaignContent() {
             )}
 
             {/* 2. Pause / Resume Button */}
-            { item.status === "active" ? (
+            {item.status === "active" ? (
               <button
                 type="button"
                 disabled={actionLoadingId === item.id}
@@ -428,7 +411,6 @@ function AddCampaignContent() {
             Unite today.
           </p>
         </div>
-
       </div>
 
       {/* 2. Top Summary Metric Cards */}

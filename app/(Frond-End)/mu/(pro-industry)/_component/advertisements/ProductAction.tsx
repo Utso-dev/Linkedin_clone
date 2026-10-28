@@ -2,7 +2,7 @@
 
 import { Eye, Pencil, Trash2, Zap } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useState } from "react";
 import AdvertisementDeleteModal from "./AdvertisementDeleteModal";
 import AdvertismentViewModal from "./AdvertismentViewModal";
 
@@ -21,16 +21,12 @@ export default function ProductAction({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const isBoosted = Boolean(
-    row.is_boosted || (row.boost_days_left && row.boost_days_left > 0)
+    row.is_boosted || (row.boost_days_left && row.boost_days_left > 0),
   );
 
   return (
     <>
-      <div
-        className={
-          className || "flex items-center justify-end gap-2 pr-3"
-        }
-      >
+      <div className={className || "flex items-center justify-end gap-2 pr-3"}>
         {/* Boost Now Button -> Navigate to dedicated Boosting Plan page */}
         {isBoosted ? (
           <button
@@ -87,6 +83,7 @@ export default function ProductAction({
           open={viewModalOpen}
           setOpen={setViewModalOpen}
           adId={row.id}
+          is_owner={true}
         />
       )}
 
