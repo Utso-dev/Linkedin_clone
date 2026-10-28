@@ -9,7 +9,7 @@ import {
 } from "@/feature/slice/neuroscienceSlice";
 import { useParams, usePathname } from "next/navigation";
 import { useState } from "react";
-import { PaginationDots } from "./PaginationDots";
+import { PaginationDots } from "../../../psychology-network/industry/_components/PaginationDots";
 import { PartnerCard } from "../../../psychology-network/industry/_components/PartnerCard";
 
 

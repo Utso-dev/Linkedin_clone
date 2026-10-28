@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SearchInput } from "../../_components/SearchInput";
-import { FilterButton } from "../../_components/FilterButton";
+import { SearchInput, FilterButton } from "../../../psychology-network/_components";
 
 interface CareersHeaderProps {
     onSearch?: (value: string) => void;

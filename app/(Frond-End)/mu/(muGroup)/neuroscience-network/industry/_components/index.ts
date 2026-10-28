@@ -1,8 +1,9 @@
-export { IndustryHeader } from "./IndustryHeader";
 export { IndustrySidebar } from "./IndustrySidebar";
-export { IndustryContent } from "./IndustryContent";
-export { PaginationDots } from "./PaginationDots";
+export { default as CommonIndustrySectionPage } from "./CommonIndustrySectionPage";
 export {
+  IndustryHeader,
+  IndustryContent,
+  PaginationDots,
   IndustryNavItem,
   IndustryFeedTabs,
   type IndustryFeedTabItem,
