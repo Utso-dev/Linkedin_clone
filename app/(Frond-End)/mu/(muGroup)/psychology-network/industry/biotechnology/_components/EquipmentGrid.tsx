@@ -73,14 +73,7 @@ export const EquipmentGrid = ({
         </div>
       )}
 
-      <div className="flex w-full items-center justify-center pt-2">
-        <Link
-          href={`/mu/psychology-network/industry/biotechnology/${sectionId}`}
-          className="text-whiteColor px-4 py-2 rounded-sm bg-primaryColor hover:shadow-md "
-        >
-          View All
-        </Link>
-      </div>
+     
     </div>
   );
 };

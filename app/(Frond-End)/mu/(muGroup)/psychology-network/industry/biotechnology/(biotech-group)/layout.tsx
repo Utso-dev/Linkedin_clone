@@ -10,7 +10,7 @@ import {
   IndustryFeedTabItem,
   IndustryFeedTabs,
   IndustryHeader,
-} from "../_components";
+} from "../../_components";
 
 function BioTechLayout({ children }: { children: React.ReactNode }) {
   const { data: biotechData } = useGetBiotechnologyQuery("biotechnology");
@@ -59,7 +59,10 @@ function BioTechLayout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Common Tabs Navigation and Search */}
-      <IndustryFeedTabs initialPath="/mu/psychology-network/industry/biotechnology" tabs={tabs} />
+      <IndustryFeedTabs
+        initialPath="/mu/psychology-network/industry/biotechnology"
+        tabs={tabs}
+      />
 
       {children}
     </div>
