@@ -8,7 +8,7 @@ import { MonitorsIcon, OurVisionIcon, StrategyIcon } from '@/public/svgIcons/Ico
 
 export default function WhoAre() {
     const { data, error, isLoading } = useGetAboutUsQuery({});
-    console.log(data, "ododoododo")
+
 
     const aboutUs = data?.data?.founder || [];
     const vedio = data?.data?.core_values || [];

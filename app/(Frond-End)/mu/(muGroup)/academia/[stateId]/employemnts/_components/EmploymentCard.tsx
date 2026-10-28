@@ -31,7 +31,7 @@ export default function EmploymentCard({ data }: PropType) {
       console.error("Error saving job:", error);
     }
   };
-  console.log(data, "data");
+
 
   return (
     <div className="p-4 sm:p-5 bg-white border border-[#D2D2D5] rounded-2xl space-y-3 hover:shadow-md transition-all duration-300">

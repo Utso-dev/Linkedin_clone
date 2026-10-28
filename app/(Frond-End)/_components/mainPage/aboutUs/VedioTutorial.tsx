@@ -20,7 +20,7 @@ export default function VideoTutorial() {
     const { data, error, isLoading } = useGetAboutUsQuery({});
 
     const vedio = data?.data?.videos || [];
-    console.log(vedio, "vedio ")
+    
 
     const [selectedVideo, setSelectedVideo] = useState<any>(null);
 

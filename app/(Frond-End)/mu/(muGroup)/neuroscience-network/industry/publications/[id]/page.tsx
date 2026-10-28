@@ -9,7 +9,7 @@ function page() {
   const { data: response, isLoading } = useGetSinglePublicationQuery(id, {
     skip: !id,
   });
-  console.log(response, "response");
+  
 
   return (
     <div>

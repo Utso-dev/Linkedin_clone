@@ -169,7 +169,7 @@ export default function AdvertisementTable() {
       setJobs((prevJobs) =>
         prevJobs.filter((item) => item.id !== selectedJob.id),
       );
-      console.log(`Deleted user with ID: ${selectedJob.id}`);
+    
       setDeleteOpen(false);
       setSelectedJob(null);
     }
@@ -403,7 +403,7 @@ export default function AdvertisementTable() {
             job={selectedJob}
             onCancel={() => setEditOpen(false)}
             onUpdate={() => {
-              console.log("Updated");
+            
               setEditOpen(false);
             }}
           />
@@ -428,7 +428,7 @@ export default function AdvertisementTable() {
             job={null}
             onCancel={() => setAddOpen(false)}
             onUpdate={() => {
-              console.log("Created new advertisement");
+           
               setAddOpen(false);
             }}
           />

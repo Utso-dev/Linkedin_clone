@@ -14,7 +14,7 @@ export const useRealtimeNotifications = (
     const channel = echo.private(channelName);
 
     channel.notification((data: any) => {
-      // console.log(data, "Check data done=========");
+    
 
       dispatch(baseApiSlice.util.invalidateTags(["Notifications"]));
     });

@@ -22,7 +22,7 @@ export default function AcademiaLayout({
 
   useEffect(() => {
     setBannerLinks(buildSourceBreadcrumbs(redirect));
-    console.log("Updated banner links based on redirect URL:", bannerLinks);
+   
   }, [redirect]);
 
   return (

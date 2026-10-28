@@ -139,7 +139,7 @@ export default function NotificationSettingsPage() {
 
       // Replace with your RTK Query or API Call:
       // await updateNotificationPreferences(payload).unwrap();
-      console.log("Notification Payload:", payload);
+
 
       toast.success("Notification preferences updated successfully!");
     } catch (error) {
