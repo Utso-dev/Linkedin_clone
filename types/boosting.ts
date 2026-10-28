@@ -123,4 +123,90 @@ export interface PurchaseRequiresActionResponse {
     payment_status: "requires_action";
     campaign_id: number;
   };
+}// Plan Configuration for Steps
+export interface PlanConfig {
+  pkgId: number | null;
+  customDays: number;
+  isCustom: boolean;
+}
+
+// Campaign Dashboard Metrics
+export interface CampaignMetrics {
+  total_campaigns: number;
+  active_campaigns: number;
+  paused_campaigns: number;
+  completed_campaigns: number;
+  total_impressions: number;
+  total_clicks: number;
+  average_ctr: number;
+  total_spend: number;
+  total_spend_formatted: string;
+}
+
+// Single Boost Campaign Item
+export interface BoostCampaignItem {
+  id: number;
+  boostable_type: string;
+  boostable_id: number;
+  user_id: number;
+  industry_id: number;
+  boost_package_id: number | null;
+  ad_type: string;
+  network_type: string;
+  placements: string[];
+  amount_paid: number;
+  amount_paid_formatted: string;
+  currency: string;
+  duration_days: number;
+  status: "active" | "paused" | "completed" | "cancelled" | string;
+  is_active: boolean;
+  is_paused: boolean;
+  is_completed: boolean;
+  can_pause: boolean;
+  can_resume: boolean;
+  starts_at: string;
+  ends_at: string;
+  paused_at: string | null;
+  starts_at_formatted: string;
+  ends_at_formatted: string;
+  remaining_days: number;
+  remaining_seconds: number;
+  progress_percentage: number;
+  freeze_days_remaining: number | null;
+  total_impressions: number;
+  total_clicks: number;
+  ctr: number;
+  ctr_formatted: string;
+  boost_package?: BoostPackage | null;
+  boostable?: {
+    id: number;
+    product_name: string;
+    slug: string;
+    image_url: string;
+    network_type: string;
+    industry_type: string;
+    status: string;
+  };
+  created_at: string;
+  updated_at: string;
+}
+
+// Boost Campaigns API Response
+export interface BoostCampaignsResponse {
+  success: boolean;
+  data: {
+    metrics: CampaignMetrics;
+    campaigns: {
+      data: BoostCampaignItem[];
+      links?: any;
+      meta: {
+        current_page: number;
+        from: number;
+        last_page: number;
+        per_page: number;
+        to: number;
+        total: number;
+      };
+    };
+  };
 }

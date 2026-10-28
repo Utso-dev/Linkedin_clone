@@ -14,7 +14,6 @@ function JobsLeftSidebar({ onItemClick }: { onItemClick?: () => void }) {
   const [isMobile, setOpenMobile] = useState(false);
   const { data: userProfileData } = useGetUserProfileQuery("");
 
-
   const isActive = (href: string): boolean => {
     if (href === "/mu/jobs") {
       return pathname === "/mu/jobs";

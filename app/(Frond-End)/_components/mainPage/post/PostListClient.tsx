@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { fetchWrapper } from "@/src/utils/fetchWrapper";
 import PostCard from "./PostCard";
 import PostCardSkleton from "./PostCardSkleton";
+import PostAddedCard from "./PostAddedCard";
 
 type Props = {
   initialData: any;
@@ -13,13 +14,21 @@ type Props = {
   limit?: number;
 };
 
-function getCursorUrl(url: string, cursor: string, limit: number) {
+function getCursorUrl(
+  url: string,
+  cursor: string,
+  limit: number,
+  seenCampaignIds: number[],
+) {
   const [pathname, query = ""] = url.split("?");
   const params = new URLSearchParams(query);
 
   params.delete("page");
   params.set("per_page", String(limit));
   params.set("cursor", cursor);
+  if (seenCampaignIds.length > 0) {
+    params.set("seen_campaign_ids", seenCampaignIds.join(","));
+  }
 
   return `${pathname}?${params.toString()}`;
 }
@@ -57,7 +66,12 @@ export default function PostListClient({
     const fetchPage = async () => {
       setIsFetching(true);
       try {
-        const res = await fetchWrapper(getCursorUrl(initialUrl, cursor, limit));
+        const seenCampaignIds = combinedData
+          .filter((item: any) => item.is_sponsored && item.ad_campaign_id)
+          .map((item: any) => item.ad_campaign_id);
+        const res = await fetchWrapper(
+          getCursorUrl(initialUrl, cursor, limit, seenCampaignIds),
+        );
         if (!cancelled && res) setDataResponse(res);
       } catch (err) {
         console.error(err);
@@ -96,8 +110,12 @@ export default function PostListClient({
   return (
     <section className="space-y-4">
       {combinedData.map((post: any) => (
-        <div key={post.id}>
-          <PostCard post={post} />
+        <div key={post.id || `ad-${post.ad_campaign_id}`}>
+          {post.is_sponsored === true ? (
+            <PostAddedCard ad={post} />
+          ) : (
+            <PostCard post={post} />
+          )}
         </div>
       ))}
 

@@ -517,7 +517,7 @@ function BoostingModalInner({
               </p>
             </div>
             {product?.product_name && (
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 truncate max-w-[200px]">
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 truncate max-w-50">
                 {product.product_name}
               </span>
             )}
@@ -592,7 +592,7 @@ function BoostingModalInner({
                             className="flex items-start gap-2 text-left"
                           >
                             <div className="w-4 h-4 rounded-full bg-[#009688] flex items-center justify-center shrink-0 mt-0.5">
-                              <Check className="w-2.5 h-2.5 text-white stroke-[3]" />
+                              <Check className="w-2.5 h-2.5 text-white stroke-3" />
                             </div>
                             <span className="text-xs text-slate-600 font-medium leading-tight">
                               {feature}
@@ -1028,7 +1028,7 @@ function BoostingModalInner({
       {step === 4 && (
         <div className="text-center py-8 px-4 max-w-md mx-auto space-y-4 animate-in zoom-in-95 duration-200">
           <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-4xl mx-auto shadow-sm">
-            <Check className="w-10 h-10 stroke-[3]" />
+            <Check className="w-10 h-10 stroke-3" />
           </div>
 
           <div>

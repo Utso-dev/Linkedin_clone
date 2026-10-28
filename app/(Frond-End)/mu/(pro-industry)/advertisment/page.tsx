@@ -1,11 +1,5 @@
-import ComingSoonCard from "@/components/reusable/ComingSoonCard";
+import AddCampainPage from "../_component/advertisements/AddCampainPage";
 
-function page() {
-  return (
-    <div>
-      <ComingSoonCard />
-    </div>
-  );
+export default function AdvertisementManagementPage() {
+  return <AddCampainPage />;
 }
-
-export default page;

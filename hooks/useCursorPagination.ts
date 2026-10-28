@@ -226,7 +226,8 @@ export function useCursorPagination<T = any>({
   // Internal cursor state when external cursor is not provided
   const [internalCursor, setInternalCursor] = useState<string | null>(null);
 
-  const activeCursor = externalCursor !== undefined ? externalCursor : internalCursor;
+  const activeCursor =
+    externalCursor !== undefined ? externalCursor : internalCursor;
   const setCursor = externalSetCursor || setInternalCursor;
 
   const [combinedData, setCombinedData] = useState<T[]>([]);

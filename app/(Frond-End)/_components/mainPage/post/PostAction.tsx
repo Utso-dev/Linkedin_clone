@@ -186,7 +186,6 @@ function PostAction({ post, meta }: PostCardProps) {
                   Edit post
                 </DropdownMenuItem>
               )}
-
               {post?.visibility !== "groups" && (
                 <DropdownMenuItem
                   onSelect={(event) => {

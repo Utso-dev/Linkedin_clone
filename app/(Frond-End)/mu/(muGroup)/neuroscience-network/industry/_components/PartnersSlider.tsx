@@ -63,7 +63,6 @@ export default function PartnersSlider() {
           <h3 className="font-['Segoe_UI'] text-xl font-semibold leading-[130%] tracking-[0.1px] text-headerColor xl:text-2xl">
             Mind Unite Partners
           </h3>
-          
         </div>
 
         {/* Right Side: Marquee Slider */}

@@ -5,26 +5,42 @@ import { useMemo, useState } from "react";
 import { IndustryCategoryType } from "@/lib/type";
 import { EquipmentCard } from "./EquipmentCard";
 import { FilterTabs } from "./FilterTabs";
+import ButtonReuseable from "@/components/reusable/CustomButton";
+
+interface EquipmentGridProps {
+  industryData?: IndustryCategoryType[] | any[];
+  initialProducts?: any[];
+  emptyMessage?: string;
+}
 
 export const EquipmentGrid = ({
-  industryData,
-}: {
-  industryData: IndustryCategoryType[];
-}) => {
+  industryData = [],
+  initialProducts = [],
+  emptyMessage = "No items found in this category",
+}: EquipmentGridProps) => {
   const [activeCategoryId, setActiveCategoryId] = useState<number | "all">(
     "all",
   );
   const [currentPage, setCurrentPage] = useState(0);
 
-  const ITEMS_PER_PAGE = 4;
+  const ITEMS_PER_PAGE = 6;
 
   const allItems = useMemo(() => {
+    // 1. If products array was passed directly (from new API response)
+    if (initialProducts && initialProducts.length > 0) {
+      if (activeCategoryId === "all") return initialProducts;
+      return initialProducts.filter(
+        (p) => p.category_id === activeCategoryId,
+      );
+    }
+
+    // 2. Fallback for legacy nested structure
     const categories =
       activeCategoryId === "all"
         ? industryData
         : industryData.filter((cat) => cat.id === activeCategoryId);
-    return categories.flatMap((cat) => cat.industry_item);
-  }, [industryData, activeCategoryId]);
+    return categories.flatMap((cat) => cat?.industry_item || []);
+  }, [industryData, initialProducts, activeCategoryId]);
 
   const visibleItems = allItems.slice(0, (currentPage + 1) * ITEMS_PER_PAGE);
 
@@ -52,19 +68,17 @@ export const EquipmentGrid = ({
       {allItems.length === 0 && (
         <div className="flex w-full justify-center py-12">
           <p className="text-liteDescriptionColor font-['Segoe_UI'] text-base">
-            No equipment found in this category
+            {emptyMessage}
           </p>
         </div>
       )}
 
       {visibleItems.length < allItems.length && (
         <div className="flex w-full items-center justify-center pt-2">
-          <button
+          <ButtonReuseable
+            title="Load More"
             onClick={() => setCurrentPage((prev) => prev + 1)}
-            className="mt-4 px-4 py-2 cursor-pointer disabled:bg-bgColor disabled:text-grayColor1 disabled:cursor-not-allowed  bg-primaryColor text-white rounded"
-          >
-            Load more
-          </button>
+          />
         </div>
       )}
     </div>

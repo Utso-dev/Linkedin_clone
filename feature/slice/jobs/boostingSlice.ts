@@ -9,6 +9,14 @@ const boostingSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["boosting"],
     }),
+    getBoostingAdvertisementCampaign: build.query({
+      query: (params) => ({
+        url: `/industry/boost-campaigns`,
+        method: "GET",
+        params,
+      }),
+      providesTags: ["boosting"],
+    }),
     getBoostingPosts: build.query({
       query: (params) => ({
         url: `/job-boosting/list`,
@@ -38,6 +46,20 @@ const boostingSlice = baseApiSlice.injectEndpoints({
         body,
       }),
     }),
+    pauseBoostingCampaign: build.mutation({
+      query: (boostId: string | number) => ({
+        url: `/industry/boost/campaigns/${boostId}/pause`,
+        method: "POST",
+      }),
+      invalidatesTags: ["boosting", "Advertisement"],
+    }),
+    resumeBoostingCampaign: build.mutation({
+      query: (boostId: string | number) => ({
+        url: `/industry/boost/campaigns/${boostId}/resume`,
+        method: "POST",
+      }),
+      invalidatesTags: ["boosting", "Advertisement"],
+    }),
     purchaseBoost: build.mutation({
       query: ({ productId, ...body }) => ({
         url: `/industry/products/${productId}/boost/purchase`,
@@ -61,6 +83,9 @@ export const {
   useGetBoostingPlanQuery,
   useGetBoostingPostsQuery,
   useGetBoostOrderSummaryQuery,
+  useGetBoostingAdvertisementCampaignQuery,
+  usePauseBoostingCampaignMutation,
+  useResumeBoostingCampaignMutation,
   useLazyGetBoostOrderSummaryQuery,
   useSendBoostOtpMutation,
   useResendBoostOtpMutation,

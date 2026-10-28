@@ -65,7 +65,7 @@ function AdvertismentStatusUpdate({
     }
   };
 
-  const buttonClassName = `inline-flex min-w-27.5 items-center justify-between gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium capitalize outline-none transition-colors ${
+  const buttonClassName = `inline-flex min-w-20.5 items-center justify-between gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium capitalize outline-none transition-colors ${
     disabled || isUpdatingStatus
       ? "cursor-not-allowed opacity-60"
       : "cursor-pointer"

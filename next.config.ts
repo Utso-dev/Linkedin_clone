@@ -41,6 +41,42 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "cleared-month-virgin-murphy.trycloudflare.com",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "8000",
+      },
+      {
+        protocol: "http",
+        hostname: "10.10.9.117",
+        port: "9000",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "8000",
+        pathname: "/storage/",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "8000",
+        pathname: "/storage/",
+      },
+      {
+        protocol: "https",
+        hostname: ".ngrok-free.dev",
+        pathname: "/storage/",
+      },
+      {
+        protocol: "https",
+        hostname: ".ngrok-free.app",
+        pathname: "/storage/**",
+      },
+      {
+        protocol: "https",
         hostname: "images.unsplash.com",
       },
     ],
