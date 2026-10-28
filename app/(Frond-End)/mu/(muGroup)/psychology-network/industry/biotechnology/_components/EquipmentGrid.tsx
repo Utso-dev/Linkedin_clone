@@ -3,19 +3,21 @@
 import { useMemo, useState } from "react";
 
 import { IndustryCategoryType } from "@/lib/type";
+import Link from "next/link";
 import { EquipmentCard } from "./EquipmentCard";
 import { FilterTabs } from "./FilterTabs";
-import ButtonReuseable from "@/components/reusable/CustomButton";
 
 interface EquipmentGridProps {
   industryData?: IndustryCategoryType[] | any[];
   initialProducts?: any[];
   emptyMessage?: string;
+  sectionId?: number | string;
 }
 
 export const EquipmentGrid = ({
   industryData = [],
   initialProducts = [],
+  sectionId,
   emptyMessage = "No items found in this category",
 }: EquipmentGridProps) => {
   const [activeCategoryId, setActiveCategoryId] = useState<number | "all">(
@@ -29,9 +31,7 @@ export const EquipmentGrid = ({
     // 1. If products array was passed directly (from new API response)
     if (initialProducts && initialProducts.length > 0) {
       if (activeCategoryId === "all") return initialProducts;
-      return initialProducts.filter(
-        (p) => p.category_id === activeCategoryId,
-      );
+      return initialProducts.filter((p) => p.category_id === activeCategoryId);
     }
 
     // 2. Fallback for legacy nested structure
@@ -73,14 +73,14 @@ export const EquipmentGrid = ({
         </div>
       )}
 
-      {visibleItems.length < allItems.length && (
-        <div className="flex w-full items-center justify-center pt-2">
-          <ButtonReuseable
-            title="Load More"
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-          />
-        </div>
-      )}
+      <div className="flex w-full items-center justify-center pt-2">
+        <Link
+          href={`/mu/psychology-network/industry/biotechnology/${sectionId}`}
+          className="text-whiteColor px-4 py-2 rounded-sm bg-primaryColor hover:shadow-md "
+        >
+          View All
+        </Link>
+      </div>
     </div>
   );
 };

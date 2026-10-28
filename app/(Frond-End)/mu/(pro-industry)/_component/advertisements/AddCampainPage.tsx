@@ -372,7 +372,7 @@ function AddCampaignContent() {
             )}
 
             {/* 2. Pause / Resume Button */}
-            {isItemActive ? (
+            { item.status === "active" ? (
               <button
                 type="button"
                 disabled={actionLoadingId === item.id}

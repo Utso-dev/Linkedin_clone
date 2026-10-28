@@ -25,7 +25,6 @@ export default function NeuroscienceBiotechnologySectionsPage() {
   const raw = data?.data;
   const sections = raw ? raw : raw.sections || [];
 
-
   return (
     <div className="flex w-full flex-col min-w-0">
       <div className="flex w-full flex-1 flex-col min-w-0">
@@ -40,6 +39,7 @@ export default function NeuroscienceBiotechnologySectionsPage() {
               const categories =
                 section?.categories || section?.industry_category || [];
               const products = section?.products || [];
+              console.log(sectionId, "sectionId");
 
               return (
                 <div
@@ -52,6 +52,7 @@ export default function NeuroscienceBiotechnologySectionsPage() {
                   <EquipmentGrid
                     industryData={categories}
                     initialProducts={products}
+                    sectionId={sectionId}
                   />
                 </div>
               );
