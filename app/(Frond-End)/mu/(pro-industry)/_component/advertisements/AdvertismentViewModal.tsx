@@ -78,7 +78,7 @@ export default function AdvertismentViewModal({
                 {/* Top Product Summary Card */}
                 <div className="grid gap-4 sm:grid-cols-[220px_minmax(0,1fr)]">
                   {/* Product Image */}
-                  <div className="relative aspect-[5/4] overflow-hidden rounded-lg border border-borderColor/60 bg-bgLightColor sm:aspect-auto sm:min-h-60">
+                  <div className="relative aspect-5/4 overflow-hidden rounded-lg border border-borderColor/60 bg-bgLightColor sm:aspect-auto sm:min-h-60">
                     {imageSrc ? (
                       <Image
                         src={imageSrc}
@@ -98,7 +98,7 @@ export default function AdvertismentViewModal({
                   <div className="flex min-w-0 flex-col justify-between gap-5 rounded-lg border border-borderColor bg-bgLightColor p-4 md:p-5">
                     <div className="space-y-4">
                       <div className="flex flex-wrap items-start justify-between gap-3">
-                        <h3 className="min-w-0 break-words text-lg font-semibold leading-tight text-headerColor md:text-xl">
+                        <h3 className="min-w-0 wrap-break-word text-lg font-semibold leading-tight text-headerColor md:text-xl">
                           {ad.product_name || "Product Name"}
                         </h3>
                         <span className="inline-flex shrink-0 items-center rounded-full border border-lightGreenColor2/30 bg-lightGreenColor2/10 px-3 py-1 text-xs font-semibold capitalize text-lightGreenColor2">
@@ -122,15 +122,29 @@ export default function AdvertismentViewModal({
                           </div>
                         ))}
                       </div>
+                      <p className="text-xs  text-grayColor1">
+                        Published{" "}
+                        <span className="font-medium text-descriptionColor">
+                          {dayjs(ad.created_at).format(
+                            "DD MMM YYYY, hh:mm A",
+                          ) || "N/A"}
+                        </span>
+                      </p>
                     </div>
 
                     {/* View, Like, Published On */}
                     <div className="flex flex-wrap items-center justify-between gap-3 border-t border-borderColor/60 pt-3 text-sm text-descriptionColor">
                       <div className="flex items-center gap-4">
                         <p>
-                          <span className="text-grayColor1">Views</span>{" "}
+                          <span className="text-grayColor1">Total Views</span>{" "}
                           <span className="font-semibold text-descriptionColor">
                             {(ad.views_count ?? 0).toLocaleString()}
+                          </span>
+                        </p>
+                        <p>
+                          <span className="text-grayColor1">Unique Views</span>{" "}
+                          <span className="font-semibold text-descriptionColor">
+                            {(ad.unique_views_count ?? 0).toLocaleString()}
                           </span>
                         </p>
                         <p>
@@ -141,14 +155,7 @@ export default function AdvertismentViewModal({
                         </p>
                       </div>
 
-                      <p className="text-xs text-grayColor1">
-                        Published{" "}
-                        <span className="font-medium text-descriptionColor">
-                          {dayjs(ad.created_at).format(
-                            "DD MMM YYYY, hh:mm A",
-                          ) || "N/A"}
-                        </span>
-                      </p>
+                      
                     </div>
                   </div>
                 </div>
