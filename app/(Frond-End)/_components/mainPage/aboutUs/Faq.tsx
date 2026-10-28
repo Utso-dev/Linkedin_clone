@@ -12,7 +12,7 @@ import { useGetAboutUsQuery } from "@/feature/slice/aboutUs/aboutUs";
 export default function FAQ() {
     const { data, error, isLoading } = useGetAboutUsQuery({});
     const item = data?.data.faqs || [];
-    console.log(item, "vai vai")
+   
     return (
         <div className="w-full py-8 md:py-12 lg:py-25 container">
             <div className="mx-auto ">
@@ -35,7 +35,7 @@ export default function FAQ() {
                             <AccordionTrigger className="px-4 md:px-8 py-4 text-left hover:no-underline text-[20px] font-semibold leading-[130%] tracking-[0.1px] text-[#1D1F2C]">
                                 {index + 1}. {faq.question}
                             </AccordionTrigger>
-                            <AccordionContent className="px-4 md:px-8 pb-6 text-[16px] leading-[24px] text-[#777980]">
+                            <AccordionContent className="px-4 md:px-8 pb-6 text-[16px] leading-6 text-[#777980]">
                                 {faq.answer}
                             </AccordionContent>
                         </AccordionItem>

@@ -3,39 +3,20 @@
 import DataTable, { Column } from "@/components/reusable/dashboard/AdminTable";
 import CustomBadge from "@/components/reusable/dashboard/CustomBadge";
 import CustomModal from "@/components/reusable/dashboard/CustomModal";
-import Image from "next/image";
-import userIcon from "@/public/images/admin/parterner.png";
 
-import { useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  ArrowDownToLine,
-  ArrowUpDown,
-  Download,
-  FilterIcon,
-  MoveUpRight,
-  Plus,
-  SearchIcon,
-} from "lucide-react";
+import Pagination from "@/components/reusable/Pagination";
 import CustomDeletModal from "@/components/reusable/dashboard/CustomDeletModal";
+import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
 import CustomTitleDescription from "@/components/reusable/dashboard/CustomTitleDes";
-import { neuroscienceFields } from "@/app/(Frond-End)/mu/(muGroup)/neuroscience-network/_mock/neuroscienceData";
-import { spawn } from "child_process";
-import AddUniversity from "./AddUniversity";
-import EditUniversity from "./EditUniversity";
 import {
   useDeleteUniversityMutation,
   useGetAllStateQuery,
   useGetUniversityQuery,
 } from "@/feature/slice/admin/academia/UniversitySlice";
-import Pagination from "@/components/reusable/Pagination";
-import CustomSelect from "@/components/reusable/dashboard/CustomSelect";
+import { MoveUpRight, Plus, SearchIcon } from "lucide-react";
+import { useState } from "react";
+import AddUniversity from "./AddUniversity";
+import EditUniversity from "./EditUniversity";
 
 interface UniversityQueryParams {
   search?: string;

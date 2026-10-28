@@ -17,7 +17,6 @@ import {
 } from "@/public/svgIcons/Icons";
 import { FileText, Zap } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import AdvertismentStatusUpdate from "./AdvertismentStatusUpdate";
 import ProductAction from "./ProductAction";
 
@@ -112,13 +111,12 @@ export default function AdvertisementsPage() {
               )}
             </div>
             <div className="min-w-0">
-              <Link
-                href={`/mu/products/${row.id}`}
+              <h4
                 title={row.product_name}
                 className="text-sm font-semibold text-headerColor hover:text-primaryColor transition-colors block truncate max-w-xs"
               >
                 {row.product_name}
-              </Link>
+              </h4>
               <p className="text-xs text-descriptionColor truncate mt-0.5">
                 {row.industry?.name ||
                   row.creator?.name ||

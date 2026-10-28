@@ -3,15 +3,15 @@
 import { IndustryCategoryType } from "@/lib/type";
 
 interface FilterTabsProps {
-  activeCategoryId: number | "all";
+  activeCategoryId: number | string | "all";
   onFilterChange: (id: number | "all") => void;
-  industryData: IndustryCategoryType[];
+  industryData: (IndustryCategoryType | { id: number; category_name: string } | any)[];
 }
 
 export const FilterTabs = ({
   activeCategoryId,
   onFilterChange,
-  industryData,
+  industryData = [],
 }: FilterTabsProps) => {
   return (
     <div className="w-full">
@@ -27,19 +27,22 @@ export const FilterTabs = ({
         >
           All
         </button>
-        {industryData.map((category, index) => (
-          <button
-            key={category.id}
-            onClick={() => onFilterChange(category.id)}
-            className={`shrink-0 flex items-center justify-center gap-2.5 whitespace-nowrap px-5 py-2 font-['Segoe_UI'] text-sm font-medium transition ${
-              activeCategoryId === category.id
-                ? "bg-[#ECEFF3] text-black"
-                : "bg-white text-[#78797E] hover:bg-[#ECEFF3] hover:text-black"
-            }`}
-          >
-            {category?.category_name}
-          </button>
-        ))}
+        {(industryData || []).map((category) => {
+          const isSelected = String(activeCategoryId) === String(category.id);
+          return (
+            <button
+              key={category.id}
+              onClick={() => onFilterChange(category.id)}
+              className={`shrink-0 flex items-center justify-center gap-2.5 whitespace-nowrap px-5 py-2 font-['Segoe_UI'] text-sm font-medium transition ${
+                isSelected
+                  ? "bg-[#ECEFF3] text-black"
+                  : "bg-white text-[#78797E] hover:bg-[#ECEFF3] hover:text-black"
+              }`}
+            >
+              {category?.category_name}
+            </button>
+          );
+        })}
         </div>
       </div>
     </div>

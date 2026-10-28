@@ -148,7 +148,7 @@ export default function ProUser() {
       setJobs((prevJobs) =>
         prevJobs.filter((item) => item.id !== selectedJob.id),
       );
-      console.log(`Deleted user with ID: ${selectedJob.id}`);
+  
       setDeleteOpen(false);
       setSelectedJob(null);
     }

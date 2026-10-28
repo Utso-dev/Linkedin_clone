@@ -12,7 +12,7 @@ function ConnectionUserCard({ profile }: { profile: ConnectionRequestType }) {
 
   const [requestSent, setRequestSent] = useState<any>();
   const [sendRequest, { isLoading }] = useSendRequestMutation();
-  console.log(requestSent, "check connections");
+
   const handleConnect = async () => {
     const payload = {
       user_id: user.id,

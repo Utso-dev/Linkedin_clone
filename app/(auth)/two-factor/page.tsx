@@ -47,7 +47,7 @@ export default function page() {
         email: email,
       };
       const response = await twoFactorRecoveryEmail(payload).unwrap();
-      console.log(response);
+     
       route.push(
         `/recovery-email?email=${email}&recovery=${response?.masked_email}`,
       );

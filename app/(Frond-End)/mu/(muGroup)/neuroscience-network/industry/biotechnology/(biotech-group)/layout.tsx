@@ -5,12 +5,12 @@ import {
   useGetProductFeedQuery,
 } from "@/feature/slice/biotechnologySlice";
 import { LayoutGrid, Menu } from "lucide-react";
-import React, { useMemo } from "react";
+import React from "react";
 import {
   IndustryFeedTabItem,
   IndustryFeedTabs,
   IndustryHeader,
-} from "../_components";
+} from "../../_components";
 
 function NeuroscienceBioTechLayout({
   children,
@@ -37,24 +37,22 @@ function NeuroscienceBioTechLayout({
     feedData?.total ||
     0;
 
-
-
-  const tabs: IndustryFeedTabItem[] =  [
-      {
-        id: "all-products",
-        label: "All Products View",
-        href: "/mu/neuroscience-network/industry/biotechnology",
-        icon: <LayoutGrid className="w-4 h-4" />,
-        count: productsCount,
-      },
-      {
-        id: "sections",
-        label: "Section-wise View",
-        href: "/mu/neuroscience-network/industry/biotechnology/sections",
-        icon: <Menu className="w-4 h-4" />,
-        count: sectionsCount,
-      },
-    ]
+  const tabs: IndustryFeedTabItem[] = [
+    {
+      id: "all-products",
+      label: "All Products View",
+      href: "/mu/neuroscience-network/industry/biotechnology",
+      icon: <LayoutGrid className="w-4 h-4" />,
+      count: productsCount,
+    },
+    {
+      id: "sections",
+      label: "Section-wise View",
+      href: "/mu/neuroscience-network/industry/biotechnology/sections",
+      icon: <Menu className="w-4 h-4" />,
+      count: sectionsCount,
+    },
+  ];
 
   return (
     <div className="w-full flex flex-col">
@@ -67,7 +65,10 @@ function NeuroscienceBioTechLayout({
       </div>
 
       {/* Common Tabs Navigation and Search */}
-      <IndustryFeedTabs initialPath="/mu/neuroscience-network/industry/biotechnology" tabs={tabs} />
+      <IndustryFeedTabs
+        initialPath="/mu/neuroscience-network/industry/biotechnology"
+        tabs={tabs}
+      />
 
       {children}
     </div>

@@ -1,23 +1,20 @@
 "use client";
 
 import {
-  ExternalLink,
-  Globe2,
-  Tag,
-} from "lucide-react";
-import {
   useFollowIndustryMutation,
   useLikebyIndustryProductMutation,
 } from "@/feature/slice/jobs/industrySlice";
-import { LikeIcon, OpenEyeIcon } from "@/public/svgIcons/Icons";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
 import {
   useAdvertisementsClickMutation,
   useAdvertisementsImpressionMutation,
 } from "@/feature/slice/post/postSlice";
 import emptyImage from "@/public/empty_user.jpg";
+import { LikeIcon, OpenEyeIcon } from "@/public/svgIcons/Icons";
 import fallbackProductImage from "@/public/xray.jpg";
+import { ExternalLink, Globe2, Tag } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 type SponsoredAd = {
   id: string | number;
@@ -36,7 +33,13 @@ type SponsoredAd = {
   views_count?: number;
   is_liked?: boolean;
   company?: { name?: string; logo?: string; tagline?: string };
-  industry?: { id?: number; name?: string; logo?: string; tagline?: string; is_following?: boolean };
+  industry?: {
+    id?: number;
+    name?: string;
+    logo?: string;
+    tagline?: string;
+    is_following?: boolean;
+  };
   section_name?: string;
   category_name?: string;
   tags?: string[];
@@ -133,11 +136,14 @@ function PostAddedCard({ ad }: { ad: SponsoredAd }) {
               campaign_ids: [ad.ad_campaign_id],
               placement: "newsfeed",
             })
-            .unwrap()
-            .catch((error) => {
-              impressionSentRef.current = false;
-              console.error("Failed to record advertisement impression:", error);
-            });
+              .unwrap()
+              .catch((error) => {
+                impressionSentRef.current = false;
+                console.error(
+                  "Failed to record advertisement impression:",
+                  error,
+                );
+              });
           }, 1000);
         } else if (!entry?.isIntersecting || entry.intersectionRatio < 0.5) {
           clearVisibilityTimer();
@@ -186,7 +192,9 @@ function PostAddedCard({ ad }: { ad: SponsoredAd }) {
     const previousLiked = isLiked;
     const previousCount = likesCount;
     setIsLiked(!previousLiked);
-    setLikesCount(previousLiked ? Math.max(0, previousCount - 1) : previousCount + 1);
+    setLikesCount(
+      previousLiked ? Math.max(0, previousCount - 1) : previousCount + 1,
+    );
 
     try {
       await likeIndustryProduct(ad.product_id).unwrap();
@@ -226,11 +234,14 @@ function PostAddedCard({ ad }: { ad: SponsoredAd }) {
             />
           </div>
           <div className="min-w-0">
-            <p className="truncate font-semibold text-slate-900">
+            <Link
+              href={`/mu/industry/${ad?.industry?.id}`}
+              className="truncate font-semibold text-slate-900"
+            >
               {ad.industry?.name || "Sponsored"}
-            </p>
+            </Link>
             <p className="truncate text-xs flex items-center gap-1 text-slate-500">
-              {ad.industry?.tagline || "Sponsored"} 
+              {ad.industry?.tagline || "Sponsored"}
               <Globe2 className="inline h-3 w-3" />
             </p>
             <p className="text-xs font-medium text-primaryColor">Promoted</p>
@@ -253,7 +264,6 @@ function PostAddedCard({ ad }: { ad: SponsoredAd }) {
       </div>
 
       <div className="px-3 pb-3">
-        
         {description && (
           <div className="mt-2 text-sm leading-6 text-headerColor">
             {isExpanded ? description : shortDescription}

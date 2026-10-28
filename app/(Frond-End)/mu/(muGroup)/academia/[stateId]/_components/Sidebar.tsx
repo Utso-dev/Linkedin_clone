@@ -70,7 +70,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       return navigationItems.some((item) => item.redirectKey === key);
     });
 
-    console.log("Parsed redirect URL:", { redirectUrl, state, idx, parts });
+    
 
     setCurrentIndex(idx !== -1 ? idx : parts.length);
     if (state) {

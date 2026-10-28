@@ -47,7 +47,7 @@ function ProfileConnectionAction({ profileData, userId }) {
 
 
   const handleConnect = async (id) => {
-    console.log("ksdjflk;asdfkas;lfkd", id);
+
 
     const payload = {
       user_id: profileData?.id,

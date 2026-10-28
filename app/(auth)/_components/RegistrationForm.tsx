@@ -34,7 +34,7 @@ function RegistrationForm() {
   const [showPassword, setShowPassword] = useState(false);
   const route = useRouter();
   const onSubmit = async (data: RegFromData) => {
-    console.log("click");
+  
 
     try {
       const response = await registration(data).unwrap();

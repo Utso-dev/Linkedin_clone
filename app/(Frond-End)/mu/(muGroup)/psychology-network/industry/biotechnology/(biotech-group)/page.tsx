@@ -7,13 +7,13 @@ import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { EquipmentCard } from "../_components";
 
-export default function NeuroscienceBiotechnologyPage() {
+export default function BiotechnologyPage() {
   const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
 
   const queryParams = useMemo(() => {
     return {
-      network_type: "neuroscience",
+      network_type: "psychology",
       industry_type: "biotechnology",
       view: "all",
       per_page: 12,

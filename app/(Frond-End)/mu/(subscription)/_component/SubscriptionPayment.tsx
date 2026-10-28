@@ -235,7 +235,7 @@ const CheckoutForm = ({ planDetails }) => {
 };
 
 export default function SubscriptionPayment({ pymentId }) {
-  console.log(pymentId, "id");
+
 
   const {
     data: planDetails,

@@ -13,7 +13,6 @@ export default async function PostList({ url }: { url?: string }) {
   } catch (err) {
     console.error("PostList server fetch error:", err);
   }
-  console.log(initialData, "initialData========");
 
   return (
     <PostListClient initialData={initialData} initialUrl={url} limit={limit} />

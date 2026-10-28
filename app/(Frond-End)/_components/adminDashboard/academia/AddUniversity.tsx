@@ -69,7 +69,7 @@ export default function AddUniversity({ onClose }: AddUniversityProps) {
         website: formData.website,
       };
 
-      console.log("Create University Payload:", payload);
+  
 
       const response = await createUniversity(payload).unwrap();
       toast.success(response?.message);

@@ -10,7 +10,7 @@ interface PublicationCardProps {
 
 export const PublicationCard = ({ publication }: PublicationCardProps) => {
   const pathName = usePathname();
-  console.log(pathName);
+ 
   return (
     <div className="group flex w-full flex-col items-start gap-3.25 self-stretch border-b border-borderColor md:p-3 py-3 hover:bg-sectionColor">
       {/* Journal and Tag Row */}

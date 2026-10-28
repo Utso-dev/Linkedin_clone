@@ -2,18 +2,19 @@
 
 import IndustrySkleton from "@/components/reusable/All Skleton/IndustrySkleton";
 import { useGetBiotechnologyQuery } from "@/feature/slice/biotechnologySlice";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { EquipmentGrid } from "../../_components";
 
-export default function NeurosciencePsychopharmacologySectionsPage() {
+export default function BiotechnologySectionsPage() {
   const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
 
   const queryParams = useMemo(
     () => ({
-      network_type: "neuroscience",
-      industry_type: "psychotropics",
+      network_type: "psychology",
+      industry_type: "biotechnology",
       view: "overview",
       ...(search.trim() ? { search: search.trim() } : {}),
     }),
@@ -22,8 +23,12 @@ export default function NeurosciencePsychopharmacologySectionsPage() {
 
   const { data, isLoading } = useGetBiotechnologyQuery(queryParams);
 
-  const raw = data?.data;
-  const sections = raw ? raw : raw.sections || [];
+  const sections = useMemo(() => {
+    const raw = data?.data;
+    if (Array.isArray(raw)) return raw;
+    if (Array.isArray(raw?.sections)) return raw.sections;
+    return [];
+  }, [data]);
 
   return (
     <div className="flex w-full flex-col min-w-0">
@@ -52,6 +57,15 @@ export default function NeurosciencePsychopharmacologySectionsPage() {
                     industryData={categories}
                     initialProducts={products}
                   />
+
+                  <div className="flex w-full items-center justify-center pt-2">
+                    <Link
+                      href={`/mu/psychology-network/industry/biotechnology/${sectionId}`}
+                      className="text-whiteColor px-4 py-2 rounded-sm bg-primaryColor hover:shadow-md "
+                    >
+                      View All
+                    </Link>
+                  </div>
                 </div>
               );
             })

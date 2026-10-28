@@ -187,7 +187,7 @@ export default function PublicationPage() {
       formatter: (_: any, row: any) => <PublicationAction ispremium={isPremium} row={row} />,
     },
   ];
-console.log(isPremium,"isPremium");
+
 
   return (
     <div className="w-full space-y-7 pb-10">

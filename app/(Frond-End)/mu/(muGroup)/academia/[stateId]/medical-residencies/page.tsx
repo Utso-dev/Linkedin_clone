@@ -38,7 +38,7 @@ export default function page() {
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.set("search", query);
     setSearchItem(query);
-    console.log(searchParams.toString());
+   
   };
 
   useEffect(() => {

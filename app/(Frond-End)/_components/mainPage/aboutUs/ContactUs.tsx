@@ -8,15 +8,15 @@ import ContactForm from "../../ContactForm";
 export default function ContactUs() {
   const { data, error, isLoading } = useGetAboutUsQuery({});
   const item = data?.data.leading_institutions || [];
-  console.log(item, "vai vai");
+
   return (
     <div className="py-8 md:py-14 lg:py-25 ">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 container">
         <div className="">
-          <h4 className="text-[#000] text-[32px] md:text-4xl lg:text-5xl font-semibold leading-normal text-center md:text-start">
+          <h4 className="text-black text-[32px] md:text-4xl lg:text-5xl font-semibold leading-normal text-center md:text-start">
             Contact Us{" "}
           </h4>
-          <p className="text-[#494949] text-xl font-normal leading-130% mt-2 max-w-[522px] ">
+          <p className="text-[#494949] text-xl font-normal leading-130% mt-2 max-w-130.5 ">
             Have a question or suggestion? Found a mistake?{" "}
           </p>
 

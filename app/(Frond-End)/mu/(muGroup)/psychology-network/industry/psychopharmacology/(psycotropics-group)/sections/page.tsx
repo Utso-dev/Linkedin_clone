@@ -4,16 +4,17 @@ import IndustrySkleton from "@/components/reusable/All Skleton/IndustrySkleton";
 import { useGetBiotechnologyQuery } from "@/feature/slice/biotechnologySlice";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import { EquipmentGrid } from "../_components";
+import { EquipmentGrid } from "../../../_components";
+import Link from "next/link";
 
-export default function BiotechnologySectionsPage() {
+export default function PsychopharmacologySectionsPage() {
   const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
 
   const queryParams = useMemo(
     () => ({
       network_type: "psychology",
-      industry_type: "biotechnology",
+      industry_type: "psychotropics",
       view: "overview",
       ...(search.trim() ? { search: search.trim() } : {}),
     }),
@@ -55,7 +56,16 @@ export default function BiotechnologySectionsPage() {
                   <EquipmentGrid
                     industryData={categories}
                     initialProducts={products}
+                    sectionId={sectionId}
                   />
+                  <div className="flex w-full items-center justify-center pt-2">
+                    <Link
+                      href={`/mu/psychology-network/industry/psychopharmacology/${sectionId}`}
+                      className="text-whiteColor px-4 py-2 rounded-sm bg-primaryColor hover:shadow-md "
+                    >
+                      View All
+                    </Link>
+                  </div>
                 </div>
               );
             })
