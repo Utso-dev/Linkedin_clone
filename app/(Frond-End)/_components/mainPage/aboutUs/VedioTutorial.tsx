@@ -68,7 +68,7 @@ export default function VideoTutorial() {
                     <p className="text-primaryColor text-xl font-semibold  ">
                         Key Features
                     </p>
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-[#000] mt-3">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-black mt-3">
                         Video Tutorial
                     </h2>
                     <p className="text-[#404040] mt-4 text-lg font-normal max-w-2xl">
@@ -153,7 +153,7 @@ export default function VideoTutorial() {
                             <div
                                 key={video.file_url || video.url}
                                 onClick={() => handleVideoSelect(video)}
-                                className={`flex-shrink-0 w-[200px] md:w-[260px] bg-white rounded-sm overflow-hidden border-2 cursor-pointer transition-all duration-300  ${selectedVideo?.title === video.title
+                                className={`shrink-0 w-50 md:w-65 bg-white rounded-sm overflow-hidden border-2 cursor-pointer transition-all duration-300  ${selectedVideo?.title === video.title
                                     ? "border-primaryColor "
                                     : "border-[#EDEDED] hover:border-primaryColor/50"
                                     }`}
@@ -213,14 +213,14 @@ export default function VideoTutorial() {
                         onClick={scrollLeft}
                         className="absolute -left-3 md:-left-5 top-1/2 -translate-y-1/2 bg-white shadow-xl p-2 md:p-3 rounded-full border border-[#EDEDED] hover:bg-gray-50  transition-all z-10 hover:border-primaryColor"
                     >
-                        <ArrowLeft size={22} className="text-[#1A1A1A] md:w-6 md:h-6" />
+                        <ArrowLeft size={22} className="text-headerColor md:w-6 md:h-6" />
                     </button>
 
                     <button
                         onClick={scrollRight}
                         className="absolute -right-3 md:-right-5 top-1/2 -translate-y-1/2 bg-white shadow-xl p-2 md:p-3 rounded-full border border-[#EDEDED] hover:bg-gray-50 hover:shadow-2xl transition-all z-10 hover:border-primaryColor"
                     >
-                        <ArrowRight size={22} className="text-[#1A1A1A] md:w-6 md:h-6" />
+                        <ArrowRight size={22} className="text-headerColor md:w-6 md:h-6" />
                     </button>
                 </div>
             </div>

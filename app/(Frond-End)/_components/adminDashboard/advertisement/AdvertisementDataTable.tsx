@@ -292,7 +292,7 @@ export default function AdvertisementTable() {
             {/* Export */}
 
             {/* Search */}
-            <div className="relative w-full w-auto">
+            <div className="relative w-full md:w-auto">
               <SearchIcon className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#808897]" />
 
               <input
@@ -303,7 +303,7 @@ export default function AdvertisementTable() {
             </div>
 
             <CustomSelect
-              className=" h-[38px]"
+              className=" h-9.5"
               value={sort}
               onChange={(value: string) =>
                 setSort(value === "default" ? "" : value)
@@ -330,7 +330,7 @@ export default function AdvertisementTable() {
 
             <CustomSelect
               value={sort}
-              className=" h-[38px]"
+              className=" h-9.5"
               onChange={(value: string) =>
                 setSort(value === "All Status" ? "" : value)
               }
@@ -346,7 +346,7 @@ export default function AdvertisementTable() {
               ]}
             />
             <DateRangePicker
-              className=" h-[38px]"
+              className=" h-9.5"
               date={date}
               setDate={setDate}
               placeholder="Select date range"
