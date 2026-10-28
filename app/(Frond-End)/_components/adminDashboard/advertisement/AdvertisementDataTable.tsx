@@ -145,7 +145,6 @@ export default function AdvertisementTable() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [sort, setSort] = useState("default");
   const [addOpen, setAddOpen] = useState(false);
-
   const [date, setDate] = useState<DateRange | undefined>(undefined);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
