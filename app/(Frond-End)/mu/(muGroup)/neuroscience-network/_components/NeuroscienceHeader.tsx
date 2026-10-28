@@ -4,8 +4,7 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { SearchInput } from "./SearchInput";
-import { FilterButton } from "./FilterButton";
+import { SearchInput, FilterButton } from "../../psychology-network/_components";
 
 interface NeuroscienceHeaderProps {
     onSearch?: (value: string) => void;

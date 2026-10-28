@@ -8,8 +8,8 @@ import {
 import { ChevronDown } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
 import { useState } from "react";
-import { IndustryHeader } from "./IndustryHeader";
-import { IndustryNavItem } from "./IndustryNavItem";
+import { IndustryHeader } from "../../../psychology-network/industry/_components/IndustryHeader";
+import { IndustryNavItem } from "../../../psychology-network/industry/_components/IndustryNavItem";
 
 export const IndustrySidebar = () => {
   const params = useParams();

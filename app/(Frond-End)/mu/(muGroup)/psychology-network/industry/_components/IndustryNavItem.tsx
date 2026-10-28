@@ -20,14 +20,29 @@ export const IndustryNavItem = ({
   onClick,
 }: IndustryNavItemProps) => {
   const pathname = usePathname();
-  const isActive = pathname === href;
+
+  const cleanPath = (pathname || "").replace(/\/+$/, "");
+  const cleanHref = (href || "").replace(/\/+$/, "");
+
+  // Match exact route or sub-routes (e.g. /sections, /[sectionId])
+  const isDirectMatch =
+    cleanPath === cleanHref || cleanPath.startsWith(`${cleanHref}/`);
+
+  // Cross-network fallback: match industry segment (e.g. 'biotechnology', 'psychopharmacology', 'publications')
+  const hrefIndustry = cleanHref.split("/industry/")[1]?.split("/")[0];
+  const pathIndustry = cleanPath.split("/industry/")[1]?.split("/")[0];
+  const isIndustryMatch = Boolean(
+    hrefIndustry && pathIndustry && hrefIndustry === pathIndustry
+  );
+
+  const isActive = isDirectMatch || isIndustryMatch;
 
   return (
     <Link
       href={href}
       onClick={onClick}
       className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 transition ${
-        isActive ? "bg-[#D3F4EF]" : "bg-white hover:bg-[#F6F8FA]"
+        isActive ? "bg-lightGreenColor" : "bg-white hover:bg-sectionColor"
       }`}
     >
       <span className="flex h-5 w-5 items-center justify-center">{icon}</span>
