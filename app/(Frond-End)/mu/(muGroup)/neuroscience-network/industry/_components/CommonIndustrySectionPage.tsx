@@ -1,6 +1,7 @@
 "use client";
 
 import IndustrySkleton from "@/components/reusable/All Skleton/IndustrySkleton";
+import CustomBackButton from "@/components/reusable/CustomBackButton";
 import { useGetProductFeedQuery } from "@/feature/slice/biotechnologySlice";
 import { useCursorQuery } from "@/hooks/useCursorPagination";
 import { useParams } from "next/navigation";
@@ -22,7 +23,9 @@ export default function CommonIndustrySectionPage({
   const params = useParams();
   const effectiveSectionId = section_id ?? params?.sectionId;
 
-  const [activeCategoryId, setActiveCategoryId] = useState<number | "all">("all");
+  const [activeCategoryId, setActiveCategoryId] = useState<number | "all">(
+    "all",
+  );
 
   const queryParams = {
     per_page: 12,
@@ -48,18 +51,19 @@ export default function CommonIndustrySectionPage({
 
   return (
     <div className="flex w-full flex-1 flex-col min-w-0">
-      <div className="flex w-full flex-col gap-6 py-6 min-w-0">
-        {/* Top Header: Network and Section Name */}
+      <div className="flex w-full flex-col gap-6 pb-6 min-w-0">
         <div className="flex w-full flex-col gap-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-primaryColor">
-            {data?.network_type || network_type} network
-          </span>
+          <div className="flex items-center gap-3">
+            <CustomBackButton />
+            <span className="text-xs font-semibold uppercase tracking-wider text-primaryColor">
+              {data?.network_type || network_type} network
+            </span>
+          </div>
           <h1 className="text-2xl md:text-3xl font-semibold text-[#1D1F2C]">
             {data?.section_name}
           </h1>
         </div>
 
-        {/* FilterTabs */}
         <div className="w-full">
           <FilterTabs
             activeCategoryId={activeCategoryId}
@@ -68,7 +72,6 @@ export default function CommonIndustrySectionPage({
           />
         </div>
 
-        {/* Products Grid */}
         {isInitialLoading ? (
           <IndustrySkleton />
         ) : products.length > 0 ? (

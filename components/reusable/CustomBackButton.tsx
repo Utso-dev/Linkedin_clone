@@ -1,7 +1,6 @@
 "use client";
-import { LeftArrowIcon } from "@/public/svgIcons/Icons";
 import { useRouter } from "next/navigation";
-import React from "react";
+import { FaChevronLeft } from "react-icons/fa";
 
 function CustomBackButton({
   className,
@@ -14,10 +13,10 @@ function CustomBackButton({
   return (
     <button
       aria-label="back-network-sidebar"
-      className={`flex items-center cursor-pointer gap-2 ${className}`}
+      className={`flex items-center cursor-pointer gap-1.5 ${className}`}
       onClick={() => router.back()}
     >
-      <LeftArrowIcon className={`w-4 h-4 ${iconClassName}`} />
+      <FaChevronLeft className={`w-3.5 h-3.5 ${iconClassName}`} />
       Back
     </button>
   );

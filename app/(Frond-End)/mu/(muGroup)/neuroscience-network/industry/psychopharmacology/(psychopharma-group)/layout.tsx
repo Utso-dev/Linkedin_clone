@@ -5,12 +5,12 @@ import {
   useGetProductFeedQuery,
 } from "@/feature/slice/biotechnologySlice";
 import { LayoutGrid, Menu } from "lucide-react";
-import React, { useMemo } from "react";
+import React from "react";
 import {
   IndustryFeedTabItem,
   IndustryFeedTabs,
   IndustryHeader,
-} from "../_components";
+} from "../../_components";
 
 function NeurosciencePsycopharmaLayout({
   children,
@@ -33,29 +33,28 @@ function NeurosciencePsycopharmaLayout({
   const raw = pharmaData?.data;
   const sectionsCount = raw?.length || raw?.sections?.length || 0;
 
-
   const productsCount =
     feedData?.pagination?.total ||
     feedData?.total_products ||
     feedData?.total ||
     0;
 
-  const tabs: IndustryFeedTabItem[] =  [
-      {
-        id: "all-products",
-        label: "All Products View",
-        href: "/mu/neuroscience-network/industry/psychopharmacology",
-        icon: <LayoutGrid className="w-4 h-4" />,
-        count: productsCount,
-      },
-      {
-        id: "sections",
-        label: "Section-wise View",
-        href: "/mu/neuroscience-network/industry/psychopharmacology/sections",
-        icon: <Menu className="w-4 h-4" />,
-        count: sectionsCount,
-      },
-    ]
+  const tabs: IndustryFeedTabItem[] = [
+    {
+      id: "all-products",
+      label: "All Products View",
+      href: "/mu/neuroscience-network/industry/psychopharmacology",
+      icon: <LayoutGrid className="w-4 h-4" />,
+      count: productsCount,
+    },
+    {
+      id: "sections",
+      label: "Section-wise View",
+      href: "/mu/neuroscience-network/industry/psychopharmacology/sections",
+      icon: <Menu className="w-4 h-4" />,
+      count: sectionsCount,
+    },
+  ];
 
   return (
     <div className="w-full flex flex-col">
@@ -68,7 +67,10 @@ function NeurosciencePsycopharmaLayout({
       </div>
 
       {/* Common Tabs Navigation and Search */}
-      <IndustryFeedTabs initialPath="/mu/neuroscience-network/industry/psychopharmacology" tabs={tabs} />
+      <IndustryFeedTabs
+        initialPath="/mu/neuroscience-network/industry/psychopharmacology"
+        tabs={tabs}
+      />
 
       {children}
     </div>

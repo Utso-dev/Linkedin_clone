@@ -5,15 +5,15 @@ import { useGetProductFeedQuery } from "@/feature/slice/biotechnologySlice";
 import { useCursorQuery } from "@/hooks/useCursorPagination";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import { EquipmentCard } from "../_components";
+import { EquipmentCard } from "../../_components";
 
-export default function PsychopharmacologyPage() {
+export default function NeurosciencePsychopharmacologyPage() {
   const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
 
   const queryParams = useMemo(() => {
     return {
-      network_type: "psychology",
+      network_type: "neuroscience",
       industry_type: "psychotropics",
       view: "all",
       per_page: 12,
