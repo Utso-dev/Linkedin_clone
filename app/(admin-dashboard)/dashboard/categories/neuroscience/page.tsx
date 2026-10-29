@@ -1,4 +1,4 @@
-import NeuroscienceStructurePage from '@/app/(Frond-End)/_components/adminDashboard/categories/neuroscience/NeuroscienceStructurePage'
+import NeuroscienceStructurePage from "@/app/(Front-End)/_components/adminDashboard/categories/neuroscience/NeuroscienceStructurePage";
 
 interface NeurosciencePageProps {
   searchParams: Promise<{

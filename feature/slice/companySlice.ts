@@ -31,7 +31,7 @@ const companySlice = baseApiSlice.injectEndpoints({
         url: `/industry/show/${companyId}`,
         method: "GET",
       }),
-      providesTags: ["Company"],
+      providesTags: ["Company","Post"],
     }),
   }),
 });

@@ -150,7 +150,7 @@ export const UkMap = ({ pathFills = {},redirect }: UkMapProps) => {
             }
 
             const handleClick = () => {
-                console.log(pathGroup)
+              
                 router.push(`/death-notices?region=${pathGroup}&redirect=${redirect}`)
             }
 

@@ -60,6 +60,20 @@ export const postApi = baseApiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Post"],
     }),
+    advertisementsClick: builder.mutation({
+      query: ({ id, placement = "newsfeed" }) => ({
+        url: `/advertisements/${id}/click`,
+        method: "POST",
+        body: { placement },
+      }),
+    }),
+    advertisementsImpression: builder.mutation({
+      query: ({ campaign_ids, placement = "newsfeed" }) => ({
+        url: `/advertisements/impressions`,
+        method: "POST",
+        body: { campaign_ids, placement },
+      }),
+    }),
 
     updateGroupPost: builder.mutation({
       query: ({ id, groupId, body }) => ({
@@ -99,6 +113,8 @@ export const {
   useCreatePostMutation,
   useUpdatePostMutation,
   useUpdateGroupPostMutation,
+  useAdvertisementsClickMutation,
+  useAdvertisementsImpressionMutation,
   useDeletePostMutation,
   useDeleteGroupPostMutation,
 } = postApi;

@@ -1,11 +1,11 @@
-import Resedences from "@/app/(Frond-End)/_components/adminDashboard/academia/Resedences";
+import Resedences from "@/app/(Front-End)/_components/adminDashboard/academia/Resedences";
 
 export default function page() {
-    return (
-        <div>
-            <div>
-                <Resedences />
-            </div>
-        </div>
-    )
+  return (
+    <div>
+      <div>
+        <Resedences />
+      </div>
+    </div>
+  );
 }

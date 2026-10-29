@@ -38,21 +38,79 @@ export const yearOptions = Array.from(
 );
 
 export const employmentTypeOptions = [
-  { value: "Full-time", label: "Full-time" },
-  { value: "Part-time", label: "Part-time" },
-  { value: "Self-employed", label: "Self-employed" },
-  { value: "Freelance", label: "Freelance" },
-  { value: "Contract", label: "Contract" },
-  { value: "Internship", label: "Internship" },
-  { value: "Apprenticeship", label: "Apprenticeship" },
-  { value: "Seasonal", label: "Seasonal" },
+  { value: "full_time", label: "Full-time" },
+  { value: "part_time", label: "Part-time" },
+  { value: "short_term", label: "Short Term" },
+  { value: "contract", label: "Contract" },
+  { value: "internship", label: "Internship" },
+  
 ];
 
 export const locationTypeOptions = [
-  { value: "On-site", label: "On-site" },
-  { value: "Hybrid", label: "Hybrid" },
-  { value: "Remote", label: "Remote" },
+  { value: "on_site", label: "On-site" },
+  { value: "hybrid", label: "Hybrid" },
+  { value: "remote", label: "Remote" },
 ];
+
+ // Status badge styling helper
+  export const getBadgeConfig = (status: string) => {
+    const s = status?.toLowerCase() || "";
+    switch (s) {
+      case "accepted":
+      case "hired":
+        return {
+          label: "Hired",
+          colorClass:
+            "bg-checkBoxColor/10 text-checkBoxColor border-checkBoxColor/30 hover:bg-checkBoxColor/12 [&_svg]:text-checkBoxColor",
+        };
+      case "pending":
+        return {
+          label: "Pending",
+          colorClass:
+            "bg-[#FFFAE7] text-[#BB960B] border-[#FDE99F] hover:bg-[#fef9c3] [&_svg]:text-[#BB960B]",
+        };
+      case "reviewing":
+      case "in progress":
+        return {
+          label: "Reviewed",
+          colorClass:
+            "bg-ratingColor/10 text-ratingColor border-ratingColor/30 hover:bg-ratingColor/12 [&_svg]:text-ratingColor",
+        };
+      case "interview":
+      case "interviewed":
+        return {
+          label: "Interview",
+          colorClass:
+            "bg-blueColor/10 text-blueColor border-blueColor/30 hover:bg-blueColor/12 [&_svg]:text-blueColor",
+        };
+      case "shortlisted":
+        return {
+          label: "Shortlisted",
+          colorClass:
+            "bg-buttonColor/10 text-buttonColor border-buttonColor/30 hover:bg-buttonColor/12 [&_svg]:text-buttonColor",
+        };
+      case "offered":
+        return {
+          label: "Offered",
+          colorClass:
+            "bg-LiteBlueColor/10 text-LiteBlueColor border-LiteBlueColor/30 hover:bg-LiteBlueColor/12 [&_svg]:text-LiteBlueColor",
+        };
+      case "rejected":
+        return {
+          label: "Rejected",
+          colorClass:
+            "bg-redColor/10 text-redColor border-redColor/30 hover:bg-redColor/12 [&_svg]:text-redColor",
+        };
+      default:
+        return {
+          label: status
+            ? status.charAt(0).toUpperCase() + status.slice(1)
+            : "Pending",
+          colorClass:
+            "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 [&_svg]:text-gray-700",
+        };
+    }
+  };
 
 export const monthAliasMap: Record<string, string> = {
   jan: "January",
@@ -381,10 +439,13 @@ export const categoryOptions = [
 ];
 
 export const employmentOfferingOptions = [
-  { value: "state", label: "State and Institution" },
-  { value: "private", label: "Private Practice" },
+  { value: "state_institutions", label: "State Institutions" },
+  { value: "academic_institutions", label: "Academic Institutions" },
+  { value: "private_practice", label: "Private Practice" },
+  { value: "biotech_industry", label: "Biotech Industry" },
+  { value: "psychotropics_industry", label: "Psychotropics Industry" },
+  { value: "publications_industry", label: "Publications Industry" },
 ];
-
 
 export const levelOptions = [
   { value: "Entry-Level", label: "Entry-Level" },

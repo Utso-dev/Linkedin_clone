@@ -188,6 +188,15 @@ export interface PostFeedType {
   is_connected: boolean;
   media: PostMediaType[];
   group: any;
+  industry: {
+    id: number;
+    name: string;
+    logo?: string | null;
+    tagline?: string | null;
+    is_following?: boolean;
+    slug?: string | null;
+  };
+
   created_at: string;
   can_edit: boolean;
   can_delete: boolean;
@@ -197,16 +206,66 @@ export interface IndustryItemType {
   id: number;
   category_id: number;
   title: string;
+  product_name: string;
+  network_type: string;
+  industry_type: string;
+  product_id: string | number;
   tag: string | null;
   sub_title: string;
   description: string;
+  industry: {
+    id: number;
+    name: string;
+    slug: string;
+    logo: string | null;
+    is_own_industry: boolean;
+  };
   image: string;
+  is_liked: boolean;
+  views_count: number;
+  likes_count: number;
   extra_tag: string | null;
   pub_date: string;
   moa: string;
   indication: string;
   image_url: string;
   link: string;
+}
+
+export interface PublicationDataType {
+  id: number;
+  publication_id: string;
+  network_type: "psychology" | "neuroscience" | string;
+  publication_type:
+    | "professional"
+    | "university"
+    | "freelance"
+    | "other"
+    | string;
+  title: string;
+  slug: string;
+  authors: string[];
+  abstract: string;
+  short_abstract: string;
+  website_url: string | null;
+  attachment_url: string | null;
+  creator?: {
+    id: number;
+    name: string;
+    username: string;
+    profile_image: string | null;
+  };
+  industry?: {
+    id: number;
+    name: string;
+    logo: string | null;
+  };
+  views_count: number;
+  likes_count: number;
+  is_liked: boolean;
+  status: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface IndustryCategoryType {
@@ -242,12 +301,14 @@ export interface JobDetails {
   website: string;
   salary_min: string;
   salary_max: string;
+  salary_type: string;
+  is_applied: boolean;
   tags: string[];
   status: string;
   applications_count: number;
   state?: { name: string } | null;
   city?: { name: string } | null;
-  industry?: { name: string; logo?: string | null } | null;
+  industry?: { id: number; name: string; logo?: string | null } | null;
   announcement_start_date: string;
   announcement_end_date: string;
 }
@@ -352,4 +413,42 @@ export interface JobPositionFormData {
   end_date?: Date;
   tags?: string;
   information_confirmed: boolean;
+}
+
+export interface CompanyType {
+  id: number;
+  name: string;
+  slug: string;
+  logo: string;
+  is_own_industry: boolean;
+  website: string;
+}
+
+export interface userJobType {
+  id: number;
+  job_id: string;
+  job_title: string;
+  slug: string;
+  position: string;
+  work_mode: string;
+  employment_type: string;
+  location: string;
+  applications_count: number;
+  created_at_human: string;
+  is_saved: boolean;
+  is_liked: boolean;
+  status: string;
+  is_applied: boolean;
+  application_status: string | null;
+
+  network_type: string;
+  employment_offering: string;
+  category: string;
+  sub_category: string | null;
+  salary_type: string;
+  salary_min: string;
+  salary_max: string;
+  state_id: number;
+  city_id: number;
+  industry: CompanyType;
 }

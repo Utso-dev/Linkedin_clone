@@ -1,9 +1,5 @@
-import BiotechnologyPage from '@/app/(Frond-End)/_components/adminDashboard/psychology/biotechnology/BiotechnologyPage'
-import React from 'react'
-
+import BiotechnologyPage from "@/app/(Front-End)/_components/adminDashboard/psychology/biotechnology/BiotechnologyPage";
 
 export default function page() {
-  return (
-    <BiotechnologyPage />
-  )
+  return <BiotechnologyPage />;
 }

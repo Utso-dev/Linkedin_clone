@@ -25,6 +25,13 @@ const settingSlice = baseApiSlice.injectEndpoints({
       }),
       providesTags: ["User"],
     }),
+    getAllBilingHistory: builder.query({
+      query: () => ({
+        url: "/billing-history",
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
   }),
 });
 
@@ -32,4 +39,5 @@ export const {
   useGeneralSettingUpdateMutation,
   useGeneralPrivacySettingUpdateMutation,
   useGetAllStatesQuery,
+  useGetAllBilingHistoryQuery,
 } = settingSlice;

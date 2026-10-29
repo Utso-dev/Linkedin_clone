@@ -1,8 +1,5 @@
-import React from 'react'
-import PublicationsPage from '@/app/(Frond-End)/_components/adminDashboard/psychology/publications/PublicationsPage'
+import PublicationsPage from "@/app/(Front-End)/_components/adminDashboard/psychology/publications/PublicationsPage";
 
 export default function page() {
-  return (
-    <PublicationsPage />
-  )
+  return <PublicationsPage />;
 }
