@@ -53,6 +53,7 @@ export default function NeurosciencePsychopharmacologySectionsPage() {
                     industryData={categories}
                     initialProducts={products}
                   />
+                     {section?.has_more && (
                   <div className="flex w-full items-center justify-center pt-2">
                     <Link
                       href={`/mu/neuroscience-network/industry/psychopharmacology/${sectionId}`}
@@ -61,6 +62,7 @@ export default function NeurosciencePsychopharmacologySectionsPage() {
                       View All
                     </Link>
                   </div>
+                     )}
                 </div>
               );
             })
