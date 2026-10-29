@@ -1,6 +1,6 @@
-import BasicUserActivity from "@/app/(Frond-End)/_components/adminDashboard/usermanagement/BasicUser/BasicUserActivity";
-import { initialJobs } from "@/app/(Frond-End)/_components/adminDashboard/usermanagement/BasicUser/BasicUserDemoData";
-import BasicUserDetails from "@/app/(Frond-End)/_components/adminDashboard/usermanagement/BasicUser/BasicUserDetails";
+import BasicUserActivity from "@/app/(Front-End)/_components/adminDashboard/usermanagement/BasicUser/BasicUserActivity";
+import { initialJobs } from "@/app/(Front-End)/_components/adminDashboard/usermanagement/BasicUser/BasicUserDemoData";
+import BasicUserDetails from "@/app/(Front-End)/_components/adminDashboard/usermanagement/BasicUser/BasicUserDetails";
 import Coverphoto from "@/public/images/admin/advertise1.png";
 
 export default async function Page({

@@ -1,11 +1,11 @@
-import Facilites from "@/app/(Frond-End)/_components/adminDashboard/academia/Facilites";
+import Facilites from "@/app/(Front-End)/_components/adminDashboard/academia/Facilites";
 
 export default function page() {
-    return (
-        <div>
-            <div>
-                <Facilites />
-            </div>
-        </div>
-    )
+  return (
+    <div>
+      <div>
+        <Facilites />
+      </div>
+    </div>
+  );
 }

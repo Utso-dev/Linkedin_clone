@@ -1,4 +1,4 @@
-import PremiumeUser from "@/app/(Frond-End)/_components/adminDashboard/usermanagement/PremiumUser/PremiumUser";
+import PremiumeUser from "@/app/(Front-End)/_components/adminDashboard/usermanagement/PremiumUser/PremiumUser";
 
 export default function page() {
   return (

@@ -1,16 +1,15 @@
-import PlanPricingCard from '@/app/(Frond-End)/_components/adminDashboard/subscription/planPricingCard/PlanPricingCard'
-import PlanPricingTable from '@/app/(Frond-End)/_components/adminDashboard/subscription/planPricingCard/PlanPricingTable'
-import React from 'react'
+import PlanPricingCard from "@/app/(Front-End)/_components/adminDashboard/subscription/planPricingCard/PlanPricingCard";
+import PlanPricingTable from "@/app/(Front-End)/_components/adminDashboard/subscription/planPricingCard/PlanPricingTable";
 
 export default function page() {
   return (
     <div>
       <div>
-        <PlanPricingCard/>
+        <PlanPricingCard />
       </div>
-      <div className='mt-4'>
-        <PlanPricingTable/>
+      <div className="mt-4">
+        <PlanPricingTable />
       </div>
     </div>
-  )
+  );
 }

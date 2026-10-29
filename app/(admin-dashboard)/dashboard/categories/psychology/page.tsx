@@ -1,4 +1,4 @@
-import PsychologyStructurePage from '@/app/(Frond-End)/_components/adminDashboard/categories/psychology/PsychologyStructurePage'
+import PsychologyStructurePage from "@/app/(Front-End)/_components/adminDashboard/categories/psychology/PsychologyStructurePage";
 
 interface PsychologyPageProps {
   searchParams: Promise<{

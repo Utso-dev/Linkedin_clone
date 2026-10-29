@@ -1,10 +1,9 @@
-import CreatePlan from '@/app/(Frond-End)/_components/adminDashboard/subscription/planPricingCard/CreatePlan'
-import React from 'react'
+import CreatePlan from "@/app/(Front-End)/_components/adminDashboard/subscription/planPricingCard/CreatePlan";
 
 export default function page() {
   return (
     <div>
-      <CreatePlan/>
+      <CreatePlan />
     </div>
-  )
+  );
 }
