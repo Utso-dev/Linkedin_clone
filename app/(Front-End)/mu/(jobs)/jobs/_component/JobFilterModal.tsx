@@ -1,10 +1,14 @@
 "use client";
 
 import ButtonReuseable from "@/components/reusable/CustomButton";
+import CreatableSelectField from "@/components/reusable/InputFiled/CreatableSelectField";
 import RootDialog from "@/components/reusable/RootDialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useGetStateByCityQuery } from "@/feature/slice/jobs/jobSlice";
+import { useGetAllStatesQuery } from "@/feature/slice/settingSlice";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { skipToken } from "@reduxjs/toolkit/query";
+import React, { useEffect, useMemo, useState } from "react";
 import { EXPERIENCE_LEVEL_OPTIONS, INDUSTRY_OPTIONS, JOB_TYPE_OPTIONS, WORKPLACE_TYPE_OPTIONS } from "./jobdata";
 import { X } from "lucide-react";
 
@@ -24,6 +28,49 @@ function JobFilterModal({ open, setOpen }: JobFilterModalProps) {
     string[]
   >([]);
   const [selectedWorkplaceTypes, setSelectedWorkplaceTypes] = useState<string[]>([]);
+  const [selectedStateId, setSelectedStateId] = useState("");
+  const [selectedCityId, setSelectedCityId] = useState("");
+  const { data: statesData, isLoading: isStateLoading } =
+    useGetAllStatesQuery(undefined);
+
+  const stateOptions = useMemo(
+    () =>
+      (statesData?.data || []).map((state: { id: string | number; name: string }) => ({
+        value: String(state.id),
+        label: state.name,
+      })),
+    [statesData],
+  );
+
+  const selectedState = (statesData?.data || []).find(
+    (state: { id: string | number; code?: string }) =>
+      String(state.id) === selectedStateId,
+  );
+  const selectedStateCode = selectedState?.code;
+  const { data: citiesData, isLoading: isCitiesLoading } =
+    useGetStateByCityQuery(selectedStateCode || skipToken);
+
+  const cityOptions = useMemo(() => {
+    const rawCities = citiesData?.data ?? citiesData ?? [];
+    if (!Array.isArray(rawCities)) return [];
+
+    return rawCities.map(
+      (
+        city:
+          | string
+          | { id?: string | number; name?: string; city?: string },
+      ) => {
+        if (typeof city === "string") {
+          return { value: city, label: city };
+        }
+
+        return {
+          value: String(city.id ?? city.name ?? city.city ?? ""),
+          label: city.name || city.city || String(city.id ?? ""),
+        };
+      },
+    );
+  }, [citiesData]);
 
   // Synchronize state with current URL search params whenever modal opens
   useEffect(() => {
@@ -32,6 +79,8 @@ function JobFilterModal({ open, setOpen }: JobFilterModalProps) {
       const industryParam = searchParams.get("network_type");
       const experienceParam = searchParams.get("experience_level");
       const workplaceParam = searchParams.get("work_mode");
+      const stateParam = searchParams.get("state_id");
+      const cityParam = searchParams.get("city_id");
            
       setSelectedJobTypes(jobTypeParam ? jobTypeParam.split(",") : []);
       setSelectedIndustries(industryParam ? industryParam.split(",") : []);
@@ -39,8 +88,10 @@ function JobFilterModal({ open, setOpen }: JobFilterModalProps) {
         experienceParam ? experienceParam.split(",") : [],
       );
       setSelectedWorkplaceTypes(workplaceParam ? workplaceParam.split(",") : []);
+      setSelectedStateId(stateParam || "");
+      setSelectedCityId(cityParam || "");
     }
-  }, [open, searchParams]);
+  }, [open, searchParams.toString()]);
 
   const toggleSelection = (
     value: string,
@@ -80,6 +131,18 @@ function JobFilterModal({ open, setOpen }: JobFilterModalProps) {
       nextParams.delete("experience_level");
     }
 
+    if (selectedStateId) {
+      nextParams.set("state_id", selectedStateId);
+    } else {
+      nextParams.delete("state_id");
+    }
+
+    if (selectedCityId) {
+      nextParams.set("city_id", selectedCityId);
+    } else {
+      nextParams.delete("city_id");
+    }
+
     const query = nextParams.toString();
     router.replace(query ? `${pathname}?${query}` : pathname);
     setOpen(false);
@@ -89,12 +152,17 @@ function JobFilterModal({ open, setOpen }: JobFilterModalProps) {
     setSelectedJobTypes([]);
     setSelectedIndustries([]);
     setSelectedExperienceLevels([]);
+    setSelectedWorkplaceTypes([]);
+    setSelectedStateId("");
+    setSelectedCityId("");
 
     const nextParams = new URLSearchParams(searchParams.toString());
     nextParams.delete("employment_type");
     nextParams.delete("network_type");
     nextParams.delete("experience_level");
     nextParams.delete("work_mode");
+    nextParams.delete("state_id");
+    nextParams.delete("city_id");
 
     const query = nextParams.toString();
     router.replace(query ? `${pathname}?${query}` : pathname);
@@ -126,6 +194,49 @@ function JobFilterModal({ open, setOpen }: JobFilterModalProps) {
 
         {/* Content Body - Only this section scrolls */}
         <div className="flex-1 px-5 sm:px-6 py-5 space-y-6 overflow-y-auto">
+          {/* Section: State & City */}
+          <div>
+            <h4 className="text-sm font-semibold text-headerColor mb-3">
+              Location
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <label className="space-y-1.5">
+                <span className="text-sm text-descriptionColor">State</span>
+                <CreatableSelectField
+                  value={selectedStateId || undefined}
+                  onChange={(value) => {
+                    setSelectedStateId(value);
+                    setSelectedCityId("");
+                  }}
+                  options={stateOptions}
+                  placeholder={
+                    isStateLoading ? "Loading states..." : "Select State"
+                  }
+                  isDisabled={isStateLoading}
+                  className="w-full"
+                />
+              </label>
+              <label className="space-y-1.5">
+                <span className="text-sm text-descriptionColor">City</span>
+                <CreatableSelectField
+                  key={`city-select-${selectedStateCode || "none"}`}
+                  value={selectedCityId || undefined}
+                  onChange={setSelectedCityId}
+                  options={cityOptions}
+                  placeholder={
+                    !selectedStateId
+                      ? "Select State first"
+                      : isCitiesLoading
+                        ? "Loading cities..."
+                        : "Select City"
+                  }
+                  isDisabled={!selectedStateId || isCitiesLoading}
+                  className="w-full"
+                />
+              </label>
+            </div>
+          </div>
+
           {/* Section: Industry */}
           <div>
             <h4 className="text-sm font-semibold text-headerColor mb-3">
