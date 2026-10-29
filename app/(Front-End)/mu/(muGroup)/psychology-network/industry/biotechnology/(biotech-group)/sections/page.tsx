@@ -23,13 +23,9 @@ export default function BiotechnologySectionsPage() {
 
   const { data, isLoading } = useGetBiotechnologyQuery(queryParams);
 
-  const sections = useMemo(() => {
-    const raw = data?.data;
-    if (Array.isArray(raw)) return raw;
-    if (Array.isArray(raw?.sections)) return raw.sections;
-    return [];
-  }, [data]);
-  console.log(sections, "sections");
+  const raw = data?.data;
+  const sections = Array.isArray(raw) ? raw : raw?.sections || [];
+
 
   return (
     <div className="flex w-full flex-col min-w-0">

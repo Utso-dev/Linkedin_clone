@@ -115,7 +115,7 @@ export default function CommonAnalyticsGraph({
                   <span className="text-gray-600 font-medium">{name}</span>
                 </span>
                 <span className="font-bold text-headerColor">
-                  {Number(entry.value ?? 0).toLocaleString()}
+                  {entry.dataKey === "ctr" ? `${Number(entry.value ?? 0).toLocaleString()}%` : Number(entry.value ?? 0).toLocaleString()}
                 </span>
               </div>
             );

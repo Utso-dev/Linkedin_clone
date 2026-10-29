@@ -24,7 +24,7 @@ export default function NeurosciencePsychopharmacologySectionsPage() {
   const { data, isLoading } = useGetBiotechnologyQuery(queryParams);
 
   const raw = data?.data;
-  const sections = raw ? raw : raw?.sections || [];
+  const sections = Array.isArray(raw) ? raw : raw?.sections || [];
 
   return (
     <div className="flex w-full flex-col min-w-0">

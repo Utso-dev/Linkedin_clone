@@ -10,14 +10,15 @@ import { useGetAdvertisementsQuery } from "@/feature/slice/jobs/analyticSlice";
 import {
   ActiveIcon,
   ApplicantIcon,
-  LikeIcon,
   OpenEyeIcon,
 } from "@/public/svgIcons/Icons";
+import { MousePointerClick, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const GRAPH_SERIES: GraphSeriesItem[] = [
-  { dataKey: "views", name: "Views", color: "#04A1B7" },
-  { dataKey: "likes", name: "Like", color: "#07C3BB" },
+  { dataKey: "impressions", name: "Impressions", color: "#04A1B7" },
+  { dataKey: "clicks", name: "Clicks", color: "#07C3BB" },
+  { dataKey: "ctr", name: "CTR", color: "#F59E0B" },
 ];
 
 export default function AnalyticsAdvertisementPage() {
@@ -30,8 +31,13 @@ export default function AnalyticsAdvertisementPage() {
 
   const analyticsData = response?.data;
   const cards = analyticsData?.cards;
-  const topProducts = analyticsData?.top_performing_products || [];
+  const topCampaigns =
+    analyticsData?.top_performing_campaigns ||
+    analyticsData?.top_performing_products ||
+    [];
   const graph = analyticsData?.graph;
+  const placementsObj = analyticsData?.placements || {};
+  const placementList = Object.values(placementsObj) as any[];
 
   // Active range filter (Weekly | Monthly)
   const [activeRange, setActiveRange] = useState<"weekly" | "monthly">("weekly");
@@ -44,28 +50,33 @@ export default function AnalyticsAdvertisementPage() {
   }, [graph?.active]);
 
   // Direct array from graph response
-  const chartData = graph?.[activeRange] || [];
+  const chartData = (graph?.[activeRange] || []).map((item: any) => ({
+    ...item,
+    impressions: item.impressions ?? item.views ?? 0,
+    clicks: item.clicks ?? item.likes ?? 0,
+    ctr: item.ctr ?? 0,
+  }));
 
   const stateCards = [
     {
-      title: "Total Products",
-      data: cards?.total_products,
+      title: "Total Spend",
+      data: cards?.total_spend,
       icon: ApplicantIcon,
     },
     {
-      title: "Active Products",
-      data: cards?.active_products,
-      icon: ActiveIcon,
-    },
-    {
-      title: "Product Views",
-      data: cards?.product_views,
+      title: "Total Impressions",
+      data: cards?.total_impressions,
       icon: OpenEyeIcon,
     },
     {
-      title: "Total Like",
-      data: cards?.total_likes,
-      icon: LikeIcon,
+      title: "Total Clicks",
+      data: cards?.total_clicks,
+      icon: MousePointerClick,
+    },
+    {
+      title: "Avg CTR",
+      data: cards?.avg_ctr,
+      icon: TrendingUp,
     },
   ];
 
@@ -96,13 +107,16 @@ export default function AnalyticsAdvertisementPage() {
 
   return (
     <div className="space-y-6">
-      {/* 4 State Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      {/* 5 State Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-4 gap-4 sm:gap-5">
         {stateCards.map(({ title, data, icon }) => (
           <CommonStateCard
             key={title}
             title={title}
-            total={data?.total ?? 0}
+            total={
+              data?.formatted ??
+              (data?.total !== undefined ? Number(data.total).toLocaleString() : 0)
+            }
             growthPercentage={data?.growth_percentage ?? 0}
             badgeText={data?.growth ? data.growth.split(" ")[0] : undefined}
             isPositive={data?.is_positive ?? true}
@@ -112,55 +126,57 @@ export default function AnalyticsAdvertisementPage() {
         ))}
       </div>
 
-      {/* Bottom Grid: Top Performing Products (Left) & Advertisement Performance Chart (Right) */}
+      {/* Bottom Grid: Top Performing Campaigns (Left) & Advertisement Performance Chart (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-        {/* Left: Top Performing Products */}
+        {/* Left: Top Performing Campaigns & Placements */}
         <div className="lg:col-span-4 xl:col-span-4 bg-white rounded-2xl border border-borderColor/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
           <div>
             <h3 className="text-lg font-bold text-headerColor mb-5">
-              Top Performing Products
+              Top Performing Campaigns
             </h3>
 
             {/* Table Header */}
             <div className="grid grid-cols-12 text-sm font-semibold text-headerColor pb-3 border-b border-borderColor/40">
-              <div className="col-span-6">Products</div>
-              <div className="col-span-3 text-right">Views</div>
-              <div className="col-span-3 text-right">Click</div>
+              <div className="col-span-6">Campaign</div>
+              <div className="col-span-3 text-right">Impr.</div>
+              <div className="col-span-3 text-right">Clicks</div>
             </div>
 
-            {/* Products List */}
+            {/* Campaigns List */}
             <div className="divide-y divide-borderColor/20">
-              {topProducts.length > 0 ? (
-                topProducts.map((product: any, index: number) => (
+              {topCampaigns.length > 0 ? (
+                topCampaigns.map((campaign: any, index: number) => (
                   <div
-                    key={product.id || index}
+                    key={campaign.id || index}
                     className="grid grid-cols-12 items-center py-3.5 hover:bg-gray-50/60 transition-colors"
                   >
                     <div className="col-span-6 flex items-center gap-2.5 min-w-0 pr-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-primaryColor shrink-0" />
                       <span
                         className="text-sm font-semibold text-headerColor truncate"
-                        title={product.product_name}
+                        title={campaign.product_name}
                       >
-                        {product.product_name || `Product ${index + 1}`}
+                        {campaign.product_name || `Campaign #${campaign.id || index + 1}`}
                       </span>
                     </div>
                     <div className="col-span-3 text-right text-sm text-grayColor1 font-normal">
-                      {Number(product.views_count ?? 0).toLocaleString()}
+                      {Number(
+                        campaign.impressions ?? campaign.views_count ?? 0,
+                      ).toLocaleString()}
                     </div>
                     <div className="col-span-3 text-right text-sm text-grayColor1 font-normal">
                       {Number(
-                        product.likes_count ??
-                          product.click_count ??
-                          product.clicks ??
+                        campaign.clicks ??
+                          campaign.click_count ??
+                          campaign.likes_count ??
                           0,
                       ).toLocaleString()}
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="py-12 text-center text-sm text-grayColor1">
-                  No products found
+                <div className="py-8 text-center text-sm text-grayColor1">
+                  No campaigns found
                 </div>
               )}
             </div>
@@ -177,7 +193,7 @@ export default function AnalyticsAdvertisementPage() {
                   {graph?.title || "Advertisement Performance"}
                 </h3>
                 <p className="text-xs sm:text-sm font-medium text-grayColor1 mt-1">
-                  {graph?.subtitle || "Views vs Like"}
+                  {graph?.subtitle || "Impressions vs Clicks"}
                 </p>
               </div>
 
@@ -203,7 +219,7 @@ export default function AnalyticsAdvertisementPage() {
                   })}
                 </div>
 
-                {/* Legend matching design */}
+                {/* Legend matching Impressions vs Clicks */}
                 <div className="flex items-center gap-4 text-xs font-medium text-grayColor1">
                   {GRAPH_SERIES.map((s) => (
                     <div key={s.dataKey} className="flex items-center gap-1.5">
@@ -222,7 +238,7 @@ export default function AnalyticsAdvertisementPage() {
             <CommonAnalyticsGraph
               data={chartData}
               series={GRAPH_SERIES}
-              subtitle={graph?.subtitle || "Product Insight"}
+              subtitle={graph?.subtitle || "Impressions vs Clicks"}
             />
           </div>
         </div>
